@@ -1,0 +1,90 @@
+.stepLabelContainer {
+
+    position: absolute;
+    top: 30px;
+
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.step {
+    position: relative;
+    transition: color 0.3s ease-in-out;
+}
+
+.stepIcon {
+    z-index: 1;
+
+}
+
+.stepIconCompleted {
+    color: green !important;
+}
+
+
+
+.stepper {
+    /* padding: 20px; */
+}
+
+.stepIcon {
+    color: gray;
+}
+
+.stepIconCompleted {
+    color: green;
+}
+
+.stepContent {
+    display: flex;
+    flex-direction: column;
+}
+
+.stepLabel {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.stepDescription {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+    /* Adds some spacing between the steps */
+}
+.stepIcon {
+    color: gray;
+    /* Default color for uncompleted steps */
+}
+
+.stepIconCompleted {
+    color: green;
+    /* Color for completed steps */
+}
+
+.stepIconPending {
+    color: lightgreen;
+}
+@media (max-width: 500px) {
+    .stepLabelContainer {
+        top: 24px;
+    }
+
+    .step {
+        position: relative;
+    }
+
+    .stepIcon {
+        z-index: 1;
+    }
+
+    .step:first-child .stepLabelContainer {
+        padding-left: 38px;
+
+    }
+
+    .step:last-child .stepLabelContainer {
+        padding-right: 38px;
+
+    }
+}

@@ -1,0 +1,36 @@
+/* Footer.module.css */
+
+/* .footerContainer {
+    background-color: rgba(0, 0, 0, 0.05);
+} */
+
+.footerLink {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* .sectionPadding {
+    padding: 4rem 0;
+}
+
+ .productHelpMobile {
+     flex-direction: row;
+     justify-content: space-between;
+ } */
+
+/* @media (max-width: 768px) {
+    .productHelpMobile {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+} */
+
+/* .contactDetails {
+    margin-top: 2rem;
+}
+
+.logoText {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+} */

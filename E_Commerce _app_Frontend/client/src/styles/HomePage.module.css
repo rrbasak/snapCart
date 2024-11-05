@@ -1,0 +1,372 @@
+.homepageContainer {
+    background-color: #d5d9d9;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* .banner {
+    width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+} */
+/* .banner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    z-index: 1;
+} */
+
+.banner {
+    position: static;
+    width: 100%;
+    height: 310px;
+    z-index: 1;
+    padding: 0;
+    margin: 0;
+}
+
+/* .banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+} */
+
+.sections {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    height: 90%;
+    gap: 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.section {
+    flex: 1 1 calc(33% - 20px);
+    /* margin: 10px; */
+    /* margin-bottom: 20px; */
+    background-color: white;
+    height: 350px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+
+.section h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.productList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.productCard {
+    width: calc(50% - 10px);
+    /* Adjust width to fit 2 items per row */
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    cursor: pointer;
+    /* Ensures content that overflows the container is hidden */
+}
+
+.productCard img {
+    width: 100%;
+    height: 100px;
+    object-fit: contain;
+    /* Makes the image cover the container without distortion */
+}
+
+.productCard p {
+    text-align: center;
+    margin-top: 5px;
+    font-size: 0.9rem;
+}
+
+.advertisementContainer {
+    display: flex;
+    margin: 20px 0;
+    gap: 20px;
+    position: relative;
+    z-index: 2;
+
+}
+
+.advertisement {
+    flex: 1 1 calc(37% - 20px);
+    /* background-color: #f8f8f8; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.headerCategory {
+    flex: 1 1 calc(23% - 20px);
+    /* padding: 10px; */
+    /* background-color: white; */
+    display: flex;
+    /* flex-direction: column; */
+    align-items: center;
+    /* justify-content: center; */
+    /* object-fit: contain; */
+    /* width: 300px; */
+    /* height: 500px; */
+}
+
+.headerCategory img {
+    max-width: 100%;
+    /* max-height: 100%; */
+    /* object-fit: contain; */
+}
+
+.advertisement img {
+    max-width: 100%;
+    /* Make sure the image fits within its container */
+}
+
+
+
+.horizontalScrollContainer {
+    position: relative;
+    margin: 20px 0;
+    background-color: white;
+    position: relative;
+    z-index: 2;
+}
+
+.horizontalScrollContainerBeforeLogin {
+    position: relative;
+    margin: 20px 0;
+    background-color: white;
+    align-items: center;
+}
+
+.horizontalScroll {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    padding: 10px 0;
+    white-space: nowrap;
+    /* Prevent wrapping */
+}
+
+.horizontalScroll::-webkit-scrollbar {
+    height: 8px;
+}
+
+.horizontalScroll::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 4px;
+}
+
+.productCardInHorizontal {
+    flex: 0 0 auto;
+    width: 150px;
+    /* Set a fixed width for each product card */
+    height: 200px;
+    /* Set a fixed height */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.productCardInHorizontal img {
+    width: 100%;
+    height: 100px;
+    object-fit: contain;
+}
+
+.productCardInHorizontal p {
+    text-align: center;
+    margin-top: 5px;
+    font-size: 0.9rem;
+}
+
+/* Styles for arrows */
+.arrowIcon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    z-index: 2;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    padding: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.arrowBack {
+    left: 0;
+}
+
+.arrowForward {
+    right: 0;
+}
+
+
+/* .Footerbutton {
+    background-color: #ffe093;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+} */
+
+.footer {
+    width: 100%;
+    background-color: #f8f9fa;
+    padding: 20px 0;
+    position: relative;
+    z-index: 2;
+}
+
+.horizontalScrollContainerBeforeLogin {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.Footerbutton {
+    cursor: pointer;
+    background-position: right -170px;
+    display: block;
+    height: 32px;
+    position: relative;
+    color: #000;
+    font-size: 12px;
+    line-height: 28px;
+    text-align: center;
+    font-weight: 700;
+    text-decoration: none;
+    text-shadow: 0 1px 0 #ffe093;
+    border: none;
+    margin-top: 10px;
+    border-radius: 5px;
+    width: 240px;
+    background-color: #ffcd3c;
+
+}
+
+.horizontalScrollContainerBeforeLoginPara {
+    font-size: 15px;
+    margin-bottom: 0px;
+}
+
+.footerlink {
+    text-decoration: none !important;
+    color: black !important;
+}
+.scrollbarheader{
+    margin: 0px 15px !important;
+    padding-top: 9px;
+}
+@media (max-width: 768px) {
+    .banner {
+        position: static;
+        width: 100%;
+        height: 299px;
+        z-index: 1;
+    }
+
+    .homepageContainer {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .sections {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        height: 90%;
+        gap: 20px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .section {
+        flex: 1 1 calc(33% - 20px);
+        background-color: white;
+        height: 350px;
+        overflow: hidden;
+        margin-bottom: 20px;
+        padding: 10px;
+    }
+
+    .productList {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .productCard {
+        width: calc(50% - 10px);
+        height: 150px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    .productCard img {
+        width: 100%;
+        height: 100px;
+        object-fit: contain;
+
+    }
+
+    .advertisementContainer {
+        display: flex;
+        flex-direction: column;
+        margin: 20px 0;
+        gap: 20px;
+        position: relative;
+        z-index: 2;
+
+    }
+
+    .horizontalScrollContainer {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .horizontalScroll {
+        display: flex;
+        flex-direction: row;
+        overflow-x: scroll;
+    }
+
+    .footer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .horizontalScrollContainerBeforeLogin,
+    .footerlink {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .horizontalScrollContainerBeforeLoginPara {
+        text-align: center;
+    }
+}

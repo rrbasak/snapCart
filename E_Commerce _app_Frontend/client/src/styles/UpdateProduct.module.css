@@ -1,0 +1,122 @@
+CreateProduct.module.css .container {
+    margin: 1rem;
+    padding: 1rem;
+}
+
+.selectWrapper {
+    margin-bottom: 1rem;
+    /* font-weight: bold; */
+    width: 100%;
+    border: 1px solid rgb(202, 194, 194);
+    border-radius: 0.4rem;
+}
+
+.allOtherFiled {
+    width: 100%;
+    height: 100%;
+    border-radius: 0.4rem;
+}
+
+.createProduct {
+    margin-bottom: 1rem;
+    font-weight: bold;
+
+}
+
+.photoUpload {
+    margin-bottom: 1rem;
+}
+
+.productDetails {
+    margin-bottom: 1rem;
+}
+
+.deliveryWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.halfWidth {
+    flex: 1 1 48%;
+}
+
+.fullWidth {
+    width: 100%;
+}
+
+.deliveryContainer {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.datePicker,
+.timePicker {
+    flex: 1;
+    margin-top: 0.5rem;
+}
+
+.label{
+    font-weight: bold;
+}
+.photoContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.photoWrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.photo {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+.removePhotoButton {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+.selectContainer {
+    display: flex;
+    gap: 10px;
+}
+
+.selectBox {
+    flex: 1;
+    border: 1px solid rgb(202, 194, 194);
+    border-radius: 0.4rem;
+}
+
+.photoUpload {
+    margin-top: 20px;
+}
+.exchangeproduct{
+    margin-bottom: 1rem;
+}
+@media (max-width: 767px) {
+    .halfWidth {
+        width: 100%;
+    }
+
+    .deliveryContainer {
+        flex-direction: column;
+        margin-bottom: 1rem;
+    }
+}

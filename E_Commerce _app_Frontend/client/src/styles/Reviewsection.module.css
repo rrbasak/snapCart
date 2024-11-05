@@ -1,0 +1,49 @@
+/* ProductDetails.module.css */
+.reviewsection {
+    margin-top: 20px;
+}
+
+.tabContainer {
+    display: flex;
+    border-bottom: 2px solid #ddd;
+}
+
+.tabButton {
+    padding: 10px;
+    border: none;
+    background: #f4f4f4;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.activeTab {
+    background: #ddd;
+}
+
+.tabContent {
+    padding: 20px;
+    background: #f9f9f9;
+}
+
+.timestamp {
+    margin: 0 10px;
+}
+
+.images {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+    margin-bottom: 45px;
+}
+
+@media (max-width: 600px) {
+    .timestamp {
+        display: block;
+        margin-left: 1px;
+        /* Adjust margins as needed */
+    }
+    .images {
+        margin-bottom: 54px;
+    }
+}

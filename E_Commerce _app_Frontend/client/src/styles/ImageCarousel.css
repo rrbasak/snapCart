@@ -1,0 +1,43 @@
+.ant-carousel .slick-prev,
+.ant-carousel .slick-prev:hover,
+.ant-carousel .slick-prev:focus {
+    font-size: inherit;
+    left: 10px;
+    z-index: 2;
+    color: black;
+    top: 150px;
+}
+
+.ant-carousel .slick-next,
+.ant-carousel .slick-next:hover,
+.ant-carousel .slick-next:focus {
+    font-size: inherit;
+    right: 10px;
+    z-index: 2;
+    color: black;
+    top: 150px;
+}
+
+
+@media (max-width: 768px) {
+
+    .ant-carousel .slick-prev,
+    .ant-carousel .slick-prev:hover,
+    .ant-carousel .slick-prev:focus {
+        font-size: inherit;
+        left: 10px;
+        z-index: 2;
+        color: black;
+        /* top: 77px; */
+    }
+
+    .ant-carousel .slick-next,
+    .ant-carousel .slick-next:hover,
+    .ant-carousel .slick-next:focus {
+        font-size: inherit;
+        right: 10px;
+        z-index: 2;
+        color: black;
+        /* top: 77px; */
+    }
+}

@@ -1,0 +1,70 @@
+/* 
+.scrollContainer {
+    display: flex;
+    overflow-x: auto;
+    padding: 10px 0;
+    margin-top: 10px;
+}
+
+.iconContainer {
+    flex: 0 0 auto;
+    text-align: center;
+    margin-right: 20px;
+}
+
+.iconLabel {
+    font-size: 0.875rem;
+    color: #555;
+} */
+
+
+
+/* styles/HorizontalScroll.module.css */
+.container {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.scrollContainer {
+    display: flex;
+    overflow: hidden;
+    /* Hide scrollbar */
+    padding: 10px 0;
+    margin-top: 10px;
+    white-space: nowrap;
+    /* Prevent line breaks */
+    flex: 1;
+    /* Allow container to grow */
+}
+
+.iconContainer {
+    flex: 0 0 auto;
+    text-align: center;
+    margin-right: 20px;
+}
+
+.iconLabel {
+    font-size: 0.875rem;
+    color: #555;
+}
+
+.arrow {
+    border: 2px solid #888;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 10.5rem;
+    border-radius: 50%;
+    position: absolute;
+    z-index: 1;
+    top:"2px"
+}
+
+.leftArrow {
+    left: 0;
+}
+
+.rightArrow {
+    right: 0;
+}

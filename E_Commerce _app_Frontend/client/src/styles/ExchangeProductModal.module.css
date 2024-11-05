@@ -1,0 +1,62 @@
+.modal {
+    font-size: small;
+}
+
+.content {
+    padding: 20px;
+}
+
+.section {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.modelSection {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.input {
+    width: 100%;
+}
+
+.exchangePrice {
+    margin-top: 10px;
+}
+
+.exchangePrice h4 {
+    margin-bottom: 10px;
+}
+
+.damagePrices {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.input {
+    flex: 1;
+}
+
+.modelActions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.brandActions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.addButton {
+    flex: 1;
+}
+
+.deleteButton {
+    flex: 1;
+}

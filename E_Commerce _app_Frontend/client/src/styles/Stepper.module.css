@@ -1,0 +1,38 @@
+/* Green color for finished and active steps */
+.step-finish .ant-steps-item-icon,
+.step-active .ant-steps-item-icon,
+.ant-steps-item-finish .ant-steps-item-icon {
+  background-color: green !important;
+  border-color: green !important;
+}
+
+.step-finish .ant-steps-item-title,
+.step-active .ant-steps-item-title,
+.ant-steps-item-finish .ant-steps-item-title {
+  color: green !important;
+}
+
+/* Green bar color for steps that are completed or in progress */
+.ant-steps-item-finish .ant-steps-item-tail::after,
+.ant-steps-item-process .ant-steps-item-tail::after {
+  background-color: green !important;
+}
+
+/* Animation */
+.fadeIn {
+  animation: fadeIn 1s ease-in-out;
+}
+.ant-steps-item-finish>.ant-steps-item-container>.ant-steps-item-tail::after {
+  background-color: red !important;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

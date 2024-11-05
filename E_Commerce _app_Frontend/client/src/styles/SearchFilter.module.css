@@ -1,0 +1,47 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+}
+
+.filterSection {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 20px;
+    padding: 10px 0;
+}
+
+.filterCategory {
+    flex: 0 0 auto;
+    margin-right: 10px;
+    white-space: nowrap;
+}
+
+.card {
+    width: 18rem;
+    margin: 2rem;
+}
+
+.cardImage {
+    width: 100%;
+    height: auto;
+}
+
+.cardBody {
+    text-align: center;
+}
+
+.resetButton {
+    margin-top: 20px;
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .filterSection {
+        flex-direction: column;
+        overflow-x: visible;
+        margin-right: 20px;
+    }
+}

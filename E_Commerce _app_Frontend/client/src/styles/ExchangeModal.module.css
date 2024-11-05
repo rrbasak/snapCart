@@ -1,0 +1,89 @@
+.modal {
+    max-width: 600px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+}
+
+.section {
+    margin-bottom: 20px;
+}
+
+.title {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.select {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.exchangeValue {
+    font-weight: bold;
+    color: #000;
+    text-align: center;
+}
+
+.footerButtons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+}
+
+.applyButton {
+    margin-left: 8px;
+}
+
+.cancelButton {
+    margin-right: 8px;
+}
+
+/* .modal {
+    max-width: 800px;
+}
+
+.content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.leftSection {
+    flex: 1;
+    margin-right: 20px;
+}
+
+.rightSection {
+    flex: 2;
+}
+
+.section {
+    margin-bottom: 20px;
+}
+
+.title {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.checkboxTitle {
+    font-weight: bold;
+}
+
+.select {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.exchangeValue {
+    font-weight: bold;
+    color: #000;
+    text-align: center;
+}
+
+.boldText {
+    font-weight: bold;
+} */

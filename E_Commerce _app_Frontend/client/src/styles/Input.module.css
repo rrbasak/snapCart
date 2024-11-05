@@ -1,0 +1,170 @@
+.inputContainer {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.recaptcha-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.recaptcha-container iframe {
+    width: 100% !important;
+    max-width: 100%;
+}
+
+/* styles.module.css */
+.gRecaptchaContainer {
+    transform: scale(0.77);
+    -webkit-transform: scale(0.77);
+    transform-origin: 0 0;
+    -webkit-transform-origin: 0 0;
+}
+
+@media (min-width: 768px) {
+
+    /* For tablet and larger screens */
+    .gRecaptchaContainer {
+        transform: scale(1);
+        -webkit-transform: scale(1);
+        transform-origin: center;
+        -webkit-transform-origin: center;
+    }
+}
+
+/* .captchaContainer {
+    margin: 0 auto 1rem auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+} */
+.captchaContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    /* Ensures full width */
+    margin: 0 auto 1rem auto;
+    /* Centers the container */
+    padding: 0 1rem;
+    /* Adds horizontal padding for mobile */
+    box-sizing: border-box;
+    /* Includes padding in the total width */
+}
+
+@media (max-width: 768px) {
+    .inputContainer {
+        width: 100%;
+        /* Full width for mobile */
+        padding: 0;
+        /* Optional: Remove padding for mobile if not needed */
+    }
+}
+
+.formLabel {
+    font-size: 14px;
+    color: #1a1a1a;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.iconInside {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    color: #5a5a5a;
+    pointer-events: none;
+}
+
+.iconOnelineInside {
+    position: absolute;
+    top: 48%;
+    left: 55px;
+    transform: translateY(-50%);
+    color: #5a5a5a;
+    pointer-events: none;
+}
+
+.iconTwoEmailInside {
+    position: absolute;
+    top: 27%;
+    left: 60px;
+    transform: translateY(-50%);
+    color: #5a5a5a;
+    pointer-events: none;
+}
+
+.emailIconOnelineInside {
+    position: absolute;
+    top: 66%;
+    left: 58px;
+    transform: translateY(-50%);
+    color: #5a5a5a;
+    pointer-events: none;
+}
+
+.icon {
+    margin-top: 35px;
+}
+
+.inputField {
+    padding-left: 40px;
+    border-radius: 5px;
+    /* border: 1px solid #ccc ; */
+    height: 50px;
+    font-size: 16px;
+    width: 100%;
+}
+
+.inputField::placeholder {
+    color: #ccc;
+    opacity: 1;
+}
+
+
+.inputRegContainer {
+    position: relative;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding-left: 10px;
+}
+
+.icon {
+    margin-right: 8px;
+    color: #888;
+}
+
+.inputRegField {
+    padding-left: 40px;
+    border-radius: 5px;
+    height: 50px;
+    font-size: 16px;
+    width: 100%;
+}
+
+.iconRegInside {
+    position: absolute;
+    top: 25%;
+    left: 15px;
+    transform: translateY(-50%);
+    color: #5a5a5a;
+    pointer-events: none;
+}
+
+.nav-link {
+    color: #000;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+.nav-link.active {
+    color: #fff;
+    background-color: #007bff;
+    border-radius: 5px;
+}

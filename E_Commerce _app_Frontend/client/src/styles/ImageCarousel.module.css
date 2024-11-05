@@ -1,0 +1,87 @@
+/* ImageCarousel.module.css */
+/* .customCarousel .slick-prev,
+.customCarousel .slick-next {
+    top: 10px;
+} */
+/* .customCarousel .slick-track
+{
+    top: 30px;
+}
+.customCarousel .slick-arrow.slick-next
+{
+    top: 0px;
+}
+.customCarousel .slick-arrow.slick-prev
+{
+    top: 0px;
+} */
+
+/* .customCarousel .slick-prev {
+    left: 20px;
+
+}
+
+.customCarousel .slick-next {
+    right: 20px;
+} */
+
+
+/* .customCarousel .slick-arrow .slick-prev:before,
+.customCarousel .slick-arrow .slick-next:before {
+    color: black;
+} */
+
+
+/* ImageCarousel.module.css */
+/* .customCarousel .slick-prev,
+.customCarousel .slick-next {
+    color: black;
+    font-size: 24px;
+}
+
+.customCarousel .slick-prev {
+    left: 20px;
+}
+
+.customCarousel .slick-next {
+    right: 20px;
+}
+
+.customCarousel .slick-prev:before,
+.customCarousel .slick-next:before {
+    color: black;
+}
+
+.customCarousel .slick-arrow .slick-next{
+    color: black;
+}
+
+.customCarousel .slick-arrow.slick-next[aria-label="next"][data-role="none"] {
+    color: black;
+    top: 155px;
+}
+@media (max-width: 768px) {
+    .customCarousel .slick-slide img {
+        height: 100%;
+    }
+} */
+
+
+.customArrow {
+    font-size: inherit;
+    color: black;
+}
+
+.ant-carousel .slick-prev,
+.ant-carousel .slick-next {
+    font-size: inherit;
+    z-index: 2;
+}
+
+.ant-carousel .slick-prev {
+    left: 10px;
+}
+
+.ant-carousel .slick-next {
+    right: 10px;
+}

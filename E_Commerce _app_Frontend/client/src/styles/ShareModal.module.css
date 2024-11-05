@@ -1,0 +1,28 @@
+.shareButtonsRow {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.shareButtonCol {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+    /* Adjust this value as needed */
+}
+
+.shareButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+.shareButton:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}

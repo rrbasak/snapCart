@@ -1,0 +1,113 @@
+.customCard {
+    height: 100%;
+    width: 100%;
+    max-width: 310px;
+    margin-bottom: 10px;
+}
+
+.imageContainer {
+    width: 130px;
+    height: 200px;
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.detailsContainer {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.productDetail {
+    margin: 0;
+    font-weight: bold;
+}
+
+.customCard .d-flex.align-items-center {
+    height: 100%;
+}
+
+.g-2 {
+    gap: 2px;
+    /* Reduced gutter space between columns */
+}
+
+.primeDayTag {
+    background-color: red;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 6px 12px;
+    /* Slightly increased padding for a better look */
+    border-radius: 12px;
+    /* Rounded corners for a modern look */
+    margin-right: 10px;
+    /* Space between tags */
+    display: inline-block;
+    /* Make sure tags are inline */
+    white-space: nowrap;
+    /* Prevent text from wrapping */
+}
+
+.exchangeAppliedTag {
+    background-color: #4CAF50;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 6px 12px;
+    border-radius: 12px;
+    margin-right: 10px;
+    display: inline-block;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.customCard {
+    position: relative;
+    padding-top: 0.5rem;
+}
+
+.tag {
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-right: 8px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.primeDayTag {
+    /* background-color: #ffe0b2;
+    color: #ff6f00; */
+    background-color: rgb;
+    color: white;
+}
+
+.exchangeAppliedTag {
+    /* background-color: #e1f5fe;
+    color: #0288d1; */
+    background-color: #4CAF50;
+    color: white;
+}
+
+.cardBody {
+    padding-top: 0.5rem;
+}
+
+.imageContainer {
+    width: 130px;
+    height: auto;
+    margin-right: 16px;
+}
+
+.detailsContainer {
+    flex-grow: 1;
+}
+
+.productDetail {
+    margin-bottom: 0.3rem;
+}

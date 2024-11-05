@@ -1,0 +1,43 @@
+/* .drawer {
+    width: 250px;
+    background-color: rgb(82, 79, 79);
+    color: white;
+}
+
+.closeButton {
+    color: black;
+    margin-left: auto;
+    display: block;
+    
+}
+
+
+ */
+
+
+ .drawer {
+     width: 250px;
+     background-color: rgb(71, 71, 71);
+     color: white;
+
+ }
+
+ .closeButton {
+     color: white !important;
+     padding-left:12px!important
+ }
+
+ .drawerHeader {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     padding: 8px 16px;
+     background-color: rgb(82, 79, 79);
+ }
+
+ .browseTitle {
+     color: white;
+ }
+ .boldText {
+     font-weight: bold !important;
+ }
