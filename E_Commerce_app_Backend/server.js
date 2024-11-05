@@ -185,7 +185,7 @@ const app = express();
 // Vercel CORS Configuration
 app.use(
   cors({
-    origin: ["https://deploy-mern-1whq.versel.app"],
+    origin: ["https://snap-cart-backend-api.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
