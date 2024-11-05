@@ -169,6 +169,7 @@ import cors from "cors";
 import { errorMiddleware } from "./middlewares/authMiddleware.js";
 import cookieParser from "cookie-parser";
 
+import path from "path";
 // Configure env
 dotenv.config();
 
@@ -198,7 +199,11 @@ app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: false }));
-
+app.use(
+  express.static(
+    path.join(__dirname, "../E_Commerce _app_Frontend/client/build")
+  )
+);
 // Routes
 // app.use("/api/v1/auth", authRoutes);
 // Apply rate limiter only to authentication routes
@@ -219,10 +224,16 @@ app.use("/api/v1/product-color", productColorRoute);
 app.use(errorMiddleware);
 
 // Rest API
-app.get("/", (req, res) => {
-  res.status(200).json({
-    message: "Welcome to e commerce app",
-  });
+// app.get("/", (req, res) => {
+//   res.status(200).json({
+//     message: "Welcome to e commerce app",
+//   });
+// });
+
+app.use("*", (req, res) => {
+  res.sendFile(
+    path.join(__dirname, "../E_Commerce _app_Frontend/client/build/index.html")
+  );
 });
 
 // Set view engine
