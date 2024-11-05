@@ -158,11 +158,14 @@ const LoginRegister = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:3000/api/v1/auth/login", {
-        email,
-        password,
-        recaptchaValue,
-      });
+      const res = await axios.post(
+        "https://snap-cart-frontend-apis.vercel.app/api/v1/auth/login",
+        {
+          email,
+          password,
+          recaptchaValue,
+        }
+      );
       //console.log(res);
       if (res && res.data.success) {
         setAuth({

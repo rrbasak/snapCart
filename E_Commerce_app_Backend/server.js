@@ -184,26 +184,26 @@ const app = express();
 //console.log(process.env.LOGIN_RATE_LIMIT_MESSAGE);
 
 // Vercel CORS Configuration
-app.use(
-  cors({
-    origin: ["https://snap-cart-backend-api.vercel.app"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: ["https://snap-cart-backend-api.vercel.app"],
+//     methods: ["GET", "POST", "PUT", "DELETE"],
+//     credentials: true,
+//   })
+// );
 // Cookie parser
 app.use(cookieParser());
 
 // Middlewares
-app.use(cors());
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: "10mb" }));
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: false }));
-app.use(
-  express.static(
-    path.join(__dirname, "../E_Commerce _app_Frontend/client/build")
-  )
-);
+// app.use(
+//   express.static(
+//     path.join(__dirname, "../E_Commerce _app_Frontend/client/build")
+//   )
+// );
 // Routes
 // app.use("/api/v1/auth", authRoutes);
 // Apply rate limiter only to authentication routes
@@ -230,11 +230,11 @@ app.use(errorMiddleware);
 //   });
 // });
 
-app.use("*", (req, res) => {
-  res.sendFile(
-    path.join(__dirname, "../E_Commerce _app_Frontend/client/build/index.html")
-  );
-});
+// app.use("*", (req, res) => {
+//   res.sendFile(
+//     path.join(__dirname, "../E_Commerce _app_Frontend/client/build/index.html")
+//   );
+// });
 
 // Set view engine
 app.set("view engine", "ejs");

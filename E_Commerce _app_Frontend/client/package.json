@@ -1,6 +1,6 @@
 {
   "name": "client",
-  "proxy": "https://snap-cart-backend-api.vercel.app/",
+  "proxy": "https://snap-cart-backend-api.vercel.app",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
