@@ -236,11 +236,11 @@ app.use((err, req, res, next) => {
 app.use(errorMiddleware);
 
 // Rest API
-// app.get("/", (req, res) => {
-//   res.status(200).json({
-//     message: "Welcome to e commerce app",
-//   });
-// });
+app.get("/", (req, res) => {
+  res.status(200).json({
+    message: "Welcome to e commerce app",
+  });
+});
 
 // app.use("*", (req, res) => {
 //   res.sendFile(
