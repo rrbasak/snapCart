@@ -1,6 +1,7 @@
 import slugify from "slugify";
 import categoryModel from "../models/categoryModel.js";
 import fs from "fs";
+import redis from "../config/client.js";
 
 export const createCategoryController = async (req, res) => {
   //console.log("req category", req.fields);
@@ -73,6 +74,7 @@ export const updateCategoryController = async (req, res) => {
 export const categoryControlller = async (req, res) => {
   try {
     const categories = await categoryModel.find({});
+    await redis.setex("categories", 12000, JSON.stringify(categories));
     res.status(200).send({
       success: true,
       messsage: "All category List",

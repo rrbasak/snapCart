@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/jsx-no-comment-textnodes */
 /* eslint-disable no-unused-vars */
 
@@ -37,6 +38,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import stylesInput from "../../../src/styles/Input.module.css";
 import stylesButton from "../../../src/styles/Button.module.css";
 import "../../styles/AuthStyles.css";
+import { addEmail, checkEmail } from "../../frontendUtil/api";
 
 const LoginRegister = () => {
   const [email, setEmail] = useState("");
@@ -53,7 +55,6 @@ const LoginRegister = () => {
   const [otpForMobileValidation, setOtpForMobileValidation] = useState();
   const [activeTab, setActiveTab] = useState("login");
   const [recaptchaValue, setRecaptchaValue] = useState();
-
   const captchaRef = useRef();
 
   const navigate = useNavigate();
@@ -158,14 +159,11 @@ const LoginRegister = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        "https://snap-cart-frontend-apis.vercel.app/api/v1/auth/login",
-        {
-          email,
-          password,
-          recaptchaValue,
-        }
-      );
+      const res = await axios.post("http://localhost:3000/api/v1/auth/login", {
+        email,
+        password,
+        recaptchaValue,
+      });
       //console.log(res);
       if (res && res.data.success) {
         setAuth({
@@ -245,9 +243,12 @@ const LoginRegister = () => {
         });
         return;
       }
-      const res = await axios.get(`/api/v1/auth/checkMail/${email}`);
+      // const res = await axios.get(`/api/v1/auth/checkMail/${email}`);
       ////console.log(res);
-      if (res && res.data.success) {
+      // const emailExists = await bloomFilter.alreadyExists(email);
+      const emailExists = await checkEmail(email);
+      if (!emailExists) {
+        await addEmail(email);
         setRegisterFormBody((prevFormBody) => ({
           ...prevFormBody,
           name: capitalize(firstName) + " " + capitalize(lastName),
@@ -255,8 +256,21 @@ const LoginRegister = () => {
         }));
         setActiveTab("mobileValidation");
       } else {
-        toast.error(res.data.message);
+        toast.error(
+          "Unable to proceed. Please check your details and try again."
+        );
       }
+
+      // if (res && res.data.success) {
+      //   setRegisterFormBody((prevFormBody) => ({
+      //     ...prevFormBody,
+      //     name: capitalize(firstName) + " " + capitalize(lastName),
+      //     email: email,
+      //   }));
+      //   setActiveTab("mobileValidation");
+      // } else {
+      //   toast.error(res.data.message);
+      // }
     } catch (error) {
       ////console.log(error);
       toast.error("Something went wrong");
@@ -363,10 +377,11 @@ const LoginRegister = () => {
         address: address,
       }));
       ////console.log(registerFormBody);
-      const res = await axios.post(
-        `${process.env.REACT_APP_API}/api/v1/auth/register`,
-        { ...registerFormBody, password: password, address: address }
-      );
+      const res = await axios.post("/api/v1/auth/register", {
+        ...registerFormBody,
+        password: password,
+        address: address,
+      });
       if (res && res.data.success) {
         toast.success(res.data.message);
         setTimeout(() => {
@@ -399,6 +414,7 @@ const LoginRegister = () => {
       navigate("/");
     }
   }, [navigate]);
+
   return (
     <Layout title="Login/Register - Ecommer App">
       {/* <section className="vh-100 gradient-custom"> */}

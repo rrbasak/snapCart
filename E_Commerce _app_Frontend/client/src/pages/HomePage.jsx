@@ -11,6 +11,7 @@ import ArrowBackIosOutlinedIcon from "@mui/icons-material/ArrowBackIosOutlined";
 import { useAuth } from "../context/auth";
 import { useDispatch, useSelector } from "react-redux";
 import ImageCarousel from "./ImageCarousel";
+import useCategory from "../hooks/useCategory";
 
 const HomePage = () => {
   const pastProducts = useSelector((state) => state.pastProduct.pastProducts);
@@ -19,7 +20,7 @@ const HomePage = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [allPrimeproducts, setAllPrimeProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
+  // const [categories, setCategories] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [auth, setAuth] = useAuth();
@@ -29,8 +30,11 @@ const HomePage = () => {
   const [dummyOneProducts, setDummyOneProducts] = useState([]);
   const [dummySecProducts, setDummySecProducts] = useState([]);
 
+  // const categories = useCategory();
+  const categories = useSelector((state) => state.categories.list.categories);
+  console.log("categories", categories);
   useEffect(() => {
-    getAllCategory();
+    // getAllCategory();
     getAllProducts();
     getAllPrimeProducts();
     getDummyOneProduct();
@@ -40,13 +44,12 @@ const HomePage = () => {
   useEffect(() => {
     if (pastProducts.length === 1) {
       const lastProduct = pastProducts[pastProducts.length - 1]?.product;
-      
+
       if (lastProduct) {
         //console.log("lastProduct", lastProduct);
         getSimilarProduct(lastProduct?._id, lastProduct.category);
       }
     } else if (pastProducts.length >= 2) {
-      
       const lastProduct = pastProducts[pastProducts.length - 1]?.product;
       const prevlastProduct = pastProducts[pastProducts.length - 2]?.product;
       if (lastProduct && prevlastProduct) {
@@ -80,16 +83,16 @@ const HomePage = () => {
       behavior: "smooth",
     });
   };
-  const getAllCategory = async () => {
-    try {
-      const { data } = await axios.get("/api/v1/category/get-category");
-      if (data?.success) {
-        setCategories(data?.categories);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  // const getAllCategory = async () => {
+  //   try {
+  //     const { data } = await axios.get("/api/v1/category/get-category");
+  //     if (data?.success) {
+  //       setCategories(data?.categories);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   const getAllProducts = async () => {
     try {
@@ -256,25 +259,26 @@ const HomePage = () => {
               <>
                 <h3>Categories to explore</h3>
                 <div className={styles.productList}>
-                  {categories.map((category) => (
-                    <div key={category?._id} className={styles.productCard}>
-                      <img
-                        src={
-                          category.photo
-                            ? `/api/v1/category/category-photo/${category?._id}`
-                            : "/images/a3.png"
-                        }
-                        alt={category.name}
-                        onClick={() => {
-                          // //console.log("cid", category._id);
-                          navigate(`/category/${category?.slug}`, {
-                            state: { cid: category._id },
-                          });
-                        }}
-                      />
-                      <p>{category.name}</p>
-                    </div>
-                  ))}
+                  {categories &&
+                    categories?.map((category) => (
+                      <div key={category?._id} className={styles.productCard}>
+                        <img
+                          src={
+                            category.photo
+                              ? `/api/v1/category/category-photo/${category?._id}`
+                              : "/images/a3.png"
+                          }
+                          alt={category.name}
+                          onClick={() => {
+                            // //console.log("cid", category._id);
+                            navigate(`/category/${category?.slug}`, {
+                              state: { cid: category._id },
+                            });
+                          }}
+                        />
+                        <p>{category.name}</p>
+                      </div>
+                    ))}
                 </div>
               </>
             ) : pastProducts.length === 1 || pastProducts.length === 0 ? (

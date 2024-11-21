@@ -77,7 +77,6 @@
 
 
 
-// src/store.js
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
@@ -86,8 +85,9 @@ import remainingTimeReducer from "../features/remainingTime/remainingTimeSlice.j
 import cartReducer from "../features/cart/cartSlice.js";
 import exchangeReducer from "../features/exchangeProduct/exchangeSlice.js";
 import pastProductReducer from "../features/pastProduct/pastProductSlice.js";
+import categoryReducer from "../features/categories/categoriesSlice.js";
 
-import {thunk} from "redux-thunk";
+import { thunk } from "redux-thunk";
 
 const persistConfig = {
   key: "root",
@@ -100,6 +100,7 @@ const rootReducer = combineReducers({
   cartOnUser: cartReducer,
   exchangeProduct: exchangeReducer,
   pastProduct: pastProductReducer,
+  categories: categoryReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

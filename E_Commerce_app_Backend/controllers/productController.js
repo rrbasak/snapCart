@@ -18,7 +18,7 @@ import { generateOrderShippedEmailContent } from "../templates/orderShippedEmail
 import { generateOrderBeforeDeliverEmailContent } from "../templates/orderBeforeDeliverEmailTemplate.js";
 import { generateOrderAfterDeliverEmailContent } from "../templates/orderAfterDeliverEmailTemplate.js";
 import { generateCancelByUserEmailContent } from "../templates/cancelByUserTemplate.js";
-import formatTimestampforOrder from "../../E_Commerce _app_Frontend/client/src/frontendUtil/dateUtlFoOrder.js";
+import formatTimestampforOrder from "../client/src/frontendUtil/dateUtlFoOrder.js";
 import Fuse from "fuse.js";
 // import formatTimestamp from "../client/src/frontendUtil/dateUtil.js";
 // const formatTimestampforOrder = require("../client/src/frontendUtill/dateUtlFoOrder.js");
@@ -987,6 +987,8 @@ export const searchRelatedProductController = async (req, res) => {
 export const realtedProductController = async (req, res) => {
   try {
     const { pid, cid } = req.params;
+    const { page, limit } = req.query;
+    const skip = (page - 1) * limit;
     const products = await productModel
       .find({
         category: cid,
@@ -994,10 +996,22 @@ export const realtedProductController = async (req, res) => {
       })
       .select("-photo")
       // .limit(3)
-      .populate("category");
+      .populate("category")
+      .skip(skip)
+      .limit(parseInt(limit));
+    // res.status(200).send({
+    //   success: true,
+    //   products,
+    // });
+    const total = await productModel.countDocuments({
+      category: cid,
+      _id: { $ne: pid },
+    });
+
     res.status(200).send({
       success: true,
       products,
+      total,
     });
   } catch (error) {
     ////console.log(error);

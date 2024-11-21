@@ -9,6 +9,7 @@ import {
   updateCategoryController,
 } from "../controllers/categoryController.js";
 import formidable from "express-formidable";
+import { getCachedData } from "../middlewares/redisMiddleware.js";
 
 const router = express.Router();
 
@@ -31,7 +32,7 @@ router.put(
 );
 
 //getALl category
-router.get("/get-category", categoryControlller);
+router.get("/get-category", getCachedData("categories"), categoryControlller);
 
 //single category
 router.get("/single-category/:slug", singleCategoryController);
@@ -47,14 +48,6 @@ router.delete(
   deleteCategoryCOntroller
 );
 export default router;
-
-
-
-
-
-
-
-
 
 // import express from "express";
 // import { isAdmin, requireSignIn } from "../middlewares/authMiddleware.js";

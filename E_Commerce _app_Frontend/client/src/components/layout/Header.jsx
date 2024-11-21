@@ -42,7 +42,8 @@ const Header = memo(() => {
   const dispatch = useDispatch();
   const [auth, setAuth] = useAuth();
   const [cart] = useCart();
-  const categories = useCategory();
+  // const categories = useCategory();
+  const categories = useSelector((state) => state.categories.list.categories);
   const navigate = useNavigate();
   const location = useLocation();
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -53,9 +54,15 @@ const Header = memo(() => {
   const [isMobileView, setIsMobileView] = useState(false);
   const isMobileViews = useMediaQuery("(max-width:900px)");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const handleSearchFocus = () => {setIsSearchFocused(true);};
+  const handleSearchFocus = () => {
+    setIsSearchFocused(true);
+  };
   const handleSearchBlur = () => setIsSearchFocused(false);
-  const handleAddressHandler =() => {navigate("/dashboard/profile", { state: { activeTab: "contactReferences" } });}
+  const handleAddressHandler = () => {
+    navigate("/dashboard/profile", {
+      state: { activeTab: "contactReferences" },
+    });
+  };
   const handleLogOut = () => {
     setAuth({
       ...auth,
