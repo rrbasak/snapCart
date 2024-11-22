@@ -299,7 +299,7 @@ const app = express();
 
 // Vercel CORS Configuration
 const allowedOrigins = [
-  "http://localhost:3000",
+  "http://localhost:8080",
   "https://snap-cart-frontend-api.vercel.app",
 ]; // Add more if needed
 
