@@ -28,7 +28,7 @@ const DeleteModal = ({
       };
 
       const { data } = await axios.post(
-        "/api/v1/product/remove-order",
+        `${process.env.REACT_APP_API}/api/v1/product/remove-order`,
         payload
       );
       //console.log(data);

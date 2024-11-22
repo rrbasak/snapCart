@@ -34,7 +34,7 @@ export const ExchangeModal = ({
   const getModelsBasedOnBrand = async (brand) => {
     try {
       const { data } = await axios.get(
-        `/api/v1/subcategory/get-subcategory/${brand}/${subcategoryId}`
+        `${process.env.REACT_APP_API}/api/v1/subcategory/get-subcategory/${brand}/${subcategoryId}`
       );
       setModels(data.allmodels[0].model);
       setSelectedBrand(brand);
@@ -108,7 +108,7 @@ export const ExchangeModal = ({
         product: product._id,
       };
       const { data } = await axios.post(
-        "/api/v1/exchange/create-exchange",
+        `${process.env.REACT_APP_API}/api/v1/exchange/create-exchange`,
         payload
       );
       //console.log(data);

@@ -162,7 +162,7 @@ const UpdateExchangeProductModal = ({
     try {
       if (prepopulatedDataForModal) {
         const { data } = await axios.put(
-          `/api/v1/subcategory/update-exchange-product/${prepopulatedDataForModal._id}`,
+          `${process.env.REACT_APP_API}/api/v1/subcategory/update-exchange-product/${prepopulatedDataForModal._id}`,
           payload
         );
         if (data?.success) {
@@ -171,7 +171,7 @@ const UpdateExchangeProductModal = ({
         }
       } else {
         const { data } = await axios.post(
-          "/api/v1/subcategory/create-exchange-product",
+          `${process.env.REACT_APP_API}/api/v1/subcategory/create-exchange-product`,
           payload
         );
         if (data?.success) {
