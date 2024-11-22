@@ -18,12 +18,13 @@ import sendEmail from "../utils/emailUtil.js";
 import { generateOrderEmailContent } from "../templates/orderDetailEmailTemplate.js";
 import { generateOrderShippedEmailContent } from "../templates/orderShippedEmailTemplate.js";
 import { generatePasswordResetEmailContent } from "../templates/recoverPasswordEmailTemplate.js";
-import formatTimestampforOrder from "../client/src/frontendUtil/dateUtlFoOrder.js";
+
 import productModel from "../models/productModel.js";
 import { generateOrderBeforeDeliverEmailContent } from "../templates/orderBeforeDeliverEmailTemplate.js";
 import { generateOrderAfterDeliverEmailContent } from "../templates/orderAfterDeliverEmailTemplate.js";
-import { generateCancelByAdminEmailContent } from "../templates/CancelByAdminTemplate .js";
 
+import { formatTimestampforOrder } from "../utils/dateUtlFoOrder.js";
+import { generateCancelByAdminEmailContent } from "../templates/cancelByAdminTemplate.js";
 //registration
 
 export const registerController = async (req, res) => {
