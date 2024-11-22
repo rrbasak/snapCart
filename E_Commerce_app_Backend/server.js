@@ -309,7 +309,7 @@ app.use(
 app.use(cookieParser());
 
 // Middlewares
-app.use(cors());
+// app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: false }));
