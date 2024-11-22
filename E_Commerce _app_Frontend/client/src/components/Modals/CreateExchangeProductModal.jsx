@@ -531,7 +531,7 @@ const CreateExchangeProductModal = ({
 
     try {
       const { data } = await axios.post(
-        "/api/v1/subcategory/create-exchange-product",
+        `${process.env.REACT_APP_API}/api/v1/subcategory/create-exchange-product`,
         payload
       );
       if (data?.success) {
