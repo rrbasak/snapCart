@@ -31,7 +31,7 @@ const HomePage = () => {
   const [dummySecProducts, setDummySecProducts] = useState([]);
 
   // const categories = useCategory();
-  const categories = useSelector((state) => state.categories.list.categories);
+  const categories = useSelector((state) => state.categories.list.categories || []);
   console.log("categories", categories);
   useEffect(() => {
     // getAllCategory();
@@ -364,7 +364,7 @@ const HomePage = () => {
               <>
                 <h3>Categories to explore</h3>
                 <div className={styles.productList}>
-                  {categories.map((category) => (
+                  {categories && categories?.map((category) => (
                     <div key={category?._id} className={styles.productCard}>
                       <img
                         src={

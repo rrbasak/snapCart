@@ -43,7 +43,7 @@ const Header = memo(() => {
   const [auth, setAuth] = useAuth();
   const [cart] = useCart();
   // const categories = useCategory();
-  const categories = useSelector((state) => state.categories.list.categories);
+  const categories = useSelector((state) => state.categories.list.categories || []);
   const navigate = useNavigate();
   const location = useLocation();
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -374,7 +374,7 @@ const Header = memo(() => {
                     All Categories
                   </Typography>
                 </MenuItem>
-                {categories.map((c) => (
+                {categories && categories?.map((c) => (
                   <MenuItem
                     key={c._id}
                     onClick={() => {
