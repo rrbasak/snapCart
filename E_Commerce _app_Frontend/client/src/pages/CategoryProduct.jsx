@@ -187,7 +187,7 @@ export default function Categories() {
   const getProductsByCat = async () => {
     try {
       const { data } = await axios.get(
-        `/api/v1/product/product-category/${params.cname}/${params.subname}`
+        `${process.env.REACT_APP_API}/api/v1/product/product-category/${params.cname}/${params.subname}`
       );
       setProducts(data?.products);
       setCategory(data?.category);

@@ -72,7 +72,7 @@ const LoginRegister = () => {
         );
         ////console.log(value.data);
         const email = value?.data?.email;
-        const res = await axios.post("/api/v1/auth/loginViaGoogle", {
+        const res = await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/loginViaGoogle`, {
           email: email,
         });
         if (res && res.data.success) {
@@ -114,7 +114,7 @@ const LoginRegister = () => {
         ////console.log(value.data);
         const email = value?.data?.email;
         const name = capitalizeName(value?.data?.name);
-        const res = await axios.post("/api/v1/auth/registerViaGoogle", {
+        const res = await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/registerViaGoogle`, {
           name: name,
           email: email,
         });
@@ -159,7 +159,7 @@ const LoginRegister = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:3000/api/v1/auth/login", {
+      const res = await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/login`, {
         email,
         password,
         recaptchaValue,
@@ -344,7 +344,7 @@ const LoginRegister = () => {
         });
         return;
       }
-      const res = await axios.put("/api/v1/auth/reset-password-otp", {
+      const res = await axios.put(`${process.env.REACT_APP_API}/api/v1/auth/reset-password-otp`, {
         otpEmail,
         resetPassword,
         confirmResetPassword,
@@ -377,7 +377,7 @@ const LoginRegister = () => {
         address: address,
       }));
       ////console.log(registerFormBody);
-      const res = await axios.post("/api/v1/auth/register", {
+      const res = await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/register`, {
         ...registerFormBody,
         password: password,
         address: address,

@@ -46,7 +46,7 @@ export default function CreateCategory() {
       productData.append("photo", photo);
       //console.log("productData", productData);
       const { data } = await axios.post(
-        "/api/v1/category/create-category",
+        `${process.env.REACT_APP_API}/api/v1/category/create-category`,
         productData
       );
       if (data?.success) {
@@ -66,7 +66,7 @@ export default function CreateCategory() {
   //get all categories
   const getAllCategory = async () => {
     try {
-      const { data } = await axios.get("/api/v1/category/get-category");
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/category/get-category`);
       if (data.success) {
         setCategories(data.categories);
       }
@@ -81,7 +81,7 @@ export default function CreateCategory() {
     e.preventDefault();
     try {
       const { data } = await axios.put(
-        `/api/v1/category/update-category/${selected._id}`,
+        `${process.env.REACT_APP_API}/api/v1/category/update-category/${selected._id}`,
         { name: updatedName }
       );
       if (data.success) {
@@ -102,7 +102,7 @@ export default function CreateCategory() {
   const handleDelete = async (pId) => {
     try {
       const { data } = await axios.delete(
-        `/api/v1/category/delete-category/${pId}`
+        `${process.env.REACT_APP_API}/api/v1/category/delete-category/${pId}`
       );
       if (data.success) {
         toast.success("Category is deleted");

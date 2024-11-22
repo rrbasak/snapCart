@@ -28,7 +28,7 @@ export default function SubCategories() {
   const categoryBasedsubcategories = async () => {
     try {
       const { data } = await axios.get(
-        `/api/v1/subcategory/category-subcategory/${cid}`
+        `${process.env.REACT_APP_API}/api/v1/subcategory/category-subcategory/${cid}`
       );
       if (data.success) {
         setSubcategories(data.subcategory);

@@ -179,7 +179,7 @@ export default function AdminPrimeDay() {
   const handleStartClick = async () => {
     if (primestartDate && primeendDate) {
       try {
-        const response = await axios.put("/api/v1/product/prime-start", {
+        const response = await axios.put(`${process.env.REACT_APP_API}/api/v1/product/prime-start`, {
           primestartDate,
           primeendDate,
         });
@@ -194,7 +194,7 @@ export default function AdminPrimeDay() {
 
   const handleEndClick = async () => {
     try {
-      const response = await axios.put("/api/v1/product/prime-end");
+      const response = await axios.put(`${process.env.REACT_APP_API}/api/v1/product/prime-end`);
       toast.success("Prime Day ended successfully!");
       dispatch(clearPrimeDates());
     } catch (error) {

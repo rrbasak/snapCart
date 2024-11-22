@@ -19,7 +19,7 @@ export default function CreateProductSize() {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        "/api/v1/product-size/create-product-size",
+        `${process.env.REACT_APP_API}/api/v1/product-size/create-product-size`,
         { name }
       );
       if (data?.success) {
@@ -38,7 +38,7 @@ export default function CreateProductSize() {
   //get all productSize
   const getAllSizes = async () => {
     try {
-      const { data } = await axios.get("/api/v1/product-size/get-product-size");
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product-size/get-product-size`);
       if (data.success) {
         setProductSize(data.size);
       }
@@ -53,7 +53,7 @@ export default function CreateProductSize() {
     e.preventDefault();
     try {
       const { data } = await axios.put(
-        `/api/v1/product-ram/update-category/${selected._id}`,
+        `${process.env.REACT_APP_API}/api/v1/product-ram/update-category/${selected._id}`,
         { name: updatedName }
       );
       if (data.success) {
@@ -74,7 +74,7 @@ export default function CreateProductSize() {
   const handleDelete = async (pId) => {
     try {
       const { data } = await axios.delete(
-        `/api/v1/product-size/delete-product-size/${pId}`
+        `${process.env.REACT_APP_API}/api/v1/product-size/delete-product-size/${pId}`
       );
       if (data.success) {
         toast.success("Size is deleted");

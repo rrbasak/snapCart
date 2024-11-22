@@ -70,7 +70,7 @@ export default function CartPage() {
     //console.log("selectedItems", selectedItems);
     try {
       const { data } = await axios.delete(
-        `/api/v1/cart/remove-cart/${auth.user._id}/${pid}`
+        `${process.env.REACT_APP_API}/api/v1/cart/remove-cart/${auth.user._id}/${pid}`
       );
       if (data?.success) {
         dispatch(removeItemFromCart({ id: pid }));
@@ -100,7 +100,7 @@ export default function CartPage() {
 
   const getToken = async () => {
     try {
-      const { data } = await axios.get("/api/v1/product/braintree/accessToken");
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/braintree/accessToken`);
       setClientToken(data?.clientToken);
     } catch (error) {
       ////console.log(error);
@@ -137,7 +137,7 @@ export default function CartPage() {
     try {
       setLoading(true);
       const { nonce } = await instance.requestPaymentMethod();
-      const { data } = await axios.post("/api/v1/product/braintree/payment", {
+      const { data } = await axios.post(`${process.env.REACT_APP_API}/api/v1/product/braintree/payment`, {
         nonce,
         cart: selectedItems,
         updatedPrice,
@@ -189,7 +189,7 @@ export default function CartPage() {
     if (!auth?.user?._id) return;
     try {
       const { data } = await axios.get(
-        `/api/v1/cart/get-cart/${auth.user._id}`
+        `${process.env.REACT_APP_API}/api/v1/cart/get-cart/${auth.user._id}`
       );
       if (data?.success) {
         //console.log(data?.cartOnUser);

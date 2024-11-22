@@ -389,7 +389,7 @@ const SearchInput = React.memo(({ isSearchFocused, onFocus, onBlur }) => {
 
   const fetchSearchResults = useCallback(async (value) => {
     try {
-      const { data } = await axios.get(`/api/v1/product/search/${value}`);
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/search/${value}`);
       //console.log(data);
 
       setDropdownValue({ results: data });
@@ -423,7 +423,7 @@ const SearchInput = React.memo(({ isSearchFocused, onFocus, onBlur }) => {
 
     setDropdownValue({ results: [] });
     const { data } = await axios.get(
-      `/api/v1/product/related-search/${search}`
+      `${process.env.REACT_APP_API}/api/v1/product/related-search/${search}`
     );
     setValues({ ...values, results: data, query: search });
     // const { pastData } = await axios.post(
@@ -433,7 +433,7 @@ const SearchInput = React.memo(({ isSearchFocused, onFocus, onBlur }) => {
     // fetchPastSearchData();
     if (auth.user?._id) {
       const { pastData } = await axios.post(
-        `/api/v1/past-search/insert-past-search/`,
+        `${process.env.REACT_APP_API}/api/v1/past-search/insert-past-search/`,
         { search: search, userId: auth.user._id }
       );
       fetchPastSearchData(); // Fetch past searches after inserting the new search
@@ -499,7 +499,7 @@ const SearchInput = React.memo(({ isSearchFocused, onFocus, onBlur }) => {
   const fetchPastSearchData = async () => {
     try {
       const { data } = await axios.get(
-        `/api/v1/past-search/get-past-search/${auth?.user?._id}`
+        `${process.env.REACT_APP_API}/api/v1/past-search/get-past-search/${auth?.user?._id}`
       );
       if (data && data?.success) {
         setPastSearchedData(data?.pastSearchResults);
@@ -512,7 +512,7 @@ const SearchInput = React.memo(({ isSearchFocused, onFocus, onBlur }) => {
   const handlerOnRemovePastSearch = async (search) => {
     try {
       const { data } = await axios.get(
-        `/api/v1/past-search/remove-past-search/${search}/${auth.user._id}`
+        `${process.env.REACT_APP_API}/api/v1/past-search/remove-past-search/${search}/${auth.user._id}`
       );
       if (data && data?.success) {
         setPastSearchedData((prevData) =>
@@ -558,7 +558,7 @@ const SearchInput = React.memo(({ isSearchFocused, onFocus, onBlur }) => {
   const fetchPastProductSearchData = async () => {
     try {
       const { data } = await axios.get(
-        `/api/v1/past-product-search/get-past-product-search/${auth?.user?._id}`
+        `${process.env.REACT_APP_API}/api/v1/past-product-search/get-past-product-search/${auth?.user?._id}`
       );
       if (data && data?.success) {
         setPastProductSearchedData(data?.pastproductSearchResults);

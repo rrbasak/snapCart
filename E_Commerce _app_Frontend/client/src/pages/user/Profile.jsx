@@ -1263,7 +1263,7 @@ export default function Profile() {
 
   const userDetailsfunc = async () => {
     const { data } = await axios.get(
-      `/api/v1/auth/get-user/${auth?.user?._id}`
+      `${process.env.REACT_APP_API}/api/v1/auth/get-user/${auth?.user?._id}`
     );
     //console.log("User", data);
     if (data.success) {
@@ -1356,7 +1356,7 @@ export default function Profile() {
       const formData = new FormData();
       formData.append("photo", file);
 
-      const { data } = await axios.put("/api/v1/auth/uploadpic", formData);
+      const { data } = await axios.put(`${process.env.REACT_APP_API}/api/v1/auth/uploadpic`, formData);
       if (data?.success) {
         const updatedUser = data?.updatedUser;
         const updatedAuth = { ...auth, user: updatedUser };

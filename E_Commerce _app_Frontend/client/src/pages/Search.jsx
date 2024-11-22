@@ -218,7 +218,7 @@ export default function Search() {
         return;
       }
       //console.log("selectedPriceRange", selectedPriceRange);
-      const { data } = await axios.post("/api/v1/product/filter-products", {
+      const { data } = await axios.post(`${process.env.REACT_APP_API}/api/v1/product/filter-products`, {
         brands: filteredBrands,
         colors: filteredColors,
         sizes: filteredSizes,
@@ -261,7 +261,7 @@ export default function Search() {
         return;
       }
       //console.log("selectedPriceRange", selectedPriceRange);
-      const { data } = await axios.post("/api/v1/product/filter-products", {
+      const { data } = await axios.post(`${process.env.REACT_APP_API}/api/v1/product/filter-products`, {
         brands: filteredBrands,
         colors: filteredColors,
         sizes: filteredSizes,

@@ -282,7 +282,7 @@ export default function OneOrder() {
   const getNumberOfReviewFunc = async () => {
     try {
       const response = await axios.get(
-        `/api/v1/review/get-review-length/${productId}`
+        `${process.env.REACT_APP_API}/api/v1/review/get-review-length/${productId}`
       );
       if (response.data.success) {
         setReviewsLength(response.data.reviewLength);
@@ -294,7 +294,7 @@ export default function OneOrder() {
   const getonereview = async () => {
     try {
       const response = await axios.get(
-        `/api/v1/review/get-one-review/${productId}/${auth?.user?._id}/${orderId}`
+        `${process.env.REACT_APP_API}/api/v1/review/get-one-review/${productId}/${auth?.user?._id}/${orderId}`
       );
       if (response.data.success) {
         setReviewsList(response.data.reviews);
@@ -323,7 +323,7 @@ export default function OneOrder() {
   const checkEligibility = async () => {
     try {
       const { data } = await axios.get(
-        `/api/v1/review/can-review/${productId}/${auth?.user?._id}/${orderId}`
+        `${process.env.REACT_APP_API}/api/v1/review/can-review/${productId}/${auth?.user?._id}/${orderId}`
       );
       if (data.success) {
         setCanReview(true);
@@ -345,7 +345,7 @@ export default function OneOrder() {
   //end
   const fetchOneOrder = async (req, res) => {
     try {
-      const { data } = await axios.get(`/api/v1/auth/get-one-order/${orderId}`);
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/auth/get-one-order/${orderId}`);
       setOrder(data);
       //console.log(data);
       //console.log("HI");

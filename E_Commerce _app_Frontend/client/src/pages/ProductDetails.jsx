@@ -108,7 +108,7 @@ export default function ProductDetails() {
   const checkEligibility = async () => {
     try {
       const { data } = await axios.get(
-        `/api/v1/review/can-review/${product?._id}/${auth?.user?._id}`
+        `${process.env.REACT_APP_API}/api/v1/review/can-review/${product?._id}/${auth?.user?._id}`
       );
       if (data.success) {
         setCanReview(true);
@@ -174,7 +174,7 @@ export default function ProductDetails() {
   const getProduct = async () => {
     try {
       const { data } = await axios.get(
-        `/api/v1/product/get-product/${params.slug}`
+        `${process.env.REACT_APP_API}/api/v1/product/get-product/${params.slug}`
       );
 
       // Redirect to 404 page if product is not found
@@ -227,7 +227,7 @@ export default function ProductDetails() {
   const getSimilarProduct = async (pid, cid) => {
     try {
       const { data } = await axios.get(
-        `/api/v1/product/related-product/${pid}/${cid}`
+        `${process.env.REACT_APP_API}/api/v1/product/related-product/${pid}/${cid}`
       );
       setRelatedProducts(data?.products);
     } catch (error) {
@@ -458,7 +458,7 @@ export default function ProductDetails() {
   const getNumberOfReviewFunc = async () => {
     try {
       const response = await axios.get(
-        `/api/v1/review/get-review-length/${product?._id}`
+        `${process.env.REACT_APP_API}/api/v1/review/get-review-length/${product?._id}`
       );
       if (response.data.success) {
         setReviewsLength(response.data.reviewLength);
@@ -484,7 +484,7 @@ export default function ProductDetails() {
   const insertproduct = async () => {
     try {
       const { data } = await axios.post(
-        `/api/v1/past-product-search/insert-past-product-search/${product?._id}/${auth?.user?._id}`
+        `${process.env.REACT_APP_API}/api/v1/past-product-search/insert-past-product-search/${product?._id}/${auth?.user?._id}`
       );
       if (
         data.success &&
@@ -511,7 +511,7 @@ export default function ProductDetails() {
   const getAllPhotos = async (productId) => {
     try {
       const { data } = await axios.get(
-        `/api/v1/product/product-all-photo/${productId}`
+        `${process.env.REACT_APP_API}/api/v1/product/product-all-photo/${productId}`
       );
       const photoURLs =
         data?.photos?.map((photo) => {

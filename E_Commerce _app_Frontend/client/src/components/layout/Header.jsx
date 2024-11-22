@@ -148,7 +148,7 @@ const Header = memo(() => {
     if (!auth?.user?._id) return;
     try {
       const { data } = await axios.get(
-        `/api/v1/cart/get-cart/${auth.user._id}`
+        `${process.env.REACT_APP_API}/api/v1/cart/get-cart/${auth.user._id}`
       );
       if (data?.success) {
         dispatch(setCart(data?.cartOnUser));

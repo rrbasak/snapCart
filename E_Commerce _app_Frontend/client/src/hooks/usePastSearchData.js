@@ -10,7 +10,7 @@ export default function usePastSearchData(userId) {
     setLoading(true);
     try {
       const { data } = await axios.get(
-        `/api/v1/past-search/get-past-search/${userId}`
+        `${process.env.REACT_APP_API}/api/v1/past-search/get-past-search/${userId}`
       );
       if (data && data.success) {
         setPastSearchedData(data.pastSearchResults);

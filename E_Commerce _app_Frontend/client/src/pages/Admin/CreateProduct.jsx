@@ -404,7 +404,7 @@ export default function CreateProduct() {
   // Fetch categories
   const getAllCategory = async () => {
     try {
-      const { data } = await axios.get("/api/v1/category/get-category");
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/category/get-category`);
       if (data?.success) {
         setCategories(data?.categories);
       }
@@ -414,7 +414,7 @@ export default function CreateProduct() {
   };
   const getAllRAM = async () => {
     try {
-      const { data } = await axios.get("/api/v1/product-ram/get-product-ram");
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product-ram/get-product-ram`);
       if (data?.success) {
         setRAMs(data?.ram);
         setRamOptions(
@@ -430,7 +430,7 @@ export default function CreateProduct() {
   };
   const getAllSize = async () => {
     try {
-      const { data } = await axios.get("/api/v1/product-size/get-product-size");
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product-size/get-product-size`);
       if (data?.success) {
         setSizes(data?.size);
         setSizeOptions(
@@ -447,7 +447,7 @@ export default function CreateProduct() {
   const getAllColor = async () => {
     try {
       const { data } = await axios.get(
-        "/api/v1/product-color/get-product-color"
+        `${process.env.REACT_APP_API}/api/v1/product-color/get-product-color`
       );
       if (data?.success) {
         setColors(data?.color);
@@ -515,7 +515,7 @@ export default function CreateProduct() {
       }
 
       const { data } = await axios.post(
-        "/api/v1/product/create-product",
+        `${process.env.REACT_APP_API}/api/v1/product/create-product`,
         productData
       );
       if (data?.success) {
@@ -725,7 +725,7 @@ export default function CreateProduct() {
   const getSubCategoriesBaseOnCAtegory = async (value) => {
     try {
       const { data } = await axios.get(
-        `/api/v1/subcategory/get-subcategory-oncategory/${value}`
+        `${process.env.REACT_APP_API}/api/v1/subcategory/get-subcategory-oncategory/${value}`
       );
       if (data?.success) {
         setSubCategories(data?.sub_categories_based_on_category);

@@ -120,7 +120,7 @@ export default function ContactReferences() {
 
     // API call to update the contact references
     try {
-      const { data } = await axios.put("/api/v1/auth/contactref", payload);
+      const { data } = await axios.put(`${process.env.REACT_APP_API}/api/v1/auth/contactref`, payload);
       if (data?.error) {
         toast.error(data?.error);
       } else {

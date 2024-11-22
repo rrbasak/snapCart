@@ -93,10 +93,10 @@ const HomePage = () => {
   //     console.error(error);
   //   }
   // };
-
+  // console.log("process.env.REACT_APP_API", process.env.REACT_APP_API);
   const getAllProducts = async () => {
     try {
-      const { data } = await axios.get("/api/v1/product/product-list/");
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/product-list/`);
       setProducts(data.products);
     } catch (error) {
       console.error(error);
@@ -104,7 +104,7 @@ const HomePage = () => {
   };
   const getAllPrimeProducts = async () => {
     try {
-      const { data } = await axios.get("/api/v1/product/all-prime-products/");
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/all-prime-products/`);
       setAllPrimeProducts(data.products);
     } catch (error) {
       console.error(error);
@@ -116,7 +116,7 @@ const HomePage = () => {
   const getSimilarProduct = async (pid, cid) => {
     try {
       const { data } = await axios.get(
-        `/api/v1/product/related-product/${pid}/${cid}`
+        `${process.env.REACT_APP_API}/api/v1/product/related-product/${pid}/${cid}`
       );
       //console.log("data here", data);
       setRelatedProducts(data?.products.slice(0, 3));
@@ -127,7 +127,7 @@ const HomePage = () => {
   const getPrevSimilarProduct = async (pid, cid) => {
     try {
       const { data } = await axios.get(
-        `/api/v1/product/related-prev-product/${pid}/${cid}`
+        `${process.env.REACT_APP_API}/api/v1/product/related-prev-product/${pid}/${cid}`
       );
       //console.log("data here prev", data);
       setPrevRelatedProducts(data?.products.slice(0, 3));
@@ -137,7 +137,7 @@ const HomePage = () => {
   };
   const getDummyOneProduct = async (pid, cid) => {
     try {
-      const { data } = await axios.get(`/api/v1/product/dummy-one-products`);
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/dummy-one-products`);
       setDummyOneProducts(data?.products.slice(0, 3));
     } catch (error) {
       ////console.log(error);
@@ -145,7 +145,7 @@ const HomePage = () => {
   };
   const getDummySecProduct = async (pid, cid) => {
     try {
-      const { data } = await axios.get(`/api/v1/product/dummy-sec-products`);
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/dummy-sec-products`);
       setDummySecProducts(data?.products.slice(0, 3));
     } catch (error) {
       ////console.log(error);

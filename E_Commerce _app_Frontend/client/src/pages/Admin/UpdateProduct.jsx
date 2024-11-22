@@ -50,7 +50,7 @@ export default function UpdateProduct() {
   const getSingleProduct = async () => {
     try {
       const { data } = await axios.get(
-        `/api/v1/product/get-product/${params.slug}`
+        `${process.env.REACT_APP_API}/api/v1/product/get-product/${params.slug}`
       );
       if (!data.success || !data.product) {
         debugger;
@@ -116,7 +116,7 @@ export default function UpdateProduct() {
     try {
       //console.log("id", id);
       const { data } = await axios.get(
-        `/api/v1/product/product-all-photo/${id}`
+        `${process.env.REACT_APP_API}/api/v1/product/product-all-photo/${id}`
       );
       //console.log(data);
       if (data.success) {
@@ -141,7 +141,7 @@ export default function UpdateProduct() {
   //get all category
   const getAllCategory = async () => {
     try {
-      const { data } = await axios.get("/api/v1/category/get-category");
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/category/get-category`);
       if (data?.success) {
         setCategories(data?.categories);
       }
@@ -154,7 +154,7 @@ export default function UpdateProduct() {
   const getSubCategoriesBaseOnCAtegory = async (value) => {
     try {
       const { data } = await axios.get(
-        `/api/v1/subcategory/get-subcategory-oncategory/${value}`
+        `${process.env.REACT_APP_API}/api/v1/subcategory/get-subcategory-oncategory/${value}`
       );
       if (data?.success) {
         setSubCategories(data?.sub_categories_based_on_category);
@@ -203,7 +203,7 @@ export default function UpdateProduct() {
       productData.append("exchangeavailable", isExchangeAvailable);
 
       const { data } = axios.put(
-        `/api/v1/product/update-product/${id}`,
+        `${process.env.REACT_APP_API}/api/v1/product/update-product/${id}`,
         productData
       );
       if (data?.success) {
@@ -224,7 +224,7 @@ export default function UpdateProduct() {
       let answer = window.prompt("Are You Sure want to delete this product ? ");
       if (!answer) return;
       const { data } = await axios.delete(
-        `/api/v1/product/delete-product/${id}`
+        `${process.env.REACT_APP_API}/api/v1/product/delete-product/${id}`
       );
       toast.success("Product Deleted Succfully");
       navigate("/dashboard/admin/products");

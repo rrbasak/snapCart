@@ -97,8 +97,8 @@ export default function AccordionUtil({ product, selectedspec }) {
     try {
       const userId = auth?.user?._id;
       const url = userId
-        ? `/api/v1/exchange/remove-exchange/${userId}/${exchangeProductId}`
-        : `/api/v1/exchange/remove-exchange/${exchangeProductId}`;
+        ? `${process.env.REACT_APP_API}/api/v1/exchange/remove-exchange/${userId}/${exchangeProductId}`
+        : `${process.env.REACT_APP_API}/api/v1/exchange/remove-exchange/${exchangeProductId}`;
       // const { data } = await axios.delete(
       //   `/api/v1/exchange/remove-exchange/${auth.user._id}/${exchangeProductId}`
       // );
@@ -167,7 +167,7 @@ export default function AccordionUtil({ product, selectedspec }) {
     try {
       //console.log("payload", payload);
       const { data } = await axios.get(
-        `/api/v1/exchange/get-exchange/${auth?.user?._id}/${exchangeProductId}`
+        `${process.env.REACT_APP_API}/api/v1/exchange/get-exchange/${auth?.user?._id}/${exchangeProductId}`
       );
 
       if (data?.success) {
