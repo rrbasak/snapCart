@@ -1,5 +1,5 @@
 // dateUtil.js
-function formatTimestampforOrder(timestamp) {
+export function formatTimestampforOrder(timestamp) {
   //console.log("timestamp", timestamp);
   const date = new Date(timestamp);
 
@@ -17,4 +17,4 @@ function formatTimestampforOrder(timestamp) {
   return date.toLocaleDateString("en-US", options);
 }
 
-module.exports = formatTimestampforOrder;
+// module.exports = formatTimestampforOrder;
