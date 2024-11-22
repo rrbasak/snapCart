@@ -229,7 +229,7 @@ export default function Categories() {
                     }}
                   >
                     <MDBCardImage
-                      src={`/api/v1/product/product-photo/${p._id}`}
+                      src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${p._id}`}
                       position="top"
                       alt={`${p.name} image`}
                       className={styles.cardImage}
@@ -241,11 +241,11 @@ export default function Categories() {
                       <MDBCardText>
                         {p.description.substring(0, 30)}...
                       </MDBCardText>
-                      {(
+                      {
                         <MDBCardText className={styles.customerratting}>
                           <CustomerRatting ratings={p?.reviews} />
                         </MDBCardText>
-                      )}
+                      }
 
                       <MDBCardText>
                         {p.specialDayTag === "true" &&

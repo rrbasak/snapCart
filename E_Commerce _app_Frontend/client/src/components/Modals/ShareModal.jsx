@@ -279,7 +279,7 @@ export const ShareModal = ({
                   <MDBCardBody className="d-flex align-items-center">
                     <div className="me-3">
                       <MDBCardImage
-                        src={`/api/v1/product/product-photo/${p.product?._id}`}
+                        src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${p.product?._id}`}
                         alt={p.name}
                         className="rounded-circle"
                         style={{ width: "100px" }}
