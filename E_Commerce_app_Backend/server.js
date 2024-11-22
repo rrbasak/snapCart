@@ -298,13 +298,16 @@ const app = express();
 //console.log(process.env.LOGIN_RATE_LIMIT_MESSAGE);
 
 // Vercel CORS Configuration
-app.use(
-  cors({
-    origin: ["https://snap-cart-frontend-api.vercel.app"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://snap-cart-frontend-api.vercel.app",
+]; // Add more if needed
+
+const corsOptions = {
+  origin: allowedOrigins,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
 // Cookie parser
 app.use(cookieParser());
 
