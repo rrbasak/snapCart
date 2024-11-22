@@ -722,10 +722,10 @@ const generateOrderEmailContent = (orderDetails, cart, updatedPrice) => {
     itemSubtotal,
     orderTotal,
   } = orderDetails;
-  const userProfileUrl = "http://localhost:3000/dashboard/profile";
-  const snapcartUrl = "http://localhost:3000";
-  const userordersUrl = "http://localhost:3000/dashboard/profile?tab=orders";
-  const userOneorderUrl = `http://localhost:3000/order?orderId=${orderId}`;
+  const userProfileUrl = "https://snap-cart-frontend-api.vercel.app/profile";
+  const snapcartUrl = "https://snap-cart-frontend-api.vercel.app";
+  const userordersUrl = "https://snap-cart-frontend-api.vercel.app/dashboard/profile?tab=orders";
+  const userOneorderUrl = `https://snap-cart-frontend-api.vercel.app/order?orderId=${orderId}`;
 
   return `<!DOCTYPE html>
 <html lang="en">

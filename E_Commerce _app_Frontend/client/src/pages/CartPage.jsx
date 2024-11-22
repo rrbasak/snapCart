@@ -398,7 +398,7 @@ export default function CartPage() {
                     />
                   )}
                   <img
-                    src={`/api/v1/product/product-photo/${p.product._id}`}
+                    src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${p.product._id}`}
                     alt={p.name}
                     className={styles.productImage}
                   />

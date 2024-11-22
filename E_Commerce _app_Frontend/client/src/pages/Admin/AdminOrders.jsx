@@ -101,7 +101,7 @@ const AdminOrders = () => {
                       <div className="row mb-2 p-3 card flex-row" key={p._id}>
                         <div className="col-md-4">
                           <img
-                            src={`/api/v1/product/product-photo/${p.product._id}`}
+                            src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${p.product._id}`}
                             className="card-img-top"
                             alt={p.product.name}
                             width="100px"

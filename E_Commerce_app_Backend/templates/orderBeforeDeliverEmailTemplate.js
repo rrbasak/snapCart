@@ -61,7 +61,7 @@ const generateOrderBeforeDeliverEmailContent = (orderDetails) => {
 <body>
   <div class="container">
     <div class="header">
-      <img src="http://localhost:3000/logo.png" alt="Snapcart.in">
+      <img src="https://snap-cart-frontend-api.vercel.app/logo.png" alt="Snapcart.in">
     </div>
     <div class="content">
       <p>Hi ${customerName},</p>

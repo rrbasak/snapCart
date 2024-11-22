@@ -177,7 +177,7 @@ const HomePage = () => {
                     {dummyOneProducts.map((product) => (
                       <div key={product._id} className={styles.productCard}>
                         <img
-                          src={`/api/v1/product/product-photo/${product._id}`}
+                          src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product._id}`}
                           alt={product.name}
                           onClick={() => navigate(`/product/${product.slug}`)}
                         />
@@ -195,7 +195,7 @@ const HomePage = () => {
                     {dummyOneProducts.map((product) => (
                       <div key={product._id} className={styles.productCard}>
                         <img
-                          src={`/api/v1/product/product-photo/${product._id}`}
+                          src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product._id}`}
                           alt={product.name}
                           onClick={() => navigate(`/product/${product.slug}`)}
                         />
@@ -218,7 +218,9 @@ const HomePage = () => {
                       className={styles.productCard}
                     >
                       <img
-                        src={`/api/v1/product/product-photo/${
+                        src={`${
+                          process.env.REACT_APP_API
+                        }/api/v1/product/product-photo/${
                           pastProducts[pastProducts?.length - 1]?.product?._id
                         }`}
                         alt={
@@ -242,7 +244,7 @@ const HomePage = () => {
                     relatedProducts?.map((product) => (
                       <div key={product?._id} className={styles.productCard}>
                         <img
-                          src={`/api/v1/product/product-photo/${product?._id}`}
+                          src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product?._id}`}
                           alt={product?.name}
                           onClick={() => navigate(`/product/${product.slug}`)}
                         />
@@ -265,7 +267,7 @@ const HomePage = () => {
                         <img
                           src={
                             category.photo
-                              ? `/api/v1/category/category-photo/${category?._id}`
+                              ? `${process.env.REACT_APP_API}/api/v1/category/category-photo/${category?._id}`
                               : "/images/a3.png"
                           }
                           alt={category.name}
@@ -289,7 +291,7 @@ const HomePage = () => {
                     {dummySecProducts.map((product) => (
                       <div key={product._id} className={styles.productCard}>
                         <img
-                          src={`/api/v1/product/product-photo/${product._id}`}
+                          src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product._id}`}
                           alt={product.name}
                           onClick={() => navigate(`/product/${product.slug}`)}
                         />
@@ -312,7 +314,9 @@ const HomePage = () => {
                       className={styles.productCard}
                     >
                       <img
-                        src={`/api/v1/product/product-photo/${
+                        src={`${
+                          process.env.REACT_APP_API
+                        }/api/v1/product/product-photo/${
                           pastProducts[pastProducts?.length - 2]?.product?._id
                         }`}
                         alt={
@@ -336,7 +340,7 @@ const HomePage = () => {
                     pervrelatedProducts?.map((product) => (
                       <div key={product?._id} className={styles.productCard}>
                         <img
-                          src={`/api/v1/product/product-photo/${product?._id}`}
+                          src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product?._id}`}
                           alt={product?.name}
                           onClick={() => navigate(`/product/${product.slug}`)}
                         />
@@ -364,24 +368,25 @@ const HomePage = () => {
               <>
                 <h3>Categories to explore</h3>
                 <div className={styles.productList}>
-                  {categories && categories?.map((category) => (
-                    <div key={category?._id} className={styles.productCard}>
-                      <img
-                        src={
-                          category.photo
-                            ? `/api/v1/category/category-photo/${category?._id}`
-                            : "/images/a3.png"
-                        }
-                        alt={category.name}
-                        onClick={() =>
-                          navigate(`/category/${category?.slug}`, {
-                            state: { cid: category._id },
-                          })
-                        }
-                      />
-                      <p>{category.name}</p>
-                    </div>
-                  ))}
+                  {categories &&
+                    categories?.map((category) => (
+                      <div key={category?._id} className={styles.productCard}>
+                        <img
+                          src={
+                            category.photo
+                              ? `${process.env.REACT_APP_API}/api/v1/category/category-photo/${category?._id}`
+                              : "/images/a3.png"
+                          }
+                          alt={category.name}
+                          onClick={() =>
+                            navigate(`/category/${category?.slug}`, {
+                              state: { cid: category._id },
+                            })
+                          }
+                        />
+                        <p>{category.name}</p>
+                      </div>
+                    ))}
                 </div>
               </>
             )}
@@ -413,7 +418,7 @@ const HomePage = () => {
                     className={styles.productCardInHorizontal}
                   >
                     <img
-                      src={`/api/v1/product/product-photo/${product?._id}`}
+                      src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product?._id}`}
                       alt={product.name}
                       onClick={() => navigate(`/product/${product.slug}`)}
                     />
@@ -440,7 +445,7 @@ const HomePage = () => {
                     className={styles.productCardInHorizontal}
                   >
                     <img
-                      src={`/api/v1/product/product-photo/${product?._id}`}
+                      src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product?._id}`}
                       alt={product.name}
                       onClick={() => navigate(`/product/${product.slug}`)}
                     />
@@ -476,7 +481,7 @@ const HomePage = () => {
                     className={styles.productCard}
                   >
                     <img
-                      src={`/api/v1/product/product-photo/${fullItem?.product?._id}`}
+                      src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${fullItem?.product?._id}`}
                       alt={fullItem?.product?.name}
                       onClick={() =>
                         navigate(`/product/${fullItem?.product?.slug}`)

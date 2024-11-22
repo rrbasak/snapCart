@@ -703,7 +703,7 @@ const generateOrderAfterDeliverEmailContent = (orderDetails) => {
     productname,
   } = orderDetails;
 
-  const snapcartUrl = "http://localhost:3000";
+  const snapcartUrl = "https://snap-cart-frontend-api.vercel.app";
   const productRatingsHTML = productIds
     .map((productId, index) => {
       const productName = productname[index];
@@ -713,7 +713,7 @@ const generateOrderAfterDeliverEmailContent = (orderDetails) => {
           <!-- Image Column -->
           <div style="width: 80px; flex-shrink: 0; margin-right: 15px;">
             <img
-              src="http://localhost:8080/api/v1/product/product-photo/${productId}"
+              src="${process.env.REACT_APP_API}/api/v1/product/product-photo/${productId}"
               alt="${productName}"
               style="width: 100%; height: auto; border-radius: 8px;"
             />

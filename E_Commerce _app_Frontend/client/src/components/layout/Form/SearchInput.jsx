@@ -703,7 +703,7 @@ const SearchInput = React.memo(({ isSearchFocused, onFocus, onBlur }) => {
                         onClick={() => handleItemClick(item?.product?.name)}
                       >
                         <img
-                          src={`/api/v1/product/product-photo/${item?.product?._id}`}
+                          src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${item?.product?._id}`}
                           alt={item?.product?.name}
                           className={styles.productImage}
                         />
