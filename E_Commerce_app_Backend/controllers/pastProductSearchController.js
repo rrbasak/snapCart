@@ -2,7 +2,7 @@ import searchProductModel from "../models/searchProductModel.js";
 
 // insert past product search
 export const insertPastProductSearchControlller = async (req, res) => {
-  //console.log("Insert past product search",req.params)
+  ////console.log("Insert past product search",req.params)
   try {
     const { productId, userId } = req.params;
     const existingPastProductearch = await searchProductModel.findOne({
@@ -13,7 +13,7 @@ export const insertPastProductSearchControlller = async (req, res) => {
       // product: productId,
       // user: userId,
     });
-    // //console.log("existingPastSearch12122", existingPastProductearch);
+    // ////console.log("existingPastSearch12122", existingPastProductearch);
     if (existingPastProductearch) {
       // Update the `updatedAt` timestamp to move it to the end of the list
       existingPastProductearch.updatedAt = new Date();
@@ -34,7 +34,7 @@ export const insertPastProductSearchControlller = async (req, res) => {
       pastproductsearch,
     });
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while inserting past product search",
@@ -71,7 +71,7 @@ export const insertPastProductSearchControlller = async (req, res) => {
 //       remainingSearches: remainingSearches,
 //     });
 //   } catch (error) {
-//     //console.log(error);
+//     ////console.log(error);
 //     res.status(500).send({
 //       success: false,
 //       message: "Error while removing past search",
@@ -98,7 +98,7 @@ export const getPastProductSearchControlller = async (req, res) => {
       pastproductSearchResults: pastproductSearchResults,
     });
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while getting past product search",

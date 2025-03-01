@@ -55,9 +55,9 @@ export default function Search() {
   const [previousResults, setPreviousResults] = useState([]);
 
   const [valuequery, setvaluequery] = useState();
-  //console.log(checkedRam);
-  //console.log(checkedBrands);
-  //console.log(checkedColors);
+  ////console.log(checkedRam);
+  ////console.log(checkedBrands);
+  ////console.log(checkedColors);
   const handleFilter = (value, id, type) => {
     let updatedList = [];
 
@@ -101,9 +101,9 @@ export default function Search() {
     setPreviousResults([]);
     setValues({ ...values, results: initialResults });
   };
-  //console.log("hello", values?.results?.length);
+  ////console.log("hello", values?.results?.length);
   useEffect(() => {
-    //console.log("values?.results", values);
+    ////console.log("values?.results", values);
     if (values?.results) {
       const newCategory = values?.results[0]?.category;
       const newSubcategoryName = values?.results[0]?.subcategoryName;
@@ -143,7 +143,7 @@ export default function Search() {
         id: uuidv4(),
         name: brand,
       }));
-      //console.log("again", extractedBrands);
+      ////console.log("again", extractedBrands);
       const extractedPriceValues = values.results.map(
         (product) => product.price
       );
@@ -152,7 +152,7 @@ export default function Search() {
       //   name: color,
       // }));
 
-      //console.log("here is the", values.results);
+      ////console.log("here is the", values.results);
       const categoryy = values?.results[0]?.category;
       const subcategoryName = values?.results[0]?.subcategoryName;
       // const extractedSubcategories = Array.from(
@@ -169,7 +169,7 @@ export default function Search() {
         new Set(values.results.map((product) => product.subcategoryName))
       );
 
-      //console.log("Extracted subcategories:", extractedSubcategories);
+      ////console.log("Extracted subcategories:", extractedSubcategories);
       setPrice(extractedPriceValues);
       const ranges = generatePriceRanges(extractedPriceValues);
       setPriceRanges(ranges);
@@ -188,13 +188,13 @@ export default function Search() {
     comment: "",
   });
 
-  //console.log("size", size);
+  ////console.log("size", size);
 
   const fetchFilteredProducts = async (isUnchecking = false) => {
     try {
-      //console.log("checkedBrands:", checkedBrands);
-      //console.log("Brands:", brands);
-      //console.log("isUnchecking:", isUnchecking);
+      ////console.log("checkedBrands:", checkedBrands);
+      ////console.log("Brands:", brands);
+      ////console.log("isUnchecking:", isUnchecking);
       const filteredBrands = brands
         .filter((b) => checkedBrands.includes(b.id))
         .map((b) => b.name);
@@ -212,22 +212,25 @@ export default function Search() {
         .map((r) => r.name);
 
       if (isUnchecking) {
-        //console.log("previousResults", previousResults);
-        //console.log("values", values);
+        ////console.log("previousResults", previousResults);
+        ////console.log("values", values);
         setValues({ ...values, results: initialResults });
         return;
       }
-      //console.log("selectedPriceRange", selectedPriceRange);
-      const { data } = await axios.post(`${process.env.REACT_APP_API}/api/v1/product/filter-products`, {
-        brands: filteredBrands,
-        colors: filteredColors,
-        sizes: filteredSizes,
-        rams: filteredRams,
-        rating: selectedRating,
-        priceRange: selectedPriceRange,
-        category: category,
-        subcategory: subcategory,
-      });
+      ////console.log("selectedPriceRange", selectedPriceRange);
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_API}/api/v1/product/filter-products`,
+        {
+          brands: filteredBrands,
+          colors: filteredColors,
+          sizes: filteredSizes,
+          rams: filteredRams,
+          rating: selectedRating,
+          priceRange: selectedPriceRange,
+          category: category,
+          subcategory: subcategory,
+        }
+      );
       setValues({ ...values, results: data });
       setPreviousResults(values.results);
     } catch (error) {
@@ -237,8 +240,8 @@ export default function Search() {
 
   const fetchFilteredProductsForChips = async (isUnchecking = false) => {
     try {
-      //console.log("checkedBrands:", checkedBrands);
-      //console.log("Brands:", brands);
+      ////console.log("checkedBrands:", checkedBrands);
+      ////console.log("Brands:", brands);
       const filteredBrands = brands
         .filter((b) => checkedBrands.includes(b.name))
         .map((b) => b.name);
@@ -260,17 +263,20 @@ export default function Search() {
         setValues({ ...values, results: initialResults });
         return;
       }
-      //console.log("selectedPriceRange", selectedPriceRange);
-      const { data } = await axios.post(`${process.env.REACT_APP_API}/api/v1/product/filter-products`, {
-        brands: filteredBrands,
-        colors: filteredColors,
-        sizes: filteredSizes,
-        rams: filteredRams,
-        rating: selectedRating,
-        priceRange: selectedPriceRange,
-        category: category,
-        subcategory: subcategory,
-      });
+      ////console.log("selectedPriceRange", selectedPriceRange);
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_API}/api/v1/product/filter-products`,
+        {
+          brands: filteredBrands,
+          colors: filteredColors,
+          sizes: filteredSizes,
+          rams: filteredRams,
+          rating: selectedRating,
+          priceRange: selectedPriceRange,
+          category: category,
+          subcategory: subcategory,
+        }
+      );
       setValues({ ...values, results: data });
       setPreviousResults(values.results);
     } catch (error) {
@@ -286,7 +292,7 @@ export default function Search() {
       checkedSizes.length > 0 ||
       selectedPriceRange.length > 0 ||
       selectedRating != null;
-    //console.log("selectedPriceRange here", selectedPriceRange);
+    ////console.log("selectedPriceRange here", selectedPriceRange);
     if (isFiltering) {
       if (isMobile) {
         fetchFilteredProductsForChips();
@@ -312,7 +318,7 @@ export default function Search() {
 
   const handleChipClick = (filter) => {
     const { id, name, type } = filter;
-    //console.log("name", name);
+    ////console.log("name", name);
     switch (type) {
       case "brand":
         setCheckedBrands((prev) =>
@@ -363,10 +369,10 @@ export default function Search() {
     price: priceRanges,
   };
 
-  //console.log("values", values);
+  ////console.log("values", values);
 
-  //console.log("location.state.isunknown", location.state.isunknown);
-  //console.log("location.state.searchValue", location.state.searchValue);
+  ////console.log("location.state.isunknown", location.state.isunknown);
+  ////console.log("location.state.searchValue", location.state.searchValue);
   // Function to find the closest match
   const getClosestMatch = (searchArray, target) => {
     let closestMatch = "";
@@ -577,7 +583,7 @@ export default function Search() {
                                       b.id,
                                       "brand"
                                     );
-                                    //console.log(e.target);
+                                    ////console.log(e.target);
                                   }}
                                 >
                                   {b.name}
@@ -691,8 +697,8 @@ export default function Search() {
                           className={styles.card}
                           onClick={(e) => {
                             e.preventDefault();
-                            // navigate(`/product/${p.slug}`);
-                            window.open(`/product/${p.slug}`, "_blank");
+                            navigate(`/product/${p.slug}`);
+                            // window.open(`/product/${p.slug}`, "_blank");
                           }}
                         >
                           <MDBCardImage

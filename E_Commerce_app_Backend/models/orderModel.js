@@ -30,6 +30,7 @@ const orderSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    partner: { type: mongoose.ObjectId, ref: "DeliveryPartner" },
     status: {
       type: String,
       default: "Order Confirmed",
@@ -41,6 +42,15 @@ const orderSchema = new mongoose.Schema(
         "Out For Delivery",
         "Delivered",
         "Canceled",
+      ],
+    },
+    deliverystatus: {
+      type: String,
+      // default: "Pending Approval",
+      enum: [
+        "Pending Approval",
+        "Approved",
+        "Rejected",
       ],
     },
   },

@@ -31,7 +31,7 @@ const DeleteModal = ({
         `${process.env.REACT_APP_API}/api/v1/product/remove-order`,
         payload
       );
-      //console.log(data);
+      ////console.log(data);
 
       if (data?.success) {
         toast.success("Order successfully deleted.");

@@ -13,7 +13,7 @@ export const subcategoryControlller = async (req, res) => {
       subcategories,
     });
   } catch (error) {
-    ////console.log(error);
+    //////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while getting categories",
@@ -37,14 +37,14 @@ export const subcategoryBrandWiseModelControlller = async (req, res) => {
       }
     );
 
-    //console.log(allModels);
+    ////console.log(allModels);
     res.status(200).send({
       success: true,
       messsage: "All Model List based on brand",
       allmodels: allModels.subcategory.metadata,
     });
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while getting models",
@@ -72,14 +72,14 @@ export const subcategoryModelWiseExchangePriceControlller = async (
       }
     );
 
-    //console.log(allModels);
+    ////console.log(allModels);
     res.status(200).send({
       success: true,
       messsage: "All Model List based on brand",
       allmodels: allModels.subcategory.metadata,
     });
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while getting models",
@@ -89,7 +89,7 @@ export const subcategoryModelWiseExchangePriceControlller = async (
 };
 
 // export const createsubcategoryControlller = async (req, res) => {
-//   //console.log("req", req.body);
+//   ////console.log("req", req.body);
 //   try {
 //     const { subname, category } = req.body;
 //     if (!subname || !category) {
@@ -103,14 +103,14 @@ export const subcategoryModelWiseExchangePriceControlller = async (
 //       slug: slugify(subname),
 //     }).save();
 
-//     //console.log(sub_category);
+//     ////console.log(sub_category);
 //     res.status(200).send({
 //       success: true,
 //       messsage: "Sub Category Created Successfully",
 //       sub_category,
 //     });
 //   } catch (error) {
-//     //console.log(error);
+//     ////console.log(error);
 //     res.status(500).send({
 //       success: false,
 //       message: "Error while creating sub_category",
@@ -121,7 +121,7 @@ export const subcategoryModelWiseExchangePriceControlller = async (
 
 // create sub_category
 export const createsubcategoryControlller = async (req, res) => {
-  //console.log("req", req.fields);
+  ////console.log("req", req.fields);
   try {
     const { subname, category } = req.fields;
     const { photo } = req.files;
@@ -152,14 +152,14 @@ export const createsubcategoryControlller = async (req, res) => {
     }
     await sub_category.save();
 
-    //console.log(sub_category);
+    ////console.log(sub_category);
     res.status(200).send({
       success: true,
       messsage: "Sub Category Created Successfully",
       sub_category,
     });
   } catch (error) {
-    //console.log("error123",error);
+    ////console.log("error123",error);
     res.status(500).send({
       success: false,
       message: "Error while creating sub_category",
@@ -170,7 +170,7 @@ export const createsubcategoryControlller = async (req, res) => {
 //delete sub_category
 export const deletesubcategoryControlller = async (req, res) => {
   const { scid } = req.params;
-  //console.log("req", req.body);
+  ////console.log("req", req.body);
   try {
     const deleteSub_Category = await sub_categoryModel.deleteOne({
       _id: scid,
@@ -182,7 +182,7 @@ export const deletesubcategoryControlller = async (req, res) => {
       deleteSub_Category,
     });
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while deleting sub_category",
@@ -203,7 +203,7 @@ export const getallsub_categoryControlller = async (req, res) => {
       sub_categories,
     });
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while getting sub_category",
@@ -223,7 +223,7 @@ export const getallsub_categoryByCategoryControlller = async (req, res) => {
       sub_categories_based_on_category,
     });
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while getting sub_category based on category",
@@ -245,7 +245,7 @@ export const createExchangeProductController = async (req, res) => {
       subCategory,
     });
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while getting sub category ",
@@ -270,7 +270,7 @@ export const updateExchangeProductController = async (req, res) => {
       subCategory,
     });
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while updating sub category ",
@@ -291,7 +291,7 @@ export const getSubCategoryController = async (req, res) => {
       subcategory,
     });
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while fetching subcategory",
@@ -311,7 +311,7 @@ export const subcategoryPhotoController = async (req, res) => {
       return res.status(200).send(subcategory.photo.data);
     }
   } catch (error) {
-    //console.log("error",error);
+    ////console.log("error",error);
     res.status(500).send({
       success: false,
       message: "Erorr while getting photo",

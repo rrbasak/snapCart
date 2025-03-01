@@ -27,7 +27,7 @@ export const createProductColorController = async (req, res) => {
       color,
     });
   } catch (error) {
-    //console.log("error", error);
+    ////console.log("error", error);
     res.status(500).send({
       success: false,
       error,
@@ -46,7 +46,7 @@ export const getProductColorController = async (req, res) => {
       color,
     });
   } catch (error) {
-    ////console.log(error);
+    //////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while getting colors",
@@ -65,7 +65,7 @@ export const deleteProductColorController = async (req, res) => {
       color,
     });
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while deleting color",

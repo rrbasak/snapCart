@@ -30,7 +30,7 @@
 //         toast.error(res.data.message);
 //       }
 //     } catch (error) {
-//       ////console.log(error);
+//       //////console.log(error);
 //       toast.error("Something went wrong");
 //     }
 //   };
@@ -115,10 +115,10 @@ const ForgotPasssword = ({ remember, otppage }) => {
     //   const res = await axios.post("/api/v1/auth/forgot-password", {
     //     email: email,
     //   });
-    //   ////console.log(res);
+    //   //////console.log(res);
     //   if (res && res.data.success) {
     //     toast.success(res.data.message);
-    //     ////console.log(res.data.otp);
+    //     //////console.log(res.data.otp);
     //     otppage(email, res.data.otp);
     //   } else {
     //     toast.error(res.data.message, {
@@ -133,12 +133,15 @@ const ForgotPasssword = ({ remember, otppage }) => {
     //   toast.error("Something went wrong");
     //   console.error("Error:", error);
     // }
-    //console.log(email)
+    ////console.log(email)
     try {
-      const res = await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/forgot-password`, {
-        email: email,
-      });
-      //console.log("res", res);
+      const res = await axios.post(
+        `${process.env.REACT_APP_API}/api/v1/auth/forgot-password`,
+        {
+          email: email,
+        }
+      );
+      ////console.log("res", res);
       if (res && res.data.success) {
         toast.success(res.data.message);
         // otppage(email, res.data.otp);
@@ -154,7 +157,7 @@ const ForgotPasssword = ({ remember, otppage }) => {
       }
     } catch (error) {
       // Catch 429 too many requests error
-      //console.log("hiii", error.response);
+      ////console.log("hiii", error.response);
       if (error.response && error.response.status === 429) {
         // Show the custom message from the backend in a toast
         toast.error(

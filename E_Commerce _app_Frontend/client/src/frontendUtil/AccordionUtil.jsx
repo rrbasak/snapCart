@@ -42,7 +42,7 @@ export default function AccordionUtil({ product, selectedspec }) {
 
   const dispatch = useDispatch();
   const remainingTime = useSelector((state) => state.remainingTime.time);
-  // //console.log(remainingTime);
+  // ////console.log(remainingTime);
 
   useEffect(() => {
     if (!product?.fastestdelivery?.closetime) return;
@@ -75,7 +75,7 @@ export default function AccordionUtil({ product, selectedspec }) {
     if (panel === "panel2") setDefaultExpanded(true);
   };
   const handleChange2 = (panel) => () => {
-    //console.log(panel);
+    ////console.log(panel);
     // if (panel === "panel1") setDefaultExpanded(true);
     if (panel === "panel2") setDefaultExpanded(true);
   };
@@ -104,7 +104,7 @@ export default function AccordionUtil({ product, selectedspec }) {
       // );
       const { data } = await axios.delete(url);
       if (data?.success) {
-        //console.log(data?.cart);
+        ////console.log(data?.cart);
         // dispatch(addItemToCart(data?.cart));
         // dispatch(setCart(data?.cart));
         toast.success(data.message);
@@ -115,7 +115,7 @@ export default function AccordionUtil({ product, selectedspec }) {
         handleChange2("panel2");
       }
     } catch (error) {
-      //console.log(error);
+      ////console.log(error);
       toast.error(error.message);
     }
   };
@@ -135,8 +135,8 @@ export default function AccordionUtil({ product, selectedspec }) {
   const displayName = userName.split(" ")[0];
 
   const totalPrice = selectedspec?.price - exchangeValue;
-  // //console.log(product.price);
-  // //console.log(exchangeValue);
+  // ////console.log(product.price);
+  // ////console.log(exchangeValue);
   const currentDate = new Date();
   const primeStartDate = new Date(product.primestartDate);
   const primeEndDate = new Date(product.primeendDate);
@@ -145,7 +145,7 @@ export default function AccordionUtil({ product, selectedspec }) {
     currentDate >= primeStartDate && currentDate <= primeEndDate;
 
   const cartHandlerWithExchange = async () => {
-    //console.log(totalPrice);
+    ////console.log(totalPrice);
 
     const orgprice =
       product?.specialDayTag === "true" && isPrimeDayDeal
@@ -165,16 +165,16 @@ export default function AccordionUtil({ product, selectedspec }) {
     };
 
     try {
-      //console.log("payload", payload);
+      ////console.log("payload", payload);
       const { data } = await axios.get(
         `${process.env.REACT_APP_API}/api/v1/exchange/get-exchange/${auth?.user?._id}/${exchangeProductId}`
       );
 
       if (data?.success) {
-        //console.log(data);
+        ////console.log(data);
         payload.exchangeProduct = data.existingExchangeProduct;
         const action = await dispatch(addItemToCartAsync(payload));
-        //console.log(action);
+        ////console.log(action);
         if (addItemToCartAsync.fulfilled.match(action)) {
           toast.success(action.payload.message);
           resetExchangeData();
@@ -183,10 +183,10 @@ export default function AccordionUtil({ product, selectedspec }) {
           throw new Error(action.error.message);
         }
       } else {
-        //console.log("Failed to get existing exchange product");
+        ////console.log("Failed to get existing exchange product");
       }
     } catch (error) {
-      //console.log(error);
+      ////console.log(error);
       toast("Please login to add items", {
         icon: "⚠️",
         style: {
@@ -215,7 +215,7 @@ export default function AccordionUtil({ product, selectedspec }) {
 
     try {
       const action = await dispatch(addItemToCartAsync(payload));
-      //console.log(action);
+      ////console.log(action);
 
       if (addItemToCartAsync.fulfilled.match(action)) {
         toast.success(action.payload.message);
@@ -223,7 +223,7 @@ export default function AccordionUtil({ product, selectedspec }) {
         throw new Error(action.error.message);
       }
     } catch (error) {
-      //console.log(error);
+      ////console.log(error);
       toast("Please login to add items", {
         icon: "⚠️",
         style: {

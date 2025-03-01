@@ -58,7 +58,7 @@
 // //   },
 // // }));
 // const CustomerRatting = ({ ratings }) => {
-//   //console.log(ratings);
+//   ////console.log(ratings);
 //   const [value, setValue] = useState(3.5);
 //   const [hover, setHover] = useState(-1);
 //   const [visible, setVisible] = useState(false);
@@ -215,7 +215,7 @@ const StyledLinearProgress = styled(LinearProgress)(({ value }) => ({
 }));
 
 const CustomerRating = ({ ratings }) => {
-  //console.log(ratings);
+  ////console.log(ratings);
   const isMobile = useMediaQuery("(max-width: 767px)");
   const [value, setValue] = useState(0);
   const [hover, setHover] = useState(-1);
@@ -256,9 +256,9 @@ const CustomerRating = ({ ratings }) => {
         return acc;
       }, {});
 
-      //console.log("ratings", ratings);
-      //console.log("avgRating", avgRating);
-      //console.log("totalRating", totalRating);
+      ////console.log("ratings", ratings);
+      ////console.log("avgRating", avgRating);
+      ////console.log("totalRating", totalRating);
       setProgressData({
         "5 stars": ((ratingCounts[5] || 0) / ratings.length) * 100,
         "4.5 stars": ((ratingCounts[4.5] || 0) / ratings.length) * 100,

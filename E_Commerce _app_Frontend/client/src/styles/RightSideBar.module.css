@@ -34,11 +34,10 @@
     color: white;
     font-weight: bold;
 } */
-
-.drawer {
+/* aiii */
+/* .drawer {
     width: 250px;
     background-color: white;
-    /* Remove background color */
     color: rgb(71, 71, 71);
 }
 
@@ -52,10 +51,90 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    /* Align the close button to the right */
 }
 
 .greeting {
     color: white;
     font-weight: bold;
+} */
+
+
+/* .header {
+    padding: 16px;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #f0f2f5;
+    text-align: center;
+}
+
+.drawer {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.menu {
+    border-right: none;
+    font-weight: 500;
+}
+
+.submenu {
+    font-weight: 600;
+}
+
+.ant-menu-item {
+    transition: background-color 0.3s ease;
+}
+
+.ant-menu-item:hover {
+    background-color: #e6f7ff;
+} */
+
+/* Header Styling */
+.header {
+    /* padding: 16px; */
+    font-size: 16px;
+    font-weight: bold;
+    /* background-color: #f0f2f5;
+    text-align: center; */
+}
+
+/* Drawer Styling */
+.drawer {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Menu Styling */
+.menu {
+    border-right: none;
+    font-weight: 500;
+}
+
+/* Active Tab Background Color */
+.ant-menu-item-selected {
+    background-color: #e6f7ff !important;
+    /* Light blue background for active items */
+}
+
+/* Hover Effect for Menu Items */
+.ant-menu-item:hover {
+    background-color: #f5f5f5 !important;
+    /* Light gray on hover */
+}
+.icon {
+    width: 1em;
+    height: 1em;
+    transition: color 0.3s;
+}
+
+.icon:hover {
+    color: #40a9ff;
+    /* Highlight on hover */
+}
+.ant-menu-item-icon {
+    margin-right: 10px;
+}
+
+.selected {
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    font-weight: 600;
+    background-color: #fff !important;
 }

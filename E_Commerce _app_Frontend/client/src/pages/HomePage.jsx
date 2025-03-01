@@ -15,7 +15,7 @@ import useCategory from "../hooks/useCategory";
 
 const HomePage = () => {
   const pastProducts = useSelector((state) => state.pastProduct.pastProducts);
-  //console.log("pastProducts", pastProducts);
+  ////console.log("pastProducts", pastProducts);
   const [cart, setCart] = useCart();
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
@@ -31,8 +31,8 @@ const HomePage = () => {
   const [dummySecProducts, setDummySecProducts] = useState([]);
 
   // const categories = useCategory();
-  const categories = useSelector((state) => state.categories.list.categories || []);
-  console.log("categories", categories);
+  const categories = useSelector((state) => state.categories.list.categories);
+  // //console.log("categories", categories);
   useEffect(() => {
     // getAllCategory();
     getAllProducts();
@@ -46,15 +46,15 @@ const HomePage = () => {
       const lastProduct = pastProducts[pastProducts.length - 1]?.product;
 
       if (lastProduct) {
-        //console.log("lastProduct", lastProduct);
+        ////console.log("lastProduct", lastProduct);
         getSimilarProduct(lastProduct?._id, lastProduct.category);
       }
     } else if (pastProducts.length >= 2) {
       const lastProduct = pastProducts[pastProducts.length - 1]?.product;
       const prevlastProduct = pastProducts[pastProducts.length - 2]?.product;
       if (lastProduct && prevlastProduct) {
-        //console.log(lastProduct);
-        //console.log("prevlastProduct", prevlastProduct);
+        ////console.log(lastProduct);
+        ////console.log("prevlastProduct", prevlastProduct);
         getSimilarProduct(lastProduct?._id, lastProduct.category);
         getPrevSimilarProduct(prevlastProduct?._id, prevlastProduct.category);
       }
@@ -93,10 +93,10 @@ const HomePage = () => {
   //     console.error(error);
   //   }
   // };
-  // console.log("process.env.REACT_APP_API", process.env.REACT_APP_API);
+
   const getAllProducts = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/product-list/`);
+      const { data } = await axios.get("/api/v1/product/product-list");
       setProducts(data.products);
     } catch (error) {
       console.error(error);
@@ -104,51 +104,51 @@ const HomePage = () => {
   };
   const getAllPrimeProducts = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/all-prime-products/`);
+      const { data } = await axios.get("/api/v1/product/all-prime-products/");
       setAllPrimeProducts(data.products);
     } catch (error) {
       console.error(error);
     }
   };
 
-  //console.log(categories);
+  ////console.log(categories);
 
   const getSimilarProduct = async (pid, cid) => {
     try {
       const { data } = await axios.get(
-        `${process.env.REACT_APP_API}/api/v1/product/related-product/${pid}/${cid}`
+        `/api/v1/product/related-product/${pid}/${cid}`
       );
-      //console.log("data here", data);
+      ////console.log("data here", data);
       setRelatedProducts(data?.products.slice(0, 3));
     } catch (error) {
-      ////console.log(error);
+      //////console.log(error);
     }
   };
   const getPrevSimilarProduct = async (pid, cid) => {
     try {
       const { data } = await axios.get(
-        `${process.env.REACT_APP_API}/api/v1/product/related-prev-product/${pid}/${cid}`
+        `/api/v1/product/related-prev-product/${pid}/${cid}`
       );
-      //console.log("data here prev", data);
+      ////console.log("data here prev", data);
       setPrevRelatedProducts(data?.products.slice(0, 3));
     } catch (error) {
-      ////console.log(error);
+      //////console.log(error);
     }
   };
   const getDummyOneProduct = async (pid, cid) => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/dummy-one-products`);
+      const { data } = await axios.get(`/api/v1/product/dummy-one-products`);
       setDummyOneProducts(data?.products.slice(0, 3));
     } catch (error) {
-      ////console.log(error);
+      //////console.log(error);
     }
   };
   const getDummySecProduct = async (pid, cid) => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/dummy-sec-products`);
+      const { data } = await axios.get(`/api/v1/product/dummy-sec-products`);
       setDummySecProducts(data?.products.slice(0, 3));
     } catch (error) {
-      ////console.log(error);
+      //////console.log(error);
     }
   };
   const images = [
@@ -158,7 +158,36 @@ const HomePage = () => {
     { src: "/images/banner4.jpg", alt: "Image 4" },
     { src: "/images/banner5.jpg", alt: "Image 4" },
   ];
-  //console.log("pervrelatedProducts", pervrelatedProducts);
+  ////console.log("pervrelatedProducts", pervrelatedProducts);
+
+  useEffect(() => {
+    const userAgent = navigator.userAgent.toLowerCase();
+    // if (auth?.user?.role === 0 || auth?.user?.role === 2) {
+    //   if (userAgent.includes("mobi")) {
+    //     trackUserActivity("mobile");
+    //   } else {
+    //     trackUserActivity("website");
+    //   }
+    // }
+    //console.log("User agent:", userAgent);
+    if (userAgent.includes("mobi")) {
+      trackUserActivity("mobile");
+    } else {
+      trackUserActivity("website");
+    }
+  }, []);
+
+  const trackUserActivity = async (source) => {
+    try {
+      //console.log("Tracking user activity...");
+      const response = await axios.post("/api/v1/track/track-activity", {
+        source,
+      });
+      //console.log(response.data);
+    } catch (error) {
+      console.error("Error tracking user activity:", error);
+    }
+  };
   return (
     <Layout title="Home Page - Your Store">
       <div className={styles.homepageContainer}>
@@ -177,7 +206,7 @@ const HomePage = () => {
                     {dummyOneProducts.map((product) => (
                       <div key={product._id} className={styles.productCard}>
                         <img
-                          src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product._id}`}
+                          src={`/api/v1/product/product-photo/${product._id}`}
                           alt={product.name}
                           onClick={() => navigate(`/product/${product.slug}`)}
                         />
@@ -195,7 +224,7 @@ const HomePage = () => {
                     {dummyOneProducts.map((product) => (
                       <div key={product._id} className={styles.productCard}>
                         <img
-                          src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product._id}`}
+                          src={`/api/v1/product/product-photo/${product._id}`}
                           alt={product.name}
                           onClick={() => navigate(`/product/${product.slug}`)}
                         />
@@ -218,9 +247,7 @@ const HomePage = () => {
                       className={styles.productCard}
                     >
                       <img
-                        src={`${
-                          process.env.REACT_APP_API
-                        }/api/v1/product/product-photo/${
+                        src={`/api/v1/product/product-photo/${
                           pastProducts[pastProducts?.length - 1]?.product?._id
                         }`}
                         alt={
@@ -244,7 +271,7 @@ const HomePage = () => {
                     relatedProducts?.map((product) => (
                       <div key={product?._id} className={styles.productCard}>
                         <img
-                          src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product?._id}`}
+                          src={`/api/v1/product/product-photo/${product?._id}`}
                           alt={product?.name}
                           onClick={() => navigate(`/product/${product.slug}`)}
                         />
@@ -267,12 +294,12 @@ const HomePage = () => {
                         <img
                           src={
                             category.photo
-                              ? `${process.env.REACT_APP_API}/api/v1/category/category-photo/${category?._id}`
+                              ? `/api/v1/category/category-photo/${category?._id}`
                               : "/images/a3.png"
                           }
                           alt={category.name}
                           onClick={() => {
-                            // //console.log("cid", category._id);
+                            // ////console.log("cid", category._id);
                             navigate(`/category/${category?.slug}`, {
                               state: { cid: category._id },
                             });
@@ -291,7 +318,7 @@ const HomePage = () => {
                     {dummySecProducts.map((product) => (
                       <div key={product._id} className={styles.productCard}>
                         <img
-                          src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product._id}`}
+                          src={`/api/v1/product/product-photo/${product._id}`}
                           alt={product.name}
                           onClick={() => navigate(`/product/${product.slug}`)}
                         />
@@ -314,9 +341,7 @@ const HomePage = () => {
                       className={styles.productCard}
                     >
                       <img
-                        src={`${
-                          process.env.REACT_APP_API
-                        }/api/v1/product/product-photo/${
+                        src={`/api/v1/product/product-photo/${
                           pastProducts[pastProducts?.length - 2]?.product?._id
                         }`}
                         alt={
@@ -340,7 +365,7 @@ const HomePage = () => {
                     pervrelatedProducts?.map((product) => (
                       <div key={product?._id} className={styles.productCard}>
                         <img
-                          src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product?._id}`}
+                          src={`/api/v1/product/product-photo/${product?._id}`}
                           alt={product?.name}
                           onClick={() => navigate(`/product/${product.slug}`)}
                         />
@@ -368,25 +393,24 @@ const HomePage = () => {
               <>
                 <h3>Categories to explore</h3>
                 <div className={styles.productList}>
-                  {categories &&
-                    categories?.map((category) => (
-                      <div key={category?._id} className={styles.productCard}>
-                        <img
-                          src={
-                            category.photo
-                              ? `${process.env.REACT_APP_API}/api/v1/category/category-photo/${category?._id}`
-                              : "/images/a3.png"
-                          }
-                          alt={category.name}
-                          onClick={() =>
-                            navigate(`/category/${category?.slug}`, {
-                              state: { cid: category._id },
-                            })
-                          }
-                        />
-                        <p>{category.name}</p>
-                      </div>
-                    ))}
+                  {categories?.map((category) => (
+                    <div key={category?._id} className={styles.productCard}>
+                      <img
+                        src={
+                          category.photo
+                            ? `/api/v1/category/category-photo/${category?._id}`
+                            : "/images/a3.png"
+                        }
+                        alt={category.name}
+                        onClick={() =>
+                          navigate(`/category/${category?.slug}`, {
+                            state: { cid: category._id },
+                          })
+                        }
+                      />
+                      <p>{category.name}</p>
+                    </div>
+                  ))}
                 </div>
               </>
             )}
@@ -418,7 +442,7 @@ const HomePage = () => {
                     className={styles.productCardInHorizontal}
                   >
                     <img
-                      src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product?._id}`}
+                      src={`/api/v1/product/product-photo/${product?._id}`}
                       alt={product.name}
                       onClick={() => navigate(`/product/${product.slug}`)}
                     />
@@ -445,7 +469,7 @@ const HomePage = () => {
                     className={styles.productCardInHorizontal}
                   >
                     <img
-                      src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product?._id}`}
+                      src={`/api/v1/product/product-photo/${product?._id}`}
                       alt={product.name}
                       onClick={() => navigate(`/product/${product.slug}`)}
                     />
@@ -481,7 +505,7 @@ const HomePage = () => {
                     className={styles.productCard}
                   >
                     <img
-                      src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${fullItem?.product?._id}`}
+                      src={`/api/v1/product/product-photo/${fullItem?.product?._id}`}
                       alt={fullItem?.product?.name}
                       onClick={() =>
                         navigate(`/product/${fullItem?.product?.slug}`)

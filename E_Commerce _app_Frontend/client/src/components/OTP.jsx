@@ -9,7 +9,7 @@ import { useAuth } from "../context/auth";
 
 //function
 const mask = (value) => {
-  ////console.log(value);
+  //////console.log(value);
   if (value.includes("@")) {
     // Mask email address
     const [localPart, domain] = value.split("@");
@@ -21,7 +21,7 @@ const mask = (value) => {
   } else {
     // Mask phone number
     value = value.slice(3);
-    ////console.log(value)
+    //////console.log(value)
     if (value.length === 10) {
       return value.slice(0, 3) + "****" + value.slice(-3);
     } else {
@@ -33,9 +33,9 @@ const mask = (value) => {
 };
 
 export default function OTP({ to, userId, email, mobile, nextPage }) {
-  //console.log(userId);
-  //console.log(to);
-  //console.log(email);
+  ////console.log(userId);
+  ////console.log(to);
+  ////console.log(email);
   // const [auth, setAuth] = useAuth();
   const [disable, setDisable] = useState(true);
   const [timerCount, setTimer] = useState(10);
@@ -63,11 +63,11 @@ export default function OTP({ to, userId, email, mobile, nextPage }) {
   };
 
   const handleSubmit = async (otp) => {
-    ////console.log("otp",otp);
-    ////console.log("OTP",OTP);
+    //////console.log("otp",otp);
+    //////console.log("OTP",OTP);
 
     // if (otp === OTP) {
-    //   ////console.log("reset");
+    //   //////console.log("reset");
     //   nextPage();
     //   return;
     // } else {
@@ -78,7 +78,7 @@ export default function OTP({ to, userId, email, mobile, nextPage }) {
     // }
 
     try {
-      const res = await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/verify-otp`, {
+      const res = await axios.post("/api/v1/auth/verify-otp", {
         userId: userId || email,
         otp,
       });
@@ -109,7 +109,7 @@ export default function OTP({ to, userId, email, mobile, nextPage }) {
   // eslint-disable-next-line no-unused-vars
   const handleResendOtp = () => {
     // handle resend OTP logic here
-    //console.log("Resend OTP clicked");
+    ////console.log("Resend OTP clicked");
   };
 
   const resendOTP = () => {
@@ -122,12 +122,12 @@ export default function OTP({ to, userId, email, mobile, nextPage }) {
   const emailHandller = async () => {
     try {
       const id = userId || email;
-      const res = await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/resend-otp`, {
+      const res = await axios.post("/api/v1/auth/resend-otp", {
         userId: id,
         email: to,
         mobile: mobile,
       });
-      //console.log(res);
+      ////console.log(res);
       if (res && res.data.success) {
         toast.success(res.data.message);
       } else {
@@ -166,7 +166,7 @@ export default function OTP({ to, userId, email, mobile, nextPage }) {
           value={otp}
           onChange={handleOtpChange}
           numInputs={4}
-          isInputNum
+          isInputNum={true}
           inputStyle={{
             height: "3rem",
             width: "3rem",
@@ -176,7 +176,15 @@ export default function OTP({ to, userId, email, mobile, nextPage }) {
             border: "1px solid #ced4da",
           }}
           shouldAutoFocus
-          renderInput={(props) => <input {...props} />}
+          renderInput={(props) => (
+            <input
+              {...props}
+              type="tel"
+              onInput={(e) => {
+                e.target.value = e.target.value.replace(/[^0-9]/g, "");
+              }}
+            />
+          )}
           placeholder="1234"
         />
       </div>

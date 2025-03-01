@@ -5,7 +5,7 @@ import userModel from "../models/userModel.js";
 
 // add review
 // export const addReviewControlller = async (req, res) => {
-//   //console.log("req", req.body);
+//   ////console.log("req", req.body);
 //   try {
 //     const { product, user, username, rating, comment } = req.body;
 //     const userData = await userModel.findById(user).select("photo");
@@ -25,14 +25,14 @@ import userModel from "../models/userModel.js";
 //     // const review = await reviewModel({
 //     //   ...req.body,
 //     // }).save();
-//     // //console.log(review);
+//     // ////console.log(review);
 //     res.status(200).send({
 //       success: true,
 //       messsage: "Review submitted successfully!",
 //       review,
 //     });
 //   } catch (error) {
-//     //console.log(error);
+//     ////console.log(error);
 //     res.status(500).send({
 //       success: false,
 //       message: "Error while creating cart",
@@ -44,20 +44,20 @@ import userModel from "../models/userModel.js";
 // export const getReviewControlller = async (req, res) => {
 //   try {
 //     const { pid } = req.params;
-//     //console.log(pid);
+//     ////console.log(pid);
 //     const review = await reviewModel
 //       .find({
 //         product: pid,
 //       })
 //       .sort({ createdAt: -1 });
-//     //console.log(review);
+//     ////console.log(review);
 //     res.status(200).send({
 //       success: true,
 //       messsage: "Review Getting successfully",
 //       review,
 //     });
 //   } catch (error) {
-//     //console.log(error);
+//     ////console.log(error);
 //     res.status(500).send({
 //       success: false,
 //       message: "Error while getting review",
@@ -86,7 +86,7 @@ export const addReviewControlller = async (req, res) => {
     //   "products.product": product,
     //   status: "deliverd",
     // });
-    // //console.log("orders here", orders);
+    // ////console.log("orders here", orders);
     // if (orders.length === 0) {
     //   return res.status(400).json({
     //     success: false,
@@ -117,7 +117,7 @@ export const addReviewControlller = async (req, res) => {
       review: savedReview,
     });
   } catch (error) {
-    //console.log("this error", error);
+    ////console.log("this error", error);
     res.status(500).send({
       success: false,
       message: "Error while submitting review",
@@ -159,7 +159,7 @@ export const getReviewControlller = async (req, res) => {
       reviews: reviewsWithPhotos,
     });
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while getting reviews",
@@ -175,7 +175,7 @@ export const getReviewLengthControlller = async (req, res) => {
     const review = await reviewModel.find({
       product: pid,
     });
-    //console.log(review);
+    ////console.log(review);
 
     res.status(200).send({
       success: true,
@@ -183,7 +183,7 @@ export const getReviewLengthControlller = async (req, res) => {
       reviewLength: review.length,
     });
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while getting review size",
@@ -221,7 +221,7 @@ export const deleteReviewController = async (req, res) => {
       reviews: remainingReviews,
     });
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while deleting review",
@@ -235,8 +235,8 @@ export const deleteReviewController = async (req, res) => {
 //   try {
 //     const { uid, pid,oid } = req.params;
 
-//     //console.log("uid",typeof(uid))
-//     //console.log("pid",pid)
+//     ////console.log("uid",typeof(uid))
+//     ////console.log("pid",pid)
 //     if (uid==="undefined") {
 //       return res
 //         .status(200)
@@ -359,7 +359,7 @@ export const getparticularReviewByPOUControlller = async (req, res) => {
       reviews: reviewWithPhoto,
     });
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while getting reviews",

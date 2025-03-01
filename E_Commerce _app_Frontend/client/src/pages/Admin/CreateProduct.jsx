@@ -404,7 +404,9 @@ export default function CreateProduct() {
   // Fetch categories
   const getAllCategory = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/category/get-category`);
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API}/api/v1/category/get-category`
+      );
       if (data?.success) {
         setCategories(data?.categories);
       }
@@ -414,7 +416,9 @@ export default function CreateProduct() {
   };
   const getAllRAM = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product-ram/get-product-ram`);
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API}/api/v1/product-ram/get-product-ram`
+      );
       if (data?.success) {
         setRAMs(data?.ram);
         setRamOptions(
@@ -430,7 +434,9 @@ export default function CreateProduct() {
   };
   const getAllSize = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product-size/get-product-size`);
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API}/api/v1/product-size/get-product-size`
+      );
       if (data?.success) {
         setSizes(data?.size);
         setSizeOptions(
@@ -465,7 +471,7 @@ export default function CreateProduct() {
 
   // Handle product creation
   const handleCreate = async (e) => {
-    //console.log(subCategory);
+    ////console.log(subCategory);
     e.preventDefault();
     try {
       const productData = new FormData();
@@ -487,7 +493,7 @@ export default function CreateProduct() {
       productData.append("size", size);
       productData.append("color", color);
       productData.append("priceVariants", JSON.stringify(priceVariants));
-      //console.log(subcategoryId);
+      ////console.log(subcategoryId);
       if (subcategoryId) {
         productData.append("subcategory", subcategoryId);
       }
@@ -509,9 +515,9 @@ export default function CreateProduct() {
       }
 
       productData.append("exchangeavailable", isExchangeAvailable);
-      //console.log("productData", productData);
+      ////console.log("productData", productData);
       for (let pair of productData.entries()) {
-        //console.log(pair[0] + ": " + pair[1]);
+        ////console.log(pair[0] + ": " + pair[1]);
       }
 
       const { data } = await axios.post(
@@ -536,13 +542,13 @@ export default function CreateProduct() {
     getAllColor();
   }, []);
 
-  //console.log("here",priceVariants);
+  ////console.log("here",priceVariants);
   const ondFreeDeliveryateChange = (date, dateString) => {
-    //console.log(dateString);
+    ////console.log(dateString);
     setFreeDeliveryDate(dateString);
   };
   const ondPublishChange = (date, dateString) => {
-    //console.log(dateString);
+    ////console.log(dateString);
     setPublishDate(dateString);
   };
   const ondFastestDeliveryateChange = (date, dateString) => {
@@ -561,7 +567,7 @@ export default function CreateProduct() {
   };
 
   const onSearch = (value) => {
-    //console.log("search:", value);
+    ////console.log("search:", value);
   };
 
   const categoryChangeHandler = (value) => {
@@ -755,14 +761,14 @@ export default function CreateProduct() {
   //   }))
   // );
   const handleSubCategoryChange = (sc_id) => {
-    //console.log(sc_id);
+    ////console.log(sc_id);
     const selectedSubCategoryObject = subCategories.find(
       (sc) => sc._id === sc_id
     );
-    //console.log(selectedSubCategoryObject);
+    ////console.log(selectedSubCategoryObject);
     setSubCategory(selectedSubCategoryObject);
   };
-  //console.log("photos", photos);
+  ////console.log("photos", photos);
   return (
     <>
       <CreateExchangeProductModal

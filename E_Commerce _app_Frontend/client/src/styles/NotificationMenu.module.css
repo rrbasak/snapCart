@@ -1,0 +1,281 @@
+.menuItem {
+    padding: 8px 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.notificationTitle {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.notificationMessage {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.5;
+    word-wrap: break-word;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: ellipsis;
+}
+
+
+.menuPaper::-webkit-scrollbar {
+    width: 4px;
+}
+
+.menuPaper::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 4px;
+}
+
+.menuPaper::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+}
+
+.menuPaper {
+    width: 300px;
+    padding: 10px;
+    max-height: 400px;
+    /* Fixes menu height */
+    overflow: hidden;
+    /* Remove extra scrollbar */
+    transform: none;
+    margin-top: 16px !important;
+    margin-left: -22px !important;
+}
+
+.scrollContainer {
+    max-height: 380px;
+    /* Adjust height */
+    overflow-y: auto;
+    /* Only this should scroll */
+    padding-right: 10px;
+    /* Prevents scrollbar overlap */
+}
+
+.scrollContainer::-webkit-scrollbar {
+    width: 5px;
+}
+
+.scrollContainer::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 5px;
+}
+
+.scrollContainer::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+}
+
+.loader {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+
+.timestamp {
+    font-size: 0.85rem;
+    color: #888;
+    margin-left: 8px;
+    white-space: nowrap;
+    text-align: right;
+}
+
+
+
+
+
+
+
+.menuItem {
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.notificationIcon {
+    width: 40px;
+    height: 40px;
+    background-color: #f0f0f0;
+
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #555;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.notificationContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.notificationTitle {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 2px;
+    color: #222;
+    /* Darker color */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.notificationMessage {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.4;
+}
+
+.timestamp {
+    font-size: 0.8rem;
+    color: #888;
+    white-space: nowrap;
+}
+
+
+
+.menuPaper {
+    width: 300px;
+    padding: 10px;
+    max-height: 400px;
+    overflow: hidden;
+}
+
+.scrollContainer {
+    max-height: 380px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.scrollContainer::-webkit-scrollbar {
+    width: 5px;
+}
+
+.scrollContainer::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 5px;
+}
+
+.scrollContainer::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.notificationContainer {
+  width: 100%;
+  padding: 10px 0;
+}
+
+.notificationHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; 
+  gap: 10px; 
+}
+
+.notificationIconWrapper {
+  width: 30px;  
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+  flex-shrink: 0;
+}
+
+.notificationTitle {
+  font-size: 14px;
+  font-weight: bold;
+  flex-grow: 1; 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; 
+}
+
+.timestamp {
+  font-size: 12px;
+  color: gray;
+  white-space: nowrap;
+  flex-shrink: 0; 
+}
+
+.notificationMessage {
+  font-size: 12px;
+  color: #555;
+  margin-top: 4px; 
+  word-wrap: break-word;
+}
+
+
+.notificationContainer {
+    width: 100%;
+    padding: 6px 0;
+}
+
+
+.notificationHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    width: 100%;
+}
+
+
+.notificationIcon {
+    width: 14px !important;
+    height: 14px !important;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f5f5;
+    flex-shrink: 0;
+}
+
+.notificationTitle {
+    font-size: 15px !important;
+    font-weight: 600 !important; 
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.timestamp {
+    font-size: 12px !important;
+    color: gray;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.notificationMessage {
+    font-size: 12px !important;
+    color: #555;
+    margin-top: 2px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}

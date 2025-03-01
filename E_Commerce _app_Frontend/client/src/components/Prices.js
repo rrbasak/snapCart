@@ -72,8 +72,8 @@ const generatePriceRanges = (prices) => {
   const ranges = [];
   let id = 0;
   const step = Math.ceil(priceRange / 10);
-  //console.log("Generating prices", prices);
-  //console.log("minPrice prices", minPrice);
+  ////console.log("Generating prices", prices);
+  ////console.log("minPrice prices", minPrice);
   // Create ranges dynamically
   for (let start = minPrice; start < maxPrice; start += step) {
     const end = start + step;

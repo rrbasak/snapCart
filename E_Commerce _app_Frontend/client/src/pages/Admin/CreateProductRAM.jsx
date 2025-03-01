@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
-import AdminMenu from "../../components/layout/AdminMenu";
-import Layout from "../../components/layout/Layout";
 import toast from "react-hot-toast";
 import axios from "axios";
-import CategoryForm from "../../components/layout/Form/CategoryForm";
-import { Modal } from "antd";
+import { Modal, Table, Card, Radio, Col, Row } from "antd";
 import ProductRAMForm from "../../components/layout/Form/ProductRAMForm";
+import AdminLayout from "../../components/layout/AdminLayout";
 
 export default function CreateProductRAM() {
   const [productRAM, setProductRAM] = useState([]);
@@ -13,15 +11,23 @@ export default function CreateProductRAM() {
   const [visible, setVisible] = useState(false);
   const [selected, setSelected] = useState(null);
   const [updatedName, setUpdatedName] = useState("");
-
-  //create category
+  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 5;
+  // Handle page change
+  const handlePageChange = (page) => {
+    setCurrentPage(page); // Update current page state
+  };
+  // Create Product RAM
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
       const { data } = await axios.post(
-        `${process.env.REACT_APP_API}/api/v1/product-ram/create-product-ram`,
+        "/api/v1/product-ram/create-product-ram",
         { name }
       );
+      setLoading(false);
       if (data?.success) {
         toast.success(`${name} is created`);
         getAllRAMs();
@@ -30,30 +36,29 @@ export default function CreateProductRAM() {
         toast.error(data.message);
       }
     } catch (error) {
-      ////console.log(error);
+      setLoading(false);
       toast.error("Something went wrong in input form");
     }
   };
 
-  //get all productRAM
+  // Get all Product RAM
   const getAllRAMs = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product-ram/get-product-ram`);
+      const { data } = await axios.get("/api/v1/product-ram/get-product-ram");
       if (data.success) {
         setProductRAM(data.ram);
       }
     } catch (error) {
-      ////console.log(error);
-      toast.error("Something went wrong in getting productRAM");
+      toast.error("Something went wrong in getting Product RAM");
     }
   };
 
-  //update category
+  // Update Product RAM
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
       const { data } = await axios.put(
-        `${process.env.REACT_APP_API}/api/v1/product-ram/update-category/${selected._id}`,
+        `/api/v1/product-ram/update-product-ram/${selected._id}`,
         { name: updatedName }
       );
       if (data.success) {
@@ -70,14 +75,14 @@ export default function CreateProductRAM() {
     }
   };
 
-  //delete category
+  // Delete Product RAM
   const handleDelete = async (pId) => {
     try {
       const { data } = await axios.delete(
-        `${process.env.REACT_APP_API}/api/v1/product-ram/delete-product-ram/${pId}`
+        `/api/v1/product-ram/delete-product-ram/${pId}`
       );
       if (data.success) {
-        toast.success("RAM is deleted");
+        toast.success("Product RAM is deleted");
         getAllRAMs();
       } else {
         toast.error(data.message);
@@ -87,75 +92,121 @@ export default function CreateProductRAM() {
     }
   };
 
+  // Columns for Ant Design Table
+  const columns = [
+    {
+      title: "Sl No.",
+      dataIndex: "index",
+      key: "index",
+      fixed: "left",
+      render: (text, record, index) => {
+        return (currentPage - 1) * pageSize + index + 1;
+      },
+    },
+    {
+      title: "PRODUCT RAM",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "ACTIONS",
+      key: "actions",
+      render: (text, record) => (
+        <>
+          <button
+            className="btn btn-primary ms-2"
+            onClick={() => {
+              setVisible(true);
+              setUpdatedName(record.name);
+              setSelected(record);
+            }}
+          >
+            Edit
+          </button>
+          <button
+            className="btn btn-danger ms-2"
+            onClick={() => {
+              handleDelete(record._id);
+              //console.log("record", record);
+            }}
+          >
+            Delete
+          </button>
+        </>
+      ),
+    },
+  ];
+
+  // Radio Button Group for filtering (if needed)
+  // const onChange = (e) => console.log(`Radio checked: ${e.target.value}`);
+
+  // Fetch RAMs on component mount
   useEffect(() => {
     getAllRAMs();
   }, []);
 
   return (
-    <Layout title={"Dashboard - Create Category"}>
-      <div className="container-fluid m-3 p-3">
+    <AdminLayout title={"Dashboard - Create Product RAM"}>
+      <div className="col-md-12">
         <div className="row">
-          <div className="col-md-3">
-            <AdminMenu />
-          </div>
           <div className="col-md-9">
             <h1>Manage Product RAM</h1>
-            <div className="p-3 w-75">
+            <div className="table-responsive">
               <ProductRAMForm
                 handleSubmit={handleSubmit}
                 value={name}
                 setValue={setName}
+                loading={loading}
               />
             </div>
-            <div className="w-75">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th scope="col">Product RAM</th>
-                    <th scope="col">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {productRAM?.map((c) => (
-                    <tr key={c._id}>
-                      <td>{c.name}</td>
-                      <td>
-                        <button
-                          className="btn btn-primary ms-2"
-                          onClick={() => {
-                            setVisible(true);
-                            setUpdatedName(c.name);
-                            setSelected(c);
-                          }}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          className="btn btn-danger ms-2"
-                          onClick={() => handleDelete(c._id)}
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+
+            <Card
+              bordered={false}
+              className="criclebox tablespace mb-24"
+              title="Product RAMs Table"
+              // extra={
+              //   <Radio.Group onChange={onChange} defaultValue="all">
+              //     <Radio.Button value="all">All</Radio.Button>
+              //     <Radio.Button value="online">ONLINE</Radio.Button>
+              //   </Radio.Group>
+              // }
+            >
+              <div className="table-responsive">
+                <Table
+                  bordered
+                  columns={columns}
+                  dataSource={productRAM}
+                  pagination={{
+                    current: currentPage,
+                    onChange: handlePageChange,
+                    pageSize: pageSize,
+                  }}
+                  scroll={{
+                    x: "max-content",
+                    // y: 120 * 5,
+                  }}
+                  loading={loading}
+                  rowKey="_id" // You should provide a unique key for each row
+                  className="ant-border-space"
+                />
+              </div>
+            </Card>
+
             <Modal
               onCancel={() => setVisible(false)}
               footer={null}
-              open={visible} // Updated to 'open'
+              open={visible} // Modal visibility control
             >
-              <CategoryForm
+              <ProductRAMForm
                 value={updatedName}
                 setValue={setUpdatedName}
                 handleSubmit={handleUpdate}
+                loading={loading}
               />
             </Modal>
           </div>
         </div>
       </div>
-    </Layout>
+    </AdminLayout>
   );
 }

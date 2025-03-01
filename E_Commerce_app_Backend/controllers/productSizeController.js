@@ -28,7 +28,7 @@ export const createProductSizeController = async (req, res) => {
       size,
     });
   } catch (error) {
-    //console.log("error", error);
+    ////console.log("error", error);
     res.status(500).send({
       success: false,
       error,
@@ -47,7 +47,7 @@ export const getProductSizeController = async (req, res) => {
       size,
     });
   } catch (error) {
-    ////console.log(error);
+    //////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while getting sizes",
@@ -66,7 +66,7 @@ export const deleteProductSizeController = async (req, res) => {
       size,
     });
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while deleting size",

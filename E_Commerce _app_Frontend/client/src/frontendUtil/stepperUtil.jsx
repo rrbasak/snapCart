@@ -143,7 +143,7 @@
 // //   }
 // // };
 // export default function HorizontalLinearStepper({ status }) {
-//   //console.log("status", status);
+//   ////console.log("status", status);
 //   const [activeStep, setActiveStep] = useState(0);
 
 // useEffect(() => {
@@ -190,7 +190,7 @@
 
 // export default function HorizontalLinearStepper({ status }) {
 //   const [activeStep, setActiveStep] = useState(0);
-//   //console.log("status",status)
+//   ////console.log("status",status)
 //   useEffect(() => {
 //     switch (status) {
 //       case "Processing":

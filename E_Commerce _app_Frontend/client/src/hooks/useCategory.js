@@ -9,12 +9,14 @@ export default function useCategory() {
   //get cat
   const getCategories = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/category/get-category`);
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API}/api/v1/category/get-category`
+      );
       setLocalCategories(data?.categories);
-      console.log(data);
+      //console.log(data);
       dispatch(setCategories(data));
     } catch (error) {
-      ////console.log(error);
+      //////console.log(error);
     }
   };
 

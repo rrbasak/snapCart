@@ -45,7 +45,7 @@
 //         toast.success("Profile Updated Successfully");
 //       }
 //     } catch (error) {
-//       ////console.log(error);
+//       //////console.log(error);
 //       toast.error("Something went wrong");
 //     }
 //   };
@@ -1230,7 +1230,7 @@ export default function Profile() {
 
   // State
   const location = useLocation();
-  //console.log(location.state?.activeTab);
+  ////console.log(location.state?.activeTab);
   const queryParams = new URLSearchParams(location.search);
   const defaultTab =
     location.state?.activeTab || queryParams.get("tab") || "personalAndAddress";
@@ -1265,16 +1265,16 @@ export default function Profile() {
     const { data } = await axios.get(
       `${process.env.REACT_APP_API}/api/v1/auth/get-user/${auth?.user?._id}`
     );
-    //console.log("User", data);
+    ////console.log("User", data);
     if (data.success) {
       const { email, name, phone, address, photo } = data?.user;
-      //console.log("User Details:", { email, name, phone, address, photo });
+      ////console.log("User Details:", { email, name, phone, address, photo });
       setName(name);
       setPhone(phone);
       setEmail(email);
       setAddress(address);
       if (photo && photo.data && photo.contentType) {
-        //console.log("photo", photo);
+        ////console.log("photo", photo);
         const base64String = btoa(
           String.fromCharCode(...new Uint8Array(photo.data.data))
         );
@@ -1289,14 +1289,14 @@ export default function Profile() {
   }, []);
   useEffect(() => {
     if (location.state?.activeTab) {
-      //console.log("hi", location.state?.activeTab);
+      ////console.log("hi", location.state?.activeTab);
       setActiveTab(location.state.activeTab);
     }
   }, [location.state?.activeTab]);
-  //console.log("Profile Photo URL:", profilePhoto);
+  ////console.log("Profile Photo URL:", profilePhoto);
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
-    //console.log("files", file);
+    ////console.log("files", file);
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -1331,16 +1331,16 @@ export default function Profile() {
   //   try {
   //     const formData = new FormData();
   //     formData.append("photo", photo);
-  //     //console.log("formData", formData);
+  //     ////console.log("formData", formData);
   //     const { data } = await axios.put("/api/v1/auth/uploadpic", formData);
-  //     //console.log("data here", data);
+  //     ////console.log("data here", data);
   //     if (data?.success) {
   //       const updatedUser = data?.updatedUser;
-  //       //console.log("updatedUser here", updatedUser);
+  //       ////console.log("updatedUser here", updatedUser);
   //       const updatedAuth = { ...auth, user: updatedUser };
-  //       //console.log("updatedAuth here", updatedAuth); // Preserve all properties of auth
+  //       ////console.log("updatedAuth here", updatedAuth); // Preserve all properties of auth
   //       setAuth(updatedAuth);
-  //       //console.log("localstorage here", localStorage.getItem("auth"));
+  //       ////console.log("localstorage here", localStorage.getItem("auth"));
   //       localStorage.setItem("auth", JSON.stringify(updatedAuth)); // Store the updated auth in localStorage
   //       toast.success(data?.message);
   //     } else {
@@ -1356,7 +1356,10 @@ export default function Profile() {
       const formData = new FormData();
       formData.append("photo", file);
 
-      const { data } = await axios.put(`${process.env.REACT_APP_API}/api/v1/auth/uploadpic`, formData);
+      const { data } = await axios.put(
+        `${process.env.REACT_APP_API}/api/v1/auth/uploadpic`,
+        formData
+      );
       if (data?.success) {
         const updatedUser = data?.updatedUser;
         const updatedAuth = { ...auth, user: updatedUser };

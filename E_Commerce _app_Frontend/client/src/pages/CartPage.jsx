@@ -35,12 +35,12 @@ export default function CartPage() {
   const [isPaymentSectionExpanded, setIsPaymentSectionExpanded] =
     useState(false);
   const navigate = useNavigate();
-  //console.log(instance);
+  ////console.log(instance);
   // const totalPrice = () => {
   //   try {
   //     let total = 0;
   //     selectedItems?.map((item) => {
-  //       //console.log(item);
+  //       ////console.log(item);
   //       total = total + item.orgprice * (quantities[item._id] || item.quantity);
 
   //     });
@@ -50,7 +50,7 @@ export default function CartPage() {
   //       currency: "INR",
   //     });
   //   } catch (error) {
-  //     ////console.log(error);
+  //     //////console.log(error);
   //   }
   // };
 
@@ -66,18 +66,18 @@ export default function CartPage() {
   };
   const [subtotal, setSubTotal] = useState();
   const removeCartItem = async (pid) => {
-    //console.log("pid", pid);
-    //console.log("selectedItems", selectedItems);
+    ////console.log("pid", pid);
+    ////console.log("selectedItems", selectedItems);
     try {
       const { data } = await axios.delete(
-        `${process.env.REACT_APP_API}/api/v1/cart/remove-cart/${auth.user._id}/${pid}`
+        `/api/v1/cart/remove-cart/${auth.user._id}/${pid}`
       );
       if (data?.success) {
         dispatch(removeItemFromCart({ id: pid }));
         setSelectedItems(selectedItems.filter((item) => item._id !== pid));
         toast.success("Item removed from cart");
       } else {
-        //console.log("Failed to delete cart");
+        ////console.log("Failed to delete cart");
       }
     } catch (error) {
       console.error("Error deleting cart data:", error);
@@ -100,10 +100,10 @@ export default function CartPage() {
 
   const getToken = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/braintree/accessToken`);
+      const { data } = await axios.get("/api/v1/product/braintree/accessToken");
       setClientToken(data?.clientToken);
     } catch (error) {
-      ////console.log(error);
+      //////console.log(error);
     }
   };
   // // payment method function
@@ -118,7 +118,7 @@ export default function CartPage() {
   //       isQuantityUpdated,
   //       quantity,
   //     });
-  //     //console.log(selectedItems);
+  //     ////console.log(selectedItems);
   //     setLoading(false);
   //     localStorage.removeItem("cart");
   //     setCart([]);
@@ -127,7 +127,7 @@ export default function CartPage() {
   //     navigate("/dashboard/profile", { state: { activeTab: "orders" } });
   //     toast.success("Payment Completed Successfully");
   //   } catch (error) {
-  //     //console.log(error);
+  //     ////console.log(error);
   //     setLoading(false);
   //   }
   // };
@@ -137,7 +137,7 @@ export default function CartPage() {
     try {
       setLoading(true);
       const { nonce } = await instance.requestPaymentMethod();
-      const { data } = await axios.post(`${process.env.REACT_APP_API}/api/v1/product/braintree/payment`, {
+      const { data } = await axios.post("/api/v1/product/braintree/payment", {
         nonce,
         cart: selectedItems,
         updatedPrice,
@@ -149,6 +149,58 @@ export default function CartPage() {
 
       if (data.success) {
         // Payment successful
+        const productNames = data?.cart
+          ?.map((product) => product.name)
+          .join(", ");
+        // //console.log(productNames);
+        // //console.log(data?.cart);
+        const statusMessages = {
+          NewOrder: `A new order has been placed for: ${productNames}.`,
+        };
+
+        const notificationTitles = {
+          NewOrder: "New Order Received 📦",
+          Canceled: "Order Canceled ❌",
+        };
+
+        await axios.post("/api/v1/auth/create-purchased-order-notification", {
+          title: notificationTitles["NewOrder"] || "Order Update",
+          message: statusMessages["NewOrder"],
+          recipient: "admin",
+          status: "unread",
+          type: "order_update",
+        });
+        for (const product of data?.cart || []) {
+          //console.log("product", product);
+          //console.log(
+          //   "product?.product?.quantity - product?.quantity",
+          //   product?.product?.quantity - product?.quantity
+          // );
+          if (
+            product?.product?.quantity - product?.quantity < 5 &&
+            product?.product?.quantity - product?.quantity > 0
+          ) {
+            // Low stock warning
+            await axios.post("/api/v1/auth/low-stock-notification", {
+              title: "Low Stock Alert ⚠️",
+              message: `${product.product.name} stock is running low. Only ${
+                product?.product?.quantity - product?.quantity
+              } items left!`,
+              recipient: "admin",
+              status: "unread",
+              type: "system",
+            });
+          } else if (product?.product?.quantity - product?.quantity === 0) {
+            // Out of stock notification
+            await axios.post("/api/v1/auth/out-of-stock-notification", {
+              title: "Out of Stock Alert ❌",
+              message: `${product.product.name} is out of stock. Please restock soon.`,
+              recipient: "admin",
+              status: "unread",
+              type: "system",
+            });
+          }
+        }
         localStorage.removeItem("cart");
         setCart([]);
         setSelectedItems([]);
@@ -166,7 +218,7 @@ export default function CartPage() {
         });
       }
     } catch (error) {
-      //console.log("Payment error:", error);
+      ////console.log("Payment error:", error);
       setLoading(false);
       toast.error(
         error.response?.data?.error ||
@@ -189,14 +241,14 @@ export default function CartPage() {
     if (!auth?.user?._id) return;
     try {
       const { data } = await axios.get(
-        `${process.env.REACT_APP_API}/api/v1/cart/get-cart/${auth.user._id}`
+        `/api/v1/cart/get-cart/${auth.user._id}`
       );
       if (data?.success) {
-        //console.log(data?.cartOnUser);
+        ////console.log(data?.cartOnUser);
         setAllCarts(data?.cartOnUser);
         return data?.cartOnUser;
       } else {
-        //console.log("Failed to fetch cart data");
+        ////console.log("Failed to fetch cart data");
       }
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -226,7 +278,7 @@ export default function CartPage() {
     const checkStock = async () => {
       try {
         const cartData = await fetchCartData();
-        //console.log("cartData", cartData);
+        ////console.log("cartData", cartData);
         cartData?.forEach((cart) => {
           if (cart?.product?.availableInStock === "Out Of Stock") {
             toast.error(`Out Of Stock for ${cart.name}`, {
@@ -250,7 +302,7 @@ export default function CartPage() {
     setSelectedItems(allcarts);
   }, [allcarts]);
 
-  //console.log(allcarts);
+  ////console.log(allcarts);
 
   useEffect(() => {
     if (selectedItems.length > 0) {
@@ -282,7 +334,7 @@ export default function CartPage() {
     setIsModalVisible(false);
     setExchangeDetails(null);
   };
-  //console.log("exchangeDetails", exchangeDetails);
+  ////console.log("exchangeDetails", exchangeDetails);
 
   const [quantity, setQuantity] = useState(
     allcarts.reduce((acc, product) => {
@@ -398,7 +450,7 @@ export default function CartPage() {
                     />
                   )}
                   <img
-                    src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${p.product._id}`}
+                    src={`/api/v1/product/product-photo/${p.product._id}`}
                     alt={p.name}
                     className={styles.productImage}
                   />

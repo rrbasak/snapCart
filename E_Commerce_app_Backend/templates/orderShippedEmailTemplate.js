@@ -168,7 +168,7 @@ const generateOrderShippedEmailContent = (orderDetails) => {
     <div class="title">Shipping Confirmation</div>
     <p class="orderNo">Order #<a href=${userOneorderUrl} class="orderID">${orderId}</a></p>
     <p class="greeting">Hello ${customerName},</p>
-    <p>We thought you'd like to know that your item(s) have been dispatched. Your order is on the way. If you want to see other orders, please visit <a href="${userordersUrl}" target="_blank">Your Orders</a> on Snapcart.in.</p>
+    <p>We thought you'd like to know that your item(s) have been dispatched. If you want to see other orders, please visit <a href="${userordersUrl}" target="_blank">Your Orders</a> on Snapcart.in.</p>
     <div class="details">
       <table class="tableStyle">
         <tr>

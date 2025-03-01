@@ -56,7 +56,7 @@ export default function UpdateProduct() {
         debugger;
         return navigate("/404");
       }
-      //console.log(dayjs(data?.product?.freedeliveryDate).format("YYYY-MM-DD"));
+      ////console.log(dayjs(data?.product?.freedeliveryDate).format("YYYY-MM-DD"));
       setData(data);
       setName(data.product.name);
       setId(data.product._id);
@@ -95,7 +95,7 @@ export default function UpdateProduct() {
       ); //sub_category id
       setIsCall(true);
     } catch (error) {
-      //console.log(error);
+      ////console.log(error);
       toast.error("Failed to fetch search data");
       navigate("/404");
     }
@@ -114,11 +114,11 @@ export default function UpdateProduct() {
   //get all photo pof product
   const fetchPhotos = async () => {
     try {
-      //console.log("id", id);
+      ////console.log("id", id);
       const { data } = await axios.get(
         `${process.env.REACT_APP_API}/api/v1/product/product-all-photo/${id}`
       );
-      //console.log(data);
+      ////console.log(data);
       if (data.success) {
         const formattedPhotos = data.photos.map((photo, index) => ({
           uid: index,
@@ -133,20 +133,22 @@ export default function UpdateProduct() {
     }
   };
   // Handling photo change in ImageUpload component
-  //console.log("photo",photos)
+  ////console.log("photo",photos)
   const handlePhotoChange = (newFileList) => {
-    //console.log("newFileList", newFileList);
+    ////console.log("newFileList", newFileList);
     setPhotos(newFileList);
   };
   //get all category
   const getAllCategory = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/category/get-category`);
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API}/api/v1/category/get-category`
+      );
       if (data?.success) {
         setCategories(data?.categories);
       }
     } catch (error) {
-      ////console.log(error);
+      //////console.log(error);
       toast.error("Something wwent wrong in getting catgeory");
     }
   };
@@ -179,11 +181,11 @@ export default function UpdateProduct() {
       // photo && productData.append("photo", photo);
       photos.forEach((photo) => {
         if (photo.originFileObj) {
-          //console.log("photo.originFileObj", photo.originFileObj);
+          ////console.log("photo.originFileObj", photo.originFileObj);
           productData.append("photo", photo.originFileObj);
         } else {
           // Handle base64 encoded images
-          //console.log("photo.url", photo.url);
+          ////console.log("photo.url", photo.url);
           productData.append("photo", photo.url);
         }
       });
@@ -213,7 +215,7 @@ export default function UpdateProduct() {
         navigate("/dashboard/admin/products");
       }
     } catch (error) {
-      ////console.log(error);
+      //////console.log(error);
       toast.error("something went wrong");
     }
   };
@@ -229,7 +231,7 @@ export default function UpdateProduct() {
       toast.success("Product Deleted Succfully");
       navigate("/dashboard/admin/products");
     } catch (error) {
-      ////console.log(error);
+      //////console.log(error);
       toast.error("Something went wrong");
     }
   };
@@ -242,18 +244,18 @@ export default function UpdateProduct() {
   }, [isCall]);
 
   const categoryChangeHandler = (value) => {
-    //console.log(value);
+    ////console.log(value);
     setCategory(value);
     setSubCategory();
     getSubCategoriesBaseOnCAtegory(value);
   };
 
   const ondFreeDeliveryateChange = (date, dateString) => {
-    //console.log(dateString);
+    ////console.log(dateString);
     setFreeDeliveryDate(dateString);
   };
   const ondFastestDeliveryateChange = (date, dateString) => {
-    //console.log(dateString);
+    ////console.log(dateString);
     setFastestDeliveryDate(dateString);
   };
   const onFastestTimeChange = (time, timeString) => {
@@ -267,8 +269,8 @@ export default function UpdateProduct() {
   //   value: val.toLowerCase(),
   // }));
   // setPreviousSelectedKeys(transformedKeys);
-  //console.log(previousSelectedKeys.map((key) => key.value));
-  //console.log(previousSelectedKeys);
+  ////console.log(previousSelectedKeys.map((key) => key.value));
+  ////console.log(previousSelectedKeys);
 
   const options = [
     { label: "Electronics", value: "electronics" },
@@ -295,21 +297,21 @@ export default function UpdateProduct() {
   };
 
   const handleSubCategoryChange = (sc_id) => {
-    //console.log(sc_id);
+    ////console.log(sc_id);
     setSubCategory(sc_id);
-    //console.log(sc_id);
+    ////console.log(sc_id);
     const selectedSubCategoryObject = subCategories.find(
       (sc) => sc._id === sc_id
     );
-    //console.log(selectedSubCategoryObject);
+    ////console.log(selectedSubCategoryObject);
     setSubCategoryName(selectedSubCategoryObject.subname);
   };
   // const handleSubCategoryChange = (sc_id) => {
-  //   //console.log(sc_id);
+  //   ////console.log(sc_id);
   //   const selectedSubCategoryObject = subCategories.find(
   //     (sc) => sc._id === sc_id
   //   );
-  //   //console.log(selectedSubCategoryObject);
+  //   ////console.log(selectedSubCategoryObject);
   //   setSubCategory(selectedSubCategoryObject);
   // };
   return (

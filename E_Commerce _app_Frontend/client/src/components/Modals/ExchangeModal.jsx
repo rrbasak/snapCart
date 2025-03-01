@@ -22,7 +22,7 @@ export const ExchangeModal = ({
   product,
   setExchangeProductId,
 }) => {
-  // //console.log(brands);
+  // ////console.log(brands);
   const [auth, setAuth] = useAuth();
   const [models, setModels] = useState([]);
   const [exchangePrices, setExchangePrices] = useState([]);
@@ -44,7 +44,7 @@ export const ExchangeModal = ({
       setExchangeValueinModal(null);
       setExchangeValue(0);
     } catch (error) {
-      //console.log(error);
+      ////console.log(error);
     }
   };
 
@@ -89,7 +89,7 @@ export const ExchangeModal = ({
   };
 
   const handleOkExchange = async () => {
-    //console.log(selectedConditions);
+    ////console.log(selectedConditions);
     const damageDetails = selectedConditions.map((condition) => {
       const conditionObj = exchangePrices.find(
         (price) => price.type.replace(" ", "_").toLowerCase() === condition
@@ -111,7 +111,7 @@ export const ExchangeModal = ({
         `${process.env.REACT_APP_API}/api/v1/exchange/create-exchange`,
         payload
       );
-      //console.log(data);
+      ////console.log(data);
       if (data?.success) {
         setSelectedBrand(null);
         setSelectedModel(null);

@@ -22,7 +22,7 @@ const CategoryForm = ({ handleSubmit, value, setValue, photo, setPhoto }) => {
               accept="image/*"
               onChange={(e) => {
                 setPhoto(e.target.files[0]);
-                ////console.log(e.target.files);
+                //////console.log(e.target.files);
               }}
               hidden
             />

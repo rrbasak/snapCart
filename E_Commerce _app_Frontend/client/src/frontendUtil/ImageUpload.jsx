@@ -17,7 +17,7 @@ const ImageUpload = ({
   maxFiles = 8,
   onPreviewChange,
 }) => {
-  //console.log("Uploading", initialFileList);
+  ////console.log("Uploading", initialFileList);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState(initialFileList);

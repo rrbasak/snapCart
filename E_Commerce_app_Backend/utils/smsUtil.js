@@ -1,9 +1,9 @@
 //key--> like OTP
 
-import twilio from 'twilio';
+import twilio from "twilio";
 
-export const sendSMS = (mobileNo,message,key)=>{
-  console.log(mobileNo);
+export const sendSMS = (mobileNo, message, key) => {
+  //console.log(mobileNo);
   const client = new twilio(
     process.env.TWILIO_ACCOUNT_SID,
     process.env.TWILIO_AUTH_TOKEN
@@ -12,14 +12,14 @@ export const sendSMS = (mobileNo,message,key)=>{
   const formattedMobileNo = String(mobileNo);
   return client.messages
     .create({
-      body: message+` ${key}`,
+      body: message + ` ${key}`,
       to: formattedMobileNo, // Text your number
       from: process.env.TWILIO_PHONE_NUMBER, // From a valid Twilio number
     })
     .then((message) => {
-      console.log(message, "Message Sent")
+      //console.log(message, "Message Sent")
     })
     .catch((error) => {
-      console.log(error, "Message Not Sent");
+      //console.log(error, "Message Not Sent");
     });
-}
+};

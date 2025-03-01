@@ -4,7 +4,7 @@ import cartModel from "../models/cartModel.js";
 
 // create cart
 export const createCartControlller = async (req, res) => {
-  //console.log("req", req.body);
+  ////console.log("req", req.body);
   try {
     const {
       user,
@@ -21,7 +21,7 @@ export const createCartControlller = async (req, res) => {
       name,
       isexchangeapplied,
     });
-    //console.log("existingCart", existingCart);
+    ////console.log("existingCart", existingCart);
     if (existingCart) {
       const existingCartUpdate = await cartModel.findOneAndUpdate(
         { user, name, isexchangeapplied },
@@ -38,14 +38,14 @@ export const createCartControlller = async (req, res) => {
       ...req.body,
     }).save();
 
-    //console.log("cart yes", cart);
+    ////console.log("cart yes", cart);
     res.status(200).send({
       success: true,
       message: "Cart created successfully",
       cart,
     });
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while creating cart",
@@ -55,7 +55,7 @@ export const createCartControlller = async (req, res) => {
 };
 // update cart
 // export const updateCartControlller = async (req, res) => {
-//   //console.log("req", req.body);
+//   ////console.log("req", req.body);
 //   try {
 //     const { name, product, orgprice, quantity } = req.body;
 //     const existingCartCategory = await cartModel.findOne({ name });
@@ -70,14 +70,14 @@ export const createCartControlller = async (req, res) => {
 //       // slug: slugify(name),
 //     }).save();
 
-//     //console.log(cart);
+//     ////console.log(cart);
 //     res.status(200).send({
 //       success: true,
 //       messsage: "Cart created successfully",
 //       cart,
 //     });
 //   } catch (error) {
-//     //console.log(error);
+//     ////console.log(error);
 //     res.status(500).send({
 //       success: false,
 //       message: "Error while creating cart",
@@ -90,19 +90,19 @@ export const createCartControlller = async (req, res) => {
 export const getCartControlller = async (req, res) => {
   try {
     const { auth_id } = req.params;
-    //console.log(auth_id);
+    ////console.log(auth_id);
     const cartOnUser = await cartModel
       .find({ user: auth_id })
       .populate("product")
       .populate("exchangeProduct");
-    //console.log("cartOnUser", cartOnUser);
+    ////console.log("cartOnUser", cartOnUser);
     res.status(200).send({
       success: true,
       messsage: "Cart getting successfully",
       cartOnUser,
     });
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while getting cart",
@@ -114,7 +114,7 @@ export const getCartControlller = async (req, res) => {
 export const removeCartController = async (req, res) => {
   try {
     const { auth_id, pid } = req.params;
-    //console.log("HIII", auth_id, pid);
+    ////console.log("HIII", auth_id, pid);
 
     // Find the user's cart and delete the specific item
     const deleteResult = await cartModel.deleteOne({ user: auth_id, _id: pid });
@@ -135,7 +135,7 @@ export const removeCartController = async (req, res) => {
       cartOnUser: updatedCart,
     });
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while deleting cart",

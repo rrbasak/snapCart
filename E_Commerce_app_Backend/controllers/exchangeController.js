@@ -2,7 +2,7 @@ import exchangeModel from "../models/exchangeModel.js";
 
 // create exchange cart of a user
 export const createExchangeControlller = async (req, res) => {
-  //console.log("req", req.body);
+  ////console.log("req", req.body);
   try {
     const { brand, model, damage, user, product } = req.body;
     const existingExchange = await exchangeModel.findOne({ user, product });
@@ -22,14 +22,14 @@ export const createExchangeControlller = async (req, res) => {
       ...req.body,
     }).save();
 
-    //console.log(exchangeproduct);
+    ////console.log(exchangeproduct);
     res.status(200).send({
       success: true,
       messsage: "Exchange created successfully",
       exchangeproduct,
     });
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while creating exchange product",
@@ -41,19 +41,19 @@ export const createExchangeControlller = async (req, res) => {
 export const getExchangeControlller = async (req, res) => {
   try {
     const { authId, exchangeId } = req.params;
-    //console.log("here", authId, exchangeId);
+    ////console.log("here", authId, exchangeId);
     const existingExchangeProduct = await exchangeModel.findOne({
       user: authId,
       _id: exchangeId,
     });
-    //console.log("existingExchangeProduct", existingExchangeProduct);
+    ////console.log("existingExchangeProduct", existingExchangeProduct);
     res.status(200).send({
       success: true,
       messsage: "Exchange product getting successfully",
       existingExchangeProduct,
     });
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error While getiing exchange product",
@@ -66,7 +66,7 @@ export const getExchangeControlller = async (req, res) => {
 // export const deleteExchangeControlller = async (req, res) => {
 //   try {
 //     const { authId, exchangeId } = req.params;
-//     //console.log("HIII", authId, exchangeId);
+//     ////console.log("HIII", authId, exchangeId);
 
 //     // Find the user's cart and delete the specific item
 //     const deleteResult = await exchangeModel.deleteOne({
@@ -87,7 +87,7 @@ export const getExchangeControlller = async (req, res) => {
 //       deleteResult: deleteResult,
 //     });
 //   } catch (error) {
-//     //console.log(error);
+//     ////console.log(error);
 //     res.status(500).send({
 //       success: false,
 //       message: "Error while deleting exchange product",
@@ -100,7 +100,7 @@ export const getExchangeControlller = async (req, res) => {
 export const deleteExchangeController = async (req, res) => {
   try {
     const { authId, exchangeId } = req.params;
-    //console.log("HIII", authId, exchangeId);
+    ////console.log("HIII", authId, exchangeId);
 
     // Define the query object
     const query = { _id: exchangeId };
@@ -126,7 +126,7 @@ export const deleteExchangeController = async (req, res) => {
       deleteResult: deleteResult,
     });
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while deleting exchange product",

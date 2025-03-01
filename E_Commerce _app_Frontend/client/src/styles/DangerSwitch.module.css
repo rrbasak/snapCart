@@ -1,0 +1,15 @@
+.switch-checked {
+    background-color: #50e406 !important;
+}
+
+.switch-unchecked {
+    background-color: red !important;
+}
+
+.icon-checked {
+    color: #56f805 !important;
+}
+
+.icon-unchecked {
+    color: red !important;
+}

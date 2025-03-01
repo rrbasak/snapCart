@@ -23,7 +23,7 @@ export default function SubCategories() {
   }, [slug, location.state]);
 
   const cid = location.state.cid;
-  //console.log("cid",cid)
+  ////console.log("cid",cid)
   const [subcategories, setSubcategories] = useState([]);
   const categoryBasedsubcategories = async () => {
     try {
@@ -37,7 +37,7 @@ export default function SubCategories() {
       console.error("Error checking review eligibility:", error);
     }
   };
-  //console.log("subcategories", subcategories);
+  ////console.log("subcategories", subcategories);
   return (
     <Layout title={"All Categories"}>
       <div style={{ marginTop: "20px" }}>

@@ -62,7 +62,7 @@ export default function ProductDetails() {
     setSelectedSpec(option);
   };
   const ScrollToTop = () => {
-    //console.log("Scroll");
+    ////console.log("Scroll");
     window.scrollTo({
       top: 0,
       behavior: "smooth",
@@ -78,7 +78,7 @@ export default function ProductDetails() {
     : {};
 
   useEffect(() => {
-    //console.log("Updated reviewsList:", reviewsList);
+    ////console.log("Updated reviewsList:", reviewsList);
   }, [reviewsList]);
   useEffect(() => {
     if (params?.slug) getProduct();
@@ -131,7 +131,7 @@ export default function ProductDetails() {
   //     getSimilarProduct(data?.product._id, data?.product.category._id);
   //     setReviewsList(data?.product?.reviews);
   //     getAllPhotos(data?.product._id);
-  //     // //console.log("here", data?.product?.priceVariants[1].price);
+  //     // ////console.log("here", data?.product?.priceVariants[1].price);
 
   //     const priceVariants = data?.product?.priceVariants || [];
   //     const ramStorageOptions = priceVariants
@@ -167,7 +167,7 @@ export default function ProductDetails() {
 
   //     setProductSpec(ramStorageOptions);
   //   } catch (error) {
-  //     //console.log(error);
+  //     ////console.log(error);
   //   }
   // };
 
@@ -219,11 +219,11 @@ export default function ProductDetails() {
 
       setProductSpec(ramStorageOptions);
     } catch (error) {
-      //console.log("Error fetching product:", error);
+      ////console.log("Error fetching product:", error);
       navigate("/404");
     }
   };
-  //console.log("ram", productspec);
+  ////console.log("ram", productspec);
   const getSimilarProduct = async (pid, cid) => {
     try {
       const { data } = await axios.get(
@@ -231,7 +231,7 @@ export default function ProductDetails() {
       );
       setRelatedProducts(data?.products);
     } catch (error) {
-      ////console.log(error);
+      //////console.log(error);
     }
   };
 
@@ -242,16 +242,16 @@ export default function ProductDetails() {
   };
   const deleteReview = (newReview) => {
     setReviewsList(newReview);
-    //console.log(reviewsList);
-    //console.log(newReview);
+    ////console.log(reviewsList);
+    ////console.log(newReview);
     // getNumberOfReviewFunc();
   };
 
   const handleOptionChange = (option) => {
     setSelectedOption(option);
   };
-  //console.log(product?.publishdate);
-  //console.log("selectedspec", selectedspec?.selectedSize);
+  ////console.log(product?.publishdate);
+  ////console.log("selectedspec", selectedspec?.selectedSize);
   const currentDate = new Date();
   const primeStartDate = new Date(product.primestartDate);
   const primeEndDate = new Date(product.primeendDate);
@@ -260,10 +260,10 @@ export default function ProductDetails() {
     currentDate >= primeStartDate && currentDate <= primeEndDate;
 
   const [reviews, setReviews] = useState();
-  //console.log("isPrimeDayDeal", isPrimeDayDeal);
-  //console.log("primeStartDate", primeStartDate);
-  //console.log("primeEndDate", primeEndDate);
-  //console.log("currentDate", currentDate);
+  ////console.log("isPrimeDayDeal", isPrimeDayDeal);
+  ////console.log("primeStartDate", primeStartDate);
+  ////console.log("primeEndDate", primeEndDate);
+  ////console.log("currentDate", currentDate);
   const renderTabContent = () => {
     switch (selectedOption) {
       case "description":
@@ -468,13 +468,13 @@ export default function ProductDetails() {
     }
   };
   const getLength = () => {
-    //console.log("cacll in ");
+    ////console.log("cacll in ");
     if (product?._id) {
       getNumberOfReviewFunc();
     }
   };
   useEffect(() => {
-    //console.log("call");
+    ////console.log("call");
     if (product?._id) {
       getNumberOfReviewFunc();
       setAccordion(true);
@@ -497,7 +497,7 @@ export default function ProductDetails() {
         dispatch(addPastProduct(newProducts));
       }
     } catch (error) {
-      //console.log(error);
+      ////console.log(error);
     }
   };
   useEffect(() => {
@@ -530,7 +530,7 @@ export default function ProductDetails() {
   const handleThumbnailHover = (src) => {
     setMainImage(src);
   };
-  //console.log(photos);
+  ////console.log(photos);
   return (
     <Layout>
       <div className={`row container mt-2 ${styles.containerMt2}`}>

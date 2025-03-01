@@ -1,5 +1,5 @@
 // export const renewToken = (req, res) => {
-//   ////console.log("renew",req);
+//   //////console.log("renew",req);
 // //   const data = localStorage.getItem("auth");
 // //   let parseData;
 // //   if (data) {
@@ -47,7 +47,7 @@
 // import JWT from "jsonwebtoken";
 
 // export const renewToken = (req, res) => {
-//   ////console.log("renew", req);
+//   //////console.log("renew", req);
 //   let exist = false;
 //   const refreshToken = req.cookies.refreshToken;
 //   if (!refreshToken) {
@@ -56,23 +56,23 @@
 //       message: "No Refresh Token",
 //     });
 //   } else {
-//     //console.log("else in renew token");
+//     ////console.log("else in renew token");
 //     JWT.verify(refreshToken, process.env.JWT_SECRET, (err, decode) => {
-//       //console.log("decode", decode);
+//       ////console.log("decode", decode);
 //       if (err) {
 //         return res.status(500).send({
 //           success: false,
 //           message: "Invalid Refresh Token",
 //         });
 //       } else {
-//         //console.log("else in renew token part 2");
+//         ////console.log("else in renew token part 2");
 //         const _id = decode._id;
 //         const accessToken = JWT.sign({ _id: _id }, process.env.JWT_SECRET, {
 //           expiresIn: "1m",
 //         });
-//         //console.log("else in renew token part 3");
+//         ////console.log("else in renew token part 3");
 //         res.cookie("accessToken", accessToken, { maxAge: 60000 });
-//         //console.log("accessToken add header", accessToken);
+//         ////console.log("accessToken add header", accessToken);
 //         res.setHeader("new-access-token", accessToken);
 //         exist = true;
 //       }

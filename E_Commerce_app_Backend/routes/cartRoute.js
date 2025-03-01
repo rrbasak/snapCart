@@ -1,13 +1,15 @@
 import express from "express";
-import { isAdmin, requireSignIn } from "../middlewares/authMiddleware.js";
+import {
+  isAdmin,
+  requireSignIn,
+  isUser,
+} from "../middlewares/authMiddleware.js";
 import formidable from "express-formidable";
 import {
   createCartControlller,
   getCartControlller,
   removeCartController,
-  
 } from "../controllers/cartController.js";
-
 
 const router = express.Router();
 

@@ -27,7 +27,7 @@ export const createProductRAMController = async (req, res) => {
       ram,
     });
   } catch (error) {
-    //console.log("error", error);
+    ////console.log("error", error);
     res.status(500).send({
       success: false,
       error,
@@ -46,7 +46,7 @@ export const getProductRAMController = async (req, res) => {
       ram,
     });
   } catch (error) {
-    ////console.log(error);
+    //////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while getting rams",
@@ -65,7 +65,7 @@ export const deleteProductRAMController = async (req, res) => {
       ram,
     });
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while deleting ram",

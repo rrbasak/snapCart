@@ -2,7 +2,7 @@ import searchHistoryModel from "../models/searchHistoryModel.js";
 
 // insert past search
 // export const insertPastSearchControlller = async (req, res) => {
-//   //console.log("req12121", req.body);
+//   ////console.log("req12121", req.body);
 //   try {
 //     const { search, userId } = req.body;
 //     const existingPastSearch = await searchHistoryModel.findOne({
@@ -15,7 +15,7 @@ import searchHistoryModel from "../models/searchHistoryModel.js";
 //     //   search: { $exists: true, $ne: null, $eq: search },
 //     //   user: { $exists: true, $ne: null, $eq: userId },
 //     // });
-//     //console.log("existingPastSearch12122", existingPastSearch);
+//     ////console.log("existingPastSearch12122", existingPastSearch);
 //     if (existingPastSearch) {
 //       return res.status(200).send({
 //         success: true,
@@ -32,7 +32,7 @@ import searchHistoryModel from "../models/searchHistoryModel.js";
 //       pastsearch,
 //     });
 //   } catch (error) {
-//     //console.log("error",error);
+//     ////console.log("error",error);
 //     res.status(500).send({
 //       success: false,
 //       message: "Error while inserting past search",
@@ -42,7 +42,7 @@ import searchHistoryModel from "../models/searchHistoryModel.js";
 // };
 
 export const insertPastSearchControlller = async (req, res) => {
-  //console.log("req12121", req.body);
+  ////console.log("req12121", req.body);
   try {
     const { search, userId } = req.body;
 
@@ -51,7 +51,7 @@ export const insertPastSearchControlller = async (req, res) => {
       search,
       user: userId,
     });
-    //console.log("existingPastSearch", existingPastSearch);
+    ////console.log("existingPastSearch", existingPastSearch);
     if (existingPastSearch) {
       return res.status(200).send({
         success: true,
@@ -71,7 +71,7 @@ export const insertPastSearchControlller = async (req, res) => {
       pastsearch,
     });
   } catch (error) {
-    //console.log("error", error);
+    ////console.log("error", error);
 
     if (error.code === 11000) {
       return res.status(400).send({
@@ -117,7 +117,7 @@ export const removePastSearchControlller = async (req, res) => {
       remainingSearches: remainingSearches,
     });
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while removing past search",
@@ -144,7 +144,7 @@ export const getPastSearchControlller = async (req, res) => {
       pastSearchResults: pastSearchResults,
     });
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while getting past search",

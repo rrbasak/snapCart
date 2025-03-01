@@ -1,6 +1,6 @@
 // dateUtil.js
-export function formatTimestampforOrder(timestamp) {
-  //console.log("timestamp", timestamp);
+export default function formatTimestampforOrder(timestamp) {
+  ////console.log("timestamp", timestamp);
   const date = new Date(timestamp);
 
   // Check if the date is valid

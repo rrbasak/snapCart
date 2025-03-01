@@ -59,7 +59,7 @@
 // const server = http.createServer(app);
 
 // // app.listen(port, () => {
-// //   ////console.log(`listening on port ${port}`.bgCyan.white)
+// //   //////console.log(`listening on port ${port}`.bgCyan.white)
 // // });
 
 // // Initialize Socket.IO server with CORS options
@@ -72,15 +72,15 @@
 
 // //socket connection
 // io.on("connection", (socket) => {
-//   //console.log("A user connected");
+//   ////console.log("A user connected");
 
 //   socket.on("disconnect", () => {
-//     //console.log("User disconnected");
+//     ////console.log("User disconnected");
 //   });
 // });
 
 // server.listen(port, () => {
-//   //console.log(`listening on port ${port}`.bgCyan.white);
+//   ////console.log(`listening on port ${port}`.bgCyan.white);
 // });
 
 // export { io };
@@ -144,7 +144,7 @@
 // //rus listen
 
 // app.listen(port, () => {
-//   //console.log(`listening on port ${port}`.bgCyan.white)
+//   ////console.log(`listening on port ${port}`.bgCyan.white)
 // });
 
 // import express, { urlencoded } from "express";
@@ -179,9 +179,9 @@
 // // Rest object
 // const app = express();
 
-// //console.log("server", process.env.LOGIN_RATE_LIMIT_WINDOW_MS);
-// //console.log(process.env.LOGIN_RATE_LIMIT_REQUESTS);
-// //console.log(process.env.LOGIN_RATE_LIMIT_MESSAGE);
+// ////console.log("server", process.env.LOGIN_RATE_LIMIT_WINDOW_MS);
+// ////console.log(process.env.LOGIN_RATE_LIMIT_REQUESTS);
+// ////console.log(process.env.LOGIN_RATE_LIMIT_MESSAGE);
 
 // // Vercel CORS Configuration
 // // app.use(
@@ -220,10 +220,8 @@
 // app.use("/api/v1/product-size", productSizeRoute);
 // app.use("/api/v1/product-color", productColorRoute);
 
-
-
 // app.use((req, res, next) => {
-//   console.log("Received request:", req.method, req.url);
+//   //console.log("Received request:", req.method, req.url);
 //   next();
 // });
 
@@ -256,10 +254,9 @@
 
 // // Listen on port
 // // app.listen(port, () => {
-// //   //console.log(`Listening on port ${port}`.bgCyan.white);
+// //   ////console.log(`Listening on port ${port}`.bgCyan.white);
 // // });
 // export default app;
-
 
 import express, { urlencoded } from "express";
 import colors from "colors";
@@ -279,6 +276,10 @@ import productRAMRoute from "./routes/productRAMRoute.js";
 import productSizeRoute from "./routes/productSizeRoute.js";
 import productColorRoute from "./routes/productColorRoute.js";
 import bloomRoutes from "./routes/bloomRoutes.js";
+import mapRoutes from "./routes/mapRoutes.js";
+import deliveryRoutes from "./routes/deliveryRoutes.js";
+import trackRoutes from "./routes/trackRoutes.js";
+import salesRoutes from "./routes/salesRoutes.js";
 
 import cors from "cors";
 import { errorMiddleware } from "./middlewares/authMiddleware.js";
@@ -293,9 +294,9 @@ connectDB();
 // Rest object
 const app = express();
 
-//console.log("server", process.env.LOGIN_RATE_LIMIT_WINDOW_MS);
-//console.log(process.env.LOGIN_RATE_LIMIT_REQUESTS);
-//console.log(process.env.LOGIN_RATE_LIMIT_MESSAGE);
+////console.log("server", process.env.LOGIN_RATE_LIMIT_WINDOW_MS);
+////console.log(process.env.LOGIN_RATE_LIMIT_REQUESTS);
+////console.log(process.env.LOGIN_RATE_LIMIT_MESSAGE);
 
 // Vercel CORS Configuration
 const allowedOrigins = [
@@ -336,6 +337,10 @@ app.use("/api/v1/product-ram", productRAMRoute);
 app.use("/api/v1/product-size", productSizeRoute);
 app.use("/api/v1/product-color", productColorRoute);
 app.use("/api/v1/check", bloomRoutes);
+app.use("/api/v1/map", mapRoutes);
+app.use("/api/v1/delivery", deliveryRoutes);
+app.use("/api/v1/track", trackRoutes);
+app.use("/api/v1/sales", salesRoutes);
 
 // Middleware
 app.use(errorMiddleware);
@@ -355,5 +360,5 @@ const port = process.env.PORT || 8080;
 
 // Listen on port
 app.listen(port, () => {
-  //console.log(`Listening on port ${port}`.bgCyan.white);
+  console.log(`Listening on port ${port}`.bgCyan.white);
 });

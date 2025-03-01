@@ -48,7 +48,7 @@ const userSchema = new mongoose.Schema(
       required: false,
     },
     photo: {
-      data: Buffer, //data--Buffer for docs
+      data: Buffer, 
       contentType: String,
     },
   },

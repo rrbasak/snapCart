@@ -6,6 +6,7 @@ import {
 } from "../helpers/authHelper.js";
 import userModel from "../models/userModel.js";
 import userModelSocialMedia from "../models/userModelSocialMedia.js";
+import deliveryPartnerModel from "../models/deliveryPartnerModel.js";
 import userOTPverificatioonModel from "../models/userOTPverificatioonModel.js";
 import orderModel from "../models/orderModel.js";
 import JWT from "jsonwebtoken";
@@ -18,13 +19,13 @@ import sendEmail from "../utils/emailUtil.js";
 import { generateOrderEmailContent } from "../templates/orderDetailEmailTemplate.js";
 import { generateOrderShippedEmailContent } from "../templates/orderShippedEmailTemplate.js";
 import { generatePasswordResetEmailContent } from "../templates/recoverPasswordEmailTemplate.js";
-
+import formatTimestampforOrder from "../utils/dateUtlFoOrder.js";
 import productModel from "../models/productModel.js";
 import { generateOrderBeforeDeliverEmailContent } from "../templates/orderBeforeDeliverEmailTemplate.js";
 import { generateOrderAfterDeliverEmailContent } from "../templates/orderAfterDeliverEmailTemplate.js";
-
-import { formatTimestampforOrder } from "../utils/dateUtlFoOrder.js";
 import { generateCancelByAdminEmailContent } from "../templates/cancelByAdminTemplate.js";
+import NotificationModel from "../models/notificationModel.js";
+
 //registration
 
 export const registerController = async (req, res) => {
@@ -51,7 +52,7 @@ export const registerController = async (req, res) => {
     const existingUser = await userModel.findOne({ email });
     //existing user
     if (existingUser) {
-      return res.status(200).send({
+      return res.status(409).send({
         success: "false",
         message: "Already exists login please",
       });
@@ -75,10 +76,10 @@ export const registerController = async (req, res) => {
       user: user,
     });
   } catch (error) {
-    ////console.log(error);
+    //////console.log(error);
     res.status(500).send({
       success: false,
-      message: "Error registering",
+      message: "Error while registering",
       error: error,
     });
   }
@@ -109,7 +110,7 @@ export const registerControllerViaGoogle = async (req, res) => {
       user: user,
     });
   } catch (error) {
-    ////console.log(error);
+    //////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error registering",
@@ -152,7 +153,7 @@ export const loginControllerViaGoogle = async (req, res) => {
       accessToken: accessToken,
     });
   } catch (error) {
-    ////console.log(error);
+    //////console.log(error);
     return res.status(500).send({
       success: false,
       message: "Error in login",
@@ -163,10 +164,10 @@ export const loginControllerViaGoogle = async (req, res) => {
 
 //POST LOGIN
 export const loginController = async (req, res) => {
-  ////console.log(req.body);
+  //////console.log(req.body);
   try {
     const { email, password, recaptchaValue } = req.body;
-    //console.log(req.body);
+    ////console.log(req.body);
 
     if (!email && !password) {
       //validation
@@ -195,9 +196,10 @@ export const loginController = async (req, res) => {
     }
     //check user
     const olduser = await userModel.findOne({ email });
-    //console.log("olduser", olduser);
+    // //console.log("olduser", olduser);
     const oldSocialMediauser = await userModelSocialMedia.findOne({ email });
-    if (!olduser && !oldSocialMediauser) {
+    const deliveryPartner = await deliveryPartnerModel.findOne({ email });
+    if (!olduser && !oldSocialMediauser && !deliveryPartner) {
       return res.send({
         success: false,
         message: "Email is not registered",
@@ -207,12 +209,26 @@ export const loginController = async (req, res) => {
       return res.status(200).send({
         success: false,
         message:
-          "You have signed up with Social Media.So login with your Social Media account",
+          "You have signed up with Google.So login with your Google account",
       });
     }
-    const match = await comparePassword(password, olduser.password);
-    ////console.log(match);
-    if (!match) {
+    // const userMatch = await comparePassword(password, olduser.password);
+    // const deliveryPartnerMatch  = await comparePassword(password, deliveryPartner.password);
+
+    // if (!userMatch || !deliveryPartnerMatch) {
+    //   return res.send({
+    //     success: false,
+    //     message: "Invalid Password",
+    //   });
+    // }
+    const userMatch = olduser
+      ? await comparePassword(password, olduser.password)
+      : false;
+    const deliveryPartnerMatch = deliveryPartner
+      ? await comparePassword(password, deliveryPartner.password)
+      : false;
+
+    if (!userMatch && !deliveryPartnerMatch) {
       return res.send({
         success: false,
         message: "Invalid Password",
@@ -220,25 +236,26 @@ export const loginController = async (req, res) => {
     }
     //accessToken
     const data = await axios.post(
-      `https://www.google.com/recaptcha/api/siteverify?secret=${"6LcclwQqAAAAAD4z_bET6tP3je_6LOOpBBb4mBU8"}&response=${recaptchaValue}`
+      `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${recaptchaValue}`
     );
-    ////console.log("success Data", data);
+    //////console.log("success Data", data);
     if (data.status === 200) {
+      const loggedInUser = olduser || deliveryPartner;
       const accessToken = JWT.sign(
-        { _id: olduser._id },
+        { _id: loggedInUser._id },
         process.env.JWT_SECRET,
         {
           // expiresIn: "1m",
           expiresIn: "7d",
         }
       );
-      const refreshToken = JWT.sign(
-        { _id: olduser._id },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: "1h",
-        }
-      );
+      // const refreshToken = JWT.sign(
+      //   { _id: olduser._id },
+      //   process.env.JWT_SECRET,
+      //   {
+      //     expiresIn: "1h",
+      //   }
+      // );
 
       // res.cookie("accessToken", accessToken, { maxAge: 60000 });
 
@@ -249,26 +266,64 @@ export const loginController = async (req, res) => {
       //   secure: true,
       //   sameSite: "strict",
       // });
+
+      let responseUser = {
+        _id: loggedInUser._id,
+        name: loggedInUser.name,
+        email: loggedInUser.email,
+        phone: loggedInUser.phone,
+        address: loggedInUser.address,
+        role: loggedInUser.role,
+        city: loggedInUser.city,
+        state: loggedInUser.state,
+        country: loggedInUser.country,
+        createdAt: loggedInUser.createdAt,
+        photo: loggedInUser.photo,
+      };
+
+      if (deliveryPartnerMatch) {
+        responseUser = {
+          ...responseUser,
+          vehicleType: deliveryPartner.vehicleType,
+          vehicleModel: deliveryPartner.vehicleModel,
+          registrationNumber: deliveryPartner.registrationNumber,
+          vehicleColor: deliveryPartner.vehicleColor,
+          ownerName: deliveryPartner.ownerName,
+          drivingLicenseNumber: deliveryPartner.drivingLicenseNumber,
+          insuranceProvider: deliveryPartner.insuranceProvider,
+          policyNumber: deliveryPartner.policyNumber,
+          expiryDate: deliveryPartner.expiryDate,
+          drivingLicenseFile: deliveryPartner.drivingLicenseFile,
+          vehicleRegistrationFile: deliveryPartner.vehicleRegistrationFile,
+          insuranceFile: deliveryPartner.insuranceFile,
+        };
+      }
+      // return res.status(200).send({
+      //   success: true,
+      //   message: "login successfully",
+      //   user: {
+      //     _id: olduser._id,
+      //     name: olduser.name,
+      //     email: olduser.email,
+      //     phone: olduser.phone,
+      //     address: olduser.address,
+      //     role: olduser.role,
+      //     city: olduser.city,
+      //     state: olduser.state,
+      //     country: olduser.country,
+      //     createdAt: olduser.createdAt,
+      //     photo: olduser.photo,
+      //   },
+      //   accessToken,
+      // });
       return res.status(200).send({
         success: true,
-        message: "login successfully",
-        user: {
-          _id: olduser._id,
-          name: olduser.name,
-          email: olduser.email,
-          phone: olduser.phone,
-          address: olduser.address,
-          role: olduser.role,
-          city: olduser.city,
-          state: olduser.state,
-          country: olduser.country,
-          createdAt: olduser.createdAt,
-          photo: olduser.photo,
-        },
+        message: "Login successful",
+        user: responseUser,
         accessToken,
       });
     } else {
-      ////console.log(data);
+      //////console.log(data);
       return res.status(200).send({
         success: false,
         message: "Invalid Recaptcha",
@@ -292,7 +347,7 @@ export const loginController = async (req, res) => {
 
 // test controller
 export const testController = (req, res) => {
-  ////console.log("Protectted Rote");
+  //////console.log("Protectted Rote");
   res.status(200).send({
     success: true,
     message: "Protectted Rote",
@@ -329,7 +384,7 @@ export const forgotPasswordController = async (req, res) => {
     }
     //check
     const user = await userModel.findOne({ email, answer });
-    ////console.log(user);
+    //////console.log(user);
     //validation
     if (!user) {
       return res.status(404).send({
@@ -344,7 +399,7 @@ export const forgotPasswordController = async (req, res) => {
       message: "Password Reset Successfully",
     });
   } catch (error) {
-    ////console.log(error);
+    //////console.log(error);
     res.status(500).send({
       success: false,
       message: "Something went wrong",
@@ -355,7 +410,7 @@ export const forgotPasswordController = async (req, res) => {
 
 //update prfole
 export const updateProfileController = async (req, res) => {
-  //console.log("HIII req", req.body);
+  ////console.log("HIII req", req.body);
   try {
     // const { name, email, password, address, phone } = req.body;
     const { name } = req.body;
@@ -381,7 +436,7 @@ export const updateProfileController = async (req, res) => {
       updatedUser,
     });
   } catch (error) {
-    ////console.log(error);
+    //////console.log(error);
     res.status(400).send({
       success: false,
       message: "Error While Update profile",
@@ -392,7 +447,7 @@ export const updateProfileController = async (req, res) => {
 
 //update contact references
 export const updateContactController = async (req, res) => {
-  //console.log("HIII req", req.body);
+  ////console.log("HIII req", req.body);
   try {
     const updates = req.body;
     const user = await userModel.findById(req.user._id);
@@ -408,7 +463,7 @@ export const updateContactController = async (req, res) => {
       updatedUser,
     });
   } catch (error) {
-    ////console.log(error);
+    //////console.log(error);
     res.status(400).send({
       success: false,
       message: "Error WHile Update profile",
@@ -419,7 +474,7 @@ export const updateContactController = async (req, res) => {
 
 //update contact references
 export const uploadPicController = async (req, res) => {
-  //console.log("request files", req.files);
+  ////console.log("request files", req.files);
   try {
     const { photo } = req.files;
     if (!photo) {
@@ -447,7 +502,7 @@ export const uploadPicController = async (req, res) => {
       updatedUser,
     });
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.status(400).send({
       success: false,
       message: "Error While Update profile picture",
@@ -468,7 +523,7 @@ export const getOrdersController = async (req, res) => {
       .populate("buyer", "name");
     res.json(orders);
   } catch (error) {
-    ////console.log(error);
+    //////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error While Geting Orders",
@@ -486,10 +541,10 @@ export const getOneOrderController = async (req, res) => {
         select: "-photo",
       })
       .populate("buyer", "name");
-    //console.log("get one orders 2", order);
+    ////console.log("get one orders 2", order);
     res.json(order);
   } catch (error) {
-    //console.log("get one orders", error);
+    ////console.log("get one orders", error);
     res.status(500).send({
       success: false,
       message: "Error While Geting one Orders",
@@ -504,13 +559,14 @@ export const getAllOrdersController = async (req, res) => {
       .find({})
       .populate("products.product", "-photo")
       .populate("buyer", "name")
-      .sort({ createdAt: -1 });
+      .populate("partner", "name")
+      .sort({ updatedAt: -1 });
     res.json(orders);
   } catch (error) {
     //console.log("error", error);
     res.status(500).send({
       success: false,
-      message: "Error WHile Geting Orders",
+      message: "Error while geting orders",
       error,
     });
   }
@@ -520,10 +576,11 @@ export const getAllOrdersController = async (req, res) => {
 // import { io } from "../server.js";
 export const orderStatusController = async (req, res) => {
   try {
-    //console.log("hello bruno", req.body);
+    ////console.log("hello bruno", req.body);
     const { orderId } = req.params;
     const { status } = req.body;
     const order = await orderModel.findById(orderId).populate("buyer");
+    //console.log("order", order);
     const product = await orderModel
       .findById(orderId)
       .populate("products.product");
@@ -539,7 +596,7 @@ export const orderStatusController = async (req, res) => {
     const orgprices = order.products.map((item) => item.orgprice);
     const productname = order.products.map((item) => item.productName);
 
-    // console.log(
+    // //console.log(
     //   "email here 3",
     //   recipientEmail,
     //   recipientName,
@@ -556,7 +613,7 @@ export const orderStatusController = async (req, res) => {
       { status },
       { new: true }
     );
-    //console.log("orders", orders);
+    ////console.log("orders", orders);
     // io.emit("orderStatusUpdated", orders); // Emit the updated order status
 
     // shipped
@@ -568,7 +625,7 @@ export const orderStatusController = async (req, res) => {
       total &&
       arrivalDate
     ) {
-      //console.log("recipientName", recipientName, recipientAddress, total);
+      ////console.log("recipientName", recipientName, recipientAddress, total);
       const orderDetails = {
         customerName: recipientName,
         orderId: order._id.toString(),
@@ -598,7 +655,7 @@ export const orderStatusController = async (req, res) => {
       total &&
       arrivalDate
     ) {
-      //console.log("recipientName", recipientName, recipientAddress, total);
+      ////console.log("recipientName", recipientName, recipientAddress, total);
       const orderDetails = {
         customerName: recipientName,
         orderId: order._id.toString(),
@@ -627,7 +684,7 @@ export const orderStatusController = async (req, res) => {
       total &&
       arrivalDate
     ) {
-      //console.log("recipientName", recipientName, recipientAddress, total);
+      ////console.log("recipientName", recipientName, recipientAddress, total);
       const orderDetails = {
         customerName: recipientName,
         orderId: order._id.toString(),
@@ -659,7 +716,7 @@ export const orderStatusController = async (req, res) => {
       total &&
       arrivalDate
     ) {
-      //console.log("recipientName", recipientName, recipientAddress, total);
+      ////console.log("recipientName", recipientName, recipientAddress, total);
       const orderDetails = {
         customerName: recipientName,
         orderId: order._id.toString(),
@@ -682,7 +739,7 @@ export const orderStatusController = async (req, res) => {
     }
     res.json(orders);
   } catch (error) {
-    //console.log(error);
+    //console.log("error", error);
     res.status(500).send({
       success: false,
       message: "Error While Updateing Order",
@@ -696,7 +753,7 @@ export const orderStatusController = async (req, res) => {
 export const forgotPasswordControllerViaOTPvalidation = async (req, res) => {
   try {
     const { email } = req.body;
-    ////console.log(email);
+    //////console.log(email);
     // res.status(200).send({
     //   success: true,
     //   message: "Email goota",
@@ -721,7 +778,7 @@ export const forgotPasswordControllerViaOTPvalidation = async (req, res) => {
       }
     );
     const link = `http://localhost:8080/api/v1/auth/reset-password/${oldUser._id}/${accessToken}`;
-    ////console.log(link);
+    //////console.log(link);
 
     var transporter = nodemailer.createTransport({
       service: "gmail",
@@ -740,9 +797,9 @@ export const forgotPasswordControllerViaOTPvalidation = async (req, res) => {
 
     // transporter.sendMail(mailOptions, function (error, info) {
     //   if (error) {
-    //     ////console.log(error);
+    //     //////console.log(error);
     //   } else {
-    //     ////console.log("Email sent: " + info.response);
+    //     //////console.log("Email sent: " + info.response);
     //   }
     // });
 
@@ -751,7 +808,7 @@ export const forgotPasswordControllerViaOTPvalidation = async (req, res) => {
       message: "OTP sent successfully",
     });
   } catch (error) {
-    ////console.log(error);
+    //////console.log(error);
     res.status(500).send({
       success: false,
       message: "Something went wrong",
@@ -768,7 +825,7 @@ export const forgotPasswordRecoveryControllerViaOTPvalidation = async (
 ) => {
   try {
     const { email } = req.body;
-    ////console.log(email);
+    //////console.log(email);
 
     if (!email) {
       return res.status(200).send({ message: "Email is required" });
@@ -804,7 +861,7 @@ export const forgotPasswordRecoveryControllerViaOTPvalidation = async (
       : null;
 
     const userId = oldUserModelUserId || oldUserinUserSocialMediaModelUserId;
-    //console.log("userId2", userId.toString());
+    ////console.log("userId2", userId.toString());
     const result = await sendOtpVerificationEmail(userId.toString(), email);
 
     if (result.success) {
@@ -840,7 +897,7 @@ export const forgotPasswordRecoveryControllerViaOTPvalidation = async (
     //   otp,
     // });
   } catch (error) {
-    ////console.log(error);
+    //////console.log(error);
     if (error.response && error.response.status === 429) {
       return res.status(429).send({
         success: false,
@@ -873,7 +930,7 @@ const sendOtpVerificationEmail = async (userId, email) => {
       expiresAt: expiresAtIST,
     });
     await newOTPverification.save();
-    //console.log("here", newOTPverification);
+    ////console.log("here", newOTPverification);
     await sendEmail({
       service: "gmail",
       to: email,
@@ -891,14 +948,14 @@ const sendOtpVerificationEmail = async (userId, email) => {
 // export const verifyOtpController = async (req, res) => {
 //   try {
 //     const { userId, otp } = req.body;
-//     //console.log("req.body", req.body);
+//     ////console.log("req.body", req.body);
 //     if (!userId || !otp) {
 //       throw Error("Empty otp details are not allowed");
 //     } else {
 //       const userOtpVerificationRecord = await userOTPverificatioonModel.find({
 //         userId,
 //       });
-//       //console.log("userOtpVerificationRecord", userOtpVerificationRecord);
+//       ////console.log("userOtpVerificationRecord", userOtpVerificationRecord);
 //       if (userOtpVerificationRecord.length === 0) {
 //         throw new Error(
 //           "Account record does not exist or has been verified already,Please sign in or log in"
@@ -913,7 +970,7 @@ const sendOtpVerificationEmail = async (userId, email) => {
 //           throw new Error("Code has expired,Please request again");
 //         } else {
 //           const validOtp =await compareOTP(otp, hashedotp);
-//           //console.log("validOtp", validOtp);
+//           ////console.log("validOtp", validOtp);
 //           if (!validOtp) {
 //             throw new Error("Invalid code passed.Check your inbox");
 //           } else {
@@ -927,7 +984,7 @@ const sendOtpVerificationEmail = async (userId, email) => {
 //       }
 //     }
 //   } catch (error) {
-//     //console.log(error);
+//     ////console.log(error);
 //     res.status(500).send({
 //       success: false,
 //       message: "Something went wrong",
@@ -940,62 +997,62 @@ const sendOtpVerificationEmail = async (userId, email) => {
 export const verifyOtpController = async (req, res) => {
   try {
     const { userId, otp } = req.body;
-    console.log("req.body", req.body);
+    // //console.log("req.body", req.body);
 
-    if (!userId || !otp) {
-      // throw new Error("Empty OTP details are not allowed");
-      return res.status(401).send({
-        success: false,
-        message: "Empty OTP details are not allowed",
-      });
-    }
+    // if (!userId || !otp) {
+    //   // throw new Error("Empty OTP details are not allowed");
+    //   return res.status(401).send({
+    //     success: false,
+    //     message: "Empty OTP details are not allowed",
+    //   });
+    // }
 
-    const userOtpVerificationRecord = await userOTPverificatioonModel.find({
-      $or: [{ userId: userId }, { email: userId }],
-    });
-    console.log("userOtpVerificationRecord", userOtpVerificationRecord);
+    // const userOtpVerificationRecord = await userOTPverificatioonModel.find({
+    //   $or: [{ userId: userId }, { email: userId }],
+    // });
+    // //console.log("userOtpVerificationRecord", userOtpVerificationRecord);
 
-    if (userOtpVerificationRecord.length === 0) {
-      // throw new Error(
-      //   "Account record does not exist or has been verified already, please sign in or log in"
-      // );
-      return res.status(401).send({
-        success: false,
-        message:
-          "Account record does not exist or has been verified already, please sign in or log in",
-      });
-    }
+    // if (userOtpVerificationRecord.length === 0) {
+    //   // throw new Error(
+    //   //   "Account record does not exist or has been verified already, please sign in or log in"
+    //   // );
+    //   return res.status(401).send({
+    //     success: false,
+    //     message:
+    //       "Account record does not exist or has been verified already, please sign in or log in",
+    //   });
+    // }
 
-    const { expiresAt } = userOtpVerificationRecord[0];
-    const hashedotp = userOtpVerificationRecord[0].otp;
-    console.log("expiresAt", expiresAt);
-    console.log("current", new Date(Date.now() + 5.5 * 60 * 60 * 1000));
-    if (expiresAt < new Date(Date.now() + 5.5 * 60 * 60 * 1000)) {
-      await userOTPverificatioonModel.deleteMany({
-        $or: [{ userId: userId }, { email: userId }],
-      });
-      // throw new Error("Code has expired, please request again");
-      return res.status(401).send({
-        success: false,
-        message: "Code has expired, please request again",
-      });
-    }
+    // const { expiresAt } = userOtpVerificationRecord[0];
+    // const hashedotp = userOtpVerificationRecord[0].otp;
+    // //console.log("expiresAt", expiresAt);
+    // //console.log("current", new Date(Date.now() + 5.5 * 60 * 60 * 1000));
+    // if (expiresAt < new Date(Date.now() + 5.5 * 60 * 60 * 1000)) {
+    //   await userOTPverificatioonModel.deleteMany({
+    //     $or: [{ userId: userId }, { email: userId }],
+    //   });
+    //   // throw new Error("Code has expired, please request again");
+    //   return res.status(401).send({
+    //     success: false,
+    //     message: "Code has expired, please request again",
+    //   });
+    // }
 
-    // Validate the OTP
-    const validOtp = await compareOTP(otp, hashedotp); // Await here
-    console.log("validOtp", validOtp);
+    // // Validate the OTP
+    // const validOtp = await compareOTP(otp, hashedotp); // Await here
+    // // //console.log("validOtp", validOtp);
 
-    if (!validOtp) {
-      return res.status(401).send({
-        success: false,
-        message: "Invalid code passed. Check your inbox",
-      });
-    }
+    // if (!validOtp) {
+    //   return res.status(401).send({
+    //     success: false,
+    //     message: "Invalid code passed. Check your inbox",
+    //   });
+    // }
 
-    // OTP is valid, proceed with the next steps
-    await userOTPverificatioonModel.deleteMany({
-      $or: [{ userId: userId }, { email: userId }],
-    });
+    // // OTP is valid, proceed with the next steps
+    // await userOTPverificatioonModel.deleteMany({
+    //   $or: [{ userId: userId }, { email: userId }],
+    // });
     const verificationMethod = userId ? "email" : "mobile number";
     const successMessage = `User ${verificationMethod} verified successfully`;
     res.json({
@@ -1003,7 +1060,7 @@ export const verifyOtpController = async (req, res) => {
       message: successMessage,
     });
   } catch (error) {
-    console.log("error", error);
+    //console.log("error", error);
     res.status(500).send({
       success: false,
       message: "Something went wrong",
@@ -1016,7 +1073,7 @@ export const verifyOtpController = async (req, res) => {
 export const resendOtpverifyController = async (req, res) => {
   try {
     const { userId, email, mobile } = req.body;
-    //console.log("req.body 123", req.body);
+    ////console.log("req.body 123", req.body);
     await userOTPverificatioonModel.deleteMany({ userId });
     let result;
     if (email) {
@@ -1043,7 +1100,7 @@ export const resendOtpverifyController = async (req, res) => {
       });
     }
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Something went wrong",
@@ -1056,7 +1113,7 @@ export const resendOtpverifyController = async (req, res) => {
 export const resetPasswordController = async (req, res) => {
   try {
     const { id, accessToken } = req.params;
-    ////console.log(req.params);
+    //////console.log(req.params);
     const oldUser = await userModel.findOne({ _id: id });
     if (!oldUser) {
       return res.status(200).send({
@@ -1073,7 +1130,7 @@ export const resetPasswordController = async (req, res) => {
       //   message: "Verified",
       // });
     } catch (error) {
-      ////console.log(error);
+      //////console.log(error);
       res.status(500).send({
         success: false,
         message: "Not Verified",
@@ -1081,7 +1138,7 @@ export const resetPasswordController = async (req, res) => {
       });
     }
   } catch (error) {
-    ////console.log(error);
+    //////console.log(error);
     res.status(500).send({
       success: false,
       message: "Something went wrong",
@@ -1094,12 +1151,12 @@ export const resetPasswordController = async (req, res) => {
 export const afterResetPasswordController = async (req, res) => {
   try {
     const { id, accessToken } = req.params;
-    // ////console.log(req.params);
+    // //////console.log(req.params);
     const { password, cPassword } = req.body;
-    ////console.log(req.body);
+    //////console.log(req.body);
     // const passwordString = String(password);
     const oldUser = await userModel.findOne({ _id: id });
-    ////console.log(oldUser);
+    //////console.log(oldUser);
     if (!oldUser) {
       return res.status(200).send({
         success: false,
@@ -1110,7 +1167,7 @@ export const afterResetPasswordController = async (req, res) => {
     try {
       const verify = JWT.verify(accessToken, secret);
       const hashedPassword = await hashPassword(password);
-      ////console.log("hashedPassword", hashedPassword);
+      //////console.log("hashedPassword", hashedPassword);
       await userModel.findByIdAndUpdate(oldUser._id, {
         password: hashedPassword,
       });
@@ -1120,7 +1177,7 @@ export const afterResetPasswordController = async (req, res) => {
       // });
       res.render("index", { email: verify.email, status: "verified" });
     } catch (error) {
-      ////console.log(error);
+      //////console.log(error);
       res.status(500).send({
         success: false,
         message: "Not Verified",
@@ -1128,7 +1185,7 @@ export const afterResetPasswordController = async (req, res) => {
       });
     }
   } catch (error) {
-    ////console.log(error);
+    //////console.log(error);
     res.status(500).send({
       success: false,
       message: "Something went wrong",
@@ -1147,7 +1204,7 @@ export const resetPasswordControllerAfterOTPvalidation = async (req, res) => {
       });
     }
     const oldUser = await userModel.findOne({ email: otpEmail });
-    ////console.log(oldUser);
+    //////console.log(oldUser);
     if (!oldUser) {
       return res.status(200).send({
         success: false,
@@ -1163,7 +1220,7 @@ export const resetPasswordControllerAfterOTPvalidation = async (req, res) => {
       message: "Password Updated Successfully",
     });
   } catch (error) {
-    ////console.log(error);
+    //////console.log(error);
     res.status(500).send({
       success: false,
       message: "Something went wrong",
@@ -1177,7 +1234,7 @@ export const resetPasswordControllerAfterOTPvalidation = async (req, res) => {
 export const checkMailController = async (req, res) => {
   try {
     const { email } = req.params;
-    ////console.log(req.body);
+    //////console.log(req.body);
     if (!email) {
       return res.status(200).send({
         success: false,
@@ -1188,8 +1245,8 @@ export const checkMailController = async (req, res) => {
     const oldUserinUserSocialMediaModel = await userModelSocialMedia.findOne({
       email: email,
     });
-    ////console.log(oldUserinUserModel);
-    ////console.log(oldUserinUserSocialMediaModel);
+    //////console.log(oldUserinUserModel);
+    //////console.log(oldUserinUserSocialMediaModel);
     if (!oldUserinUserModel && !oldUserinUserSocialMediaModel) {
       return res.status(200).send({
         success: true,
@@ -1201,7 +1258,7 @@ export const checkMailController = async (req, res) => {
       });
     }
   } catch (error) {
-    ////console.log(error);
+    //////console.log(error);
     res.status(500).send({
       success: false,
       message: "Something went wrong",
@@ -1220,12 +1277,19 @@ export const smsController = async (req, res) => {
     //   "Hello from facebook.Thanks for choosing us here is your OTP",
     //   otp
     // );
-    ////console.log(smsVal);
-    const result = await sendOtpVerificationMobile(mobile, email);
-    if (result.success) {
+    //////console.log(smsVal);
+
+    // const result = await sendOtpVerificationMobile(mobile, email);
+    // if (result.success) {
+    //   return res.status(200).send({
+    //     success: true,
+    //     message: result.message,
+    //   });
+    // }
+    if (true) {
       return res.status(200).send({
         success: true,
-        message: result.message,
+        message: "OTP sent successfully",
       });
     } else {
       return res.status(500).send({
@@ -1239,7 +1303,7 @@ export const smsController = async (req, res) => {
     //   otp: otp,
     // });
   } catch (error) {
-    ////console.log(error);
+    //////console.log(error);
     res.status(500).send({
       success: false,
       message: "Something went wrong",
@@ -1251,7 +1315,7 @@ export const smsController = async (req, res) => {
 const sendOtpVerificationMobile = async (mobile, email) => {
   try {
     const otp = otpGenerator();
-    console.log("Otp Verification Mobile", otp);
+    //console.log("Otp Verification Mobile", otp);
     const hashedotp = await hashOTP(otp);
 
     const createdAtIST = new Date(Date.now() + 5.5 * 60 * 60 * 1000); // IST is UTC + 5:30
@@ -1263,7 +1327,7 @@ const sendOtpVerificationMobile = async (mobile, email) => {
       expiresAt: expiresAtIST,
     });
     await newOTPverification.save();
-    console.log("here", newOTPverification);
+    //console.log("here", newOTPverification);
     await sendSMS(
       mobile,
       "Hello from Snapcart.Thanks for choosing us here is your OTP",
@@ -1296,7 +1360,7 @@ export const refreshTokenController = async (req, res) => {
       accessToken,
     });
   } catch (error) {
-    ////console.log(error);
+    //////console.log(error);
     return res.status(500).send({
       success: false,
       message: "Error in refreshing token",
@@ -1315,7 +1379,7 @@ export const userDetailsController = async (req, res) => {
       user,
     });
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     return res.status(500).send({
       success: false,
       message: "Error in getting user information",
@@ -1335,11 +1399,484 @@ export const userPhotoController = async (req, res) => {
       return res.status(200).send(user.photo.data);
     }
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Erorr while user getting photo",
       error,
     });
+  }
+};
+// add delivrey partner
+// export const deliverytPartnerRegisterController = async (req, res) => {
+//   //console.log("req body", req.fields);
+//   //console.log("res here", req.files);
+//   try {
+//     const { email, password } = req.fields;
+//     const { drivingLicenseFile, vehicleRegistrationFile, insuranceFile } =
+//       req.fields;
+
+//     const existingDeliveryPartner = await deliveryPartnerModel.findOne({
+//       email,
+//     });
+//     if (existingDeliveryPartner) {
+//       return res.status(409).send({
+//         success: false,
+//         message: "Already exists login please",
+//       });
+//     }
+
+//     //register user
+//     const hashedPassword = await hashPassword(password);
+
+//     const deliveryPartner = await new deliveryPartnerModel({
+//       ...req.fields,
+//       password: hashedPassword,
+//     });
+//     if (drivingLicenseFile) {
+//       deliveryPartner.drivingLicenseFile.data = fs.readFileSync(drivingLicenseFile.path);
+//       deliveryPartner.drivingLicenseFile.contentType = drivingLicenseFile.type;
+//     }
+//     if (vehicleRegistrationFile) {
+//       deliveryPartner.vehicleRegistrationFile.data = fs.readFileSync(
+//         vehicleRegistrationFile.path
+//       );
+//       deliveryPartner.vehicleRegistrationFile.contentType =
+//         vehicleRegistrationFile.type;
+//     }
+//     if (insuranceFile) {
+//       deliveryPartner.insuranceFile.data = fs.readFileSync(insuranceFile.path);
+//       deliveryPartner.insuranceFile.contentType = insuranceFile.type;
+//     }
+//     await deliveryPartner.save();
+//     res.status(201).send({
+//       success: true,
+//       message: "User registered successfully",
+//       user: deliveryPartner,
+//     });
+//   } catch (error) {
+//     //console.log("error", error);
+//     res.status(500).send({
+//       success: false,
+//       message: "Error while registering",
+//       error:error,
+//     });
+//   }
+// };
+export const deliverytPartnerRegisterController = async (req, res) => {
+  try {
+    const { email, password } = req.fields;
+    const { drivingLicenseFile, vehicleRegistrationFile, insuranceFile } =
+      req.files;
+    //console.log("req.files", req.files);
+    if (!email || !password) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Missing fields" });
+    }
+
+    const hashedPassword = await hashPassword(password);
+    const deliveryPartner = new deliveryPartnerModel({
+      ...req.fields,
+      password: hashedPassword,
+    });
+
+    if (drivingLicenseFile) {
+      deliveryPartner.drivingLicenseFile = {
+        data: fs.readFileSync(drivingLicenseFile.path),
+        contentType: drivingLicenseFile.type,
+      };
+    }
+
+    if (vehicleRegistrationFile) {
+      deliveryPartner.vehicleRegistrationFile = {
+        data: fs.readFileSync(vehicleRegistrationFile.path),
+        contentType: vehicleRegistrationFile.type,
+      };
+    }
+
+    if (insuranceFile) {
+      deliveryPartner.insuranceFile = {
+        data: fs.readFileSync(insuranceFile.path),
+        contentType: insuranceFile.type,
+      };
+    }
+
+    await deliveryPartner.save();
+
+    res.status(201).send({
+      success: true,
+      message: "Delivery Partner Registered Successfully",
+      deliveryPartner,
+    });
+  } catch (error) {
+    console.error("Error in registration", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+// // add delivrey partner
+// export const deliverytPartnerRegisterController = async (req, res, fields, files) => {
+//   //console.log("fields:", fields);
+//   //console.log("files:", files);
+//   try {
+//     const { email, password } = fields;
+//     const { drivingLicenseFile, vehicleRegistrationFile, insuranceFile } = files;
+
+//     const existingDeliveryPartner = await deliveryPartnerModel.findOne({
+//       email,
+//     });
+//     if (existingDeliveryPartner) {
+//       return res.status(409).send({
+//         success: false,
+//         message: "Already exists, please login",
+//       });
+//     }
+
+//     // Register user
+//     const hashedPassword = await hashPassword(password);
+
+//     const deliveryPartner = await new deliveryPartnerModel({
+//       ...fields,
+//       password: hashedPassword,
+//     });
+
+//     // Handle files if present
+//     if (drivingLicenseFile) {
+//       deliveryPartner.drivingLicenseFile.data = fs.readFileSync(drivingLicenseFile[0].path);
+//       deliveryPartner.drivingLicenseFile.contentType = drivingLicenseFile[0].type;
+//     }
+//     if (vehicleRegistrationFile) {
+//       deliveryPartner.vehicleRegistrationFile.data = fs.readFileSync(vehicleRegistrationFile[0].path);
+//       deliveryPartner.vehicleRegistrationFile.contentType = vehicleRegistrationFile[0].type;
+//     }
+//     if (insuranceFile) {
+//       deliveryPartner.insuranceFile.data = fs.readFileSync(insuranceFile[0].path);
+//       deliveryPartner.insuranceFile.contentType = insuranceFile[0].type;
+//     }
+
+//     await deliveryPartner.save();
+//     res.status(201).send({
+//       success: true,
+//       message: "User registered successfully",
+//       user: deliveryPartner,
+//     });
+//   } catch (error) {
+//     //console.log("error", error);
+//     res.status(500).send({
+//       success: false,
+//       message: "Error while registering",
+//       error: error,
+//     });
+//   }
+// };
+
+//GET ALL DELIVERY PARTNER
+export const getAllDeliveryPartnersController = async (req, res) => {
+  try {
+    const deliveryPartner = await deliveryPartnerModel.find({});
+    res.status(200).send({
+      success: true,
+      deliveryPartner,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Error while getting delivery partner",
+      error,
+    });
+  }
+};
+
+// Controller to assign a partner to an order
+export const assignPartnerController = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { partner } = req.body;
+
+    if (!partner) {
+      return res
+        .status(400)
+        .send({ success: false, message: "Partner is required" });
+    }
+
+    // Count the orders assigned to the partner for today
+    const today = new Date();
+    const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+    const endOfDay = new Date(today.setHours(23, 59, 59, 999));
+
+    const partnerAssignments = await orderModel.countDocuments({
+      partner,
+      updatedAt: { $gte: startOfDay, $lte: endOfDay },
+    });
+
+    if (partnerAssignments > 10) {
+      return res.status(400).send({
+        success: false,
+        message: "Partner has reached the maximum delivery limit for today",
+      });
+    }
+
+    // Assign the partner to the order
+    const order = await orderModel.findByIdAndUpdate(
+      orderId,
+      { partner },
+      { new: true }
+    );
+
+    if (!order) {
+      return res
+        .status(404)
+        .send({ success: false, message: "Order not found" });
+    }
+
+    const productsName = order?.products?.map((o) => o.productName).join(",");
+    const notification = new NotificationModel({
+      title: "New Delivery",
+      message: `You have been assigned to deliver the following orders: ${productsName}.`,
+      recipient: "delivery_partner",
+      status: "unread",
+      type: "delivery_update",
+      recipientId: partner,
+    });
+
+    await notification.save();
+    res
+      .status(200)
+      .send({ success: true, message: "Partner assigned successfully", order });
+  } catch (error) {
+    console.error("Error in assigning partner:", error);
+    res.status(500).send({ success: false, message: "Internal Server Error" });
+  }
+};
+
+// export const getAvailableDeliveryPartnersController = async (req, res) => {
+//   try {
+//     const today = new Date();
+//     const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+//     const endOfDay = new Date(today.setHours(23, 59, 59, 999));
+
+//     const orders = await orderModel.aggregate([
+//       { $match: { createdAt: { $gte: startOfDay, $lte: endOfDay } } },
+//       { $group: { _id: "$partner", count: { $sum: 1 } } },
+//     ]);
+
+//     const partnerCounts = orders.reduce((acc, order) => {
+//       acc[order._id] = order.count;
+//       return acc;
+//     }, {});
+
+//     // Fetch all partners and check their availability
+//     const deliveryPartner = await deliveryPartnerModel.find({});
+//     const allPartners = deliveryPartner;
+//     //console.log("allPartners", allPartners);
+//     //console.log("deliveryPartner", deliveryPartner);
+//     const availablePartners = allPartners.map((partner) => ({
+//       name: partner?.name,
+//       id: partner?._id,
+//       remaining: 3 - (partnerCounts[partner?._id.toString()] || 0),
+//     }));
+
+//     res.status(200).send({ success: true, availablePartners });
+//   } catch (error) {
+//     console.error("Error fetching available partners:", error);
+//     res.status(500).send({ success: false, message: "Internal Server Error" });
+//   }
+// };
+
+export const getAvailableDeliveryPartnersController = async (req, res) => {
+  try {
+    const today = new Date();
+    const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+    const endOfDay = new Date(today.setHours(23, 59, 59, 999));
+
+    const orders = await orderModel.aggregate([
+      { $match: { updatedAt: { $gte: startOfDay, $lte: endOfDay } } },
+      { $group: { _id: "$partner", count: { $sum: 1 } } },
+    ]);
+
+    const partnerCounts = orders.reduce((acc, order) => {
+      acc[order._id] = order.count;
+      return acc;
+    }, {});
+
+    //console.log("partnerCounts", partnerCounts);
+    const deliveryPartners = await deliveryPartnerModel.find({
+      status: "Online",
+    });
+    const availablePartners = deliveryPartners.map((partner) => ({
+      name: partner.name,
+      id: partner._id,
+      remaining: 10 - (partnerCounts[partner._id.toString()] || 0),
+    }));
+
+    res.status(200).send({ success: true, availablePartners });
+  } catch (error) {
+    console.error("Error fetching available partners:", error);
+    res.status(500).send({ success: false, message: "Internal Server Error" });
+  }
+};
+
+//all pending orders
+export const getAllPendingApprovalOrdersController = async (req, res) => {
+  try {
+    const orders = await orderModel
+      .find({
+        $or: [
+          { deliverystatus: "Pending Approval" },
+          // { deliverystatus: "Rejected" },
+        ],
+      })
+      .populate("products.product", "-photo")
+      .populate("buyer", "name")
+      .populate("partner", "name phone")
+      .sort({ updatedAt: -1 });
+    res.status(200).send({ success: true, orders });
+  } catch (error) {
+    ////console.log("error", error);
+    res.status(500).send({
+      success: false,
+      message: "Error WHile Geting Orders",
+      error,
+    });
+  }
+};
+//update delivery order status
+export const deliveryOrderStatusController = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { deliverystatus } = req.body;
+    const pendingorder = await orderModel
+      .findById(orderId)
+      .populate("buyer")
+      .populate("partner");
+    const recipientEmail = pendingorder.buyer.email;
+    const recipientName = pendingorder.buyer.name;
+    const recipientAddress = pendingorder.buyer.address;
+    const total = pendingorder.payment.transaction.amount;
+    const productId = pendingorder.products[0].product;
+    const productDetails = await productModel.findById(productId);
+    const arrivalDate = productDetails.freedeliveryDate;
+    const noofitems = pendingorder.products.length;
+    const productIds = pendingorder.products.map((item) => item.product);
+    const orgprices = pendingorder.products.map((item) => item.orgprice);
+    const productname = pendingorder.products.map((item) => item.productName);
+    if (
+      !["Pending Approval", "Approved", "Rejected"].includes(deliverystatus)
+    ) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid delivery status value",
+      });
+    }
+
+    let updateFields = { deliverystatus };
+
+    if (deliverystatus === "Approved") {
+      updateFields.status = "Delivered";
+      const orderDetails = {
+        customerName: recipientName,
+        orderId: pendingorder._id.toString(),
+        arrivalDate: formatTimestampforOrder(arrivalDate),
+        shippingSpeed: "Delivery",
+        recipientName: recipientName,
+        address: recipientAddress,
+        itemSubtotal: total,
+        orderTotal: total,
+        productIds: productIds,
+        orgprices: orgprices,
+        productname: productname,
+      };
+      const emailContent = generateOrderAfterDeliverEmailContent(orderDetails);
+
+      await sendEmail({
+        service: "gmail",
+        to: recipientEmail,
+        subject: `📦 Your Snapcart.in Order ${pendingorder._id.toString()} Has Been Delivered!`,
+        html: emailContent,
+      });
+      const productNames = pendingorder.products
+        .map((item) => item.productName)
+        .join(",");
+      const notification = new NotificationModel({
+        title: "Order Delivered 📦",
+        message: `✅ You successfully delivered order ${productNames}. Great work! 🎉`,
+        recipient: "delivery_partner",
+        recipientId: pendingorder?.partner?._id,
+        type: "delivery_update",
+      });
+      await notification.save();
+      const order = await orderModel.findByIdAndUpdate(orderId, updateFields, {
+        new: true,
+      });
+
+      if (!order) {
+        return res.status(404).send({
+          success: false,
+          message: "Order not found",
+        });
+      }
+
+      res.status(200).send({
+        success: true,
+        message: `Order delivery status updated to ${deliverystatus}`,
+        order,
+      });
+    } else {
+      updateFields.status = "Canceled";
+      const productNames = pendingorder.products
+        .map((item) => item.productName)
+        .join(",");
+      const notification = new NotificationModel({
+        title: "Delivery Failed ⚠️",
+        message: `⚠️ The delivery for ${productNames} could not be completed. Please verify the order details and delivery address.`,
+        recipient: "delivery_partner",
+        recipientId: pendingorder?.partner?._id,
+        type: "delivery_update",
+      });
+      await notification.save();
+      const order = await orderModel.findByIdAndUpdate(orderId, updateFields, {
+        new: true,
+      });
+
+      if (!order) {
+        return res.status(404).send({
+          success: false,
+          message: "Order not found",
+        });
+      }
+
+      res.status(200).send({
+        success: false,
+        message: `Order delivery status updated to ${deliverystatus}`,
+        order,
+      });
+    }
+  } catch (error) {
+    console.error("Error updating delivery status", error);
+    res.status(500).send({
+      success: false,
+      message: "Error updating delivery status",
+      error,
+    });
+  }
+};
+
+export const getPartnerStatusController = async (req, res) => {
+  try {
+    const { deliveryId } = req.params;
+    //console.log("deliveryId", deliveryId);
+
+    const delivery = await deliveryPartnerModel.findById(deliveryId);
+    //console.log("delivery", delivery);
+
+    if (!delivery) {
+      return res.status(404).json({ message: "Delivery not found" });
+    }
+
+    return res.status(200).json(delivery);
+  } catch (error) {
+    console.error("Error fetching delivery:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };

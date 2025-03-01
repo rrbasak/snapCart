@@ -13,14 +13,17 @@ const PhoneNumber = ({ otppage, email }) => {
   const phoneNoHandller = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/get-otp`, {
-        mobile: mobileno,
-        email: email,
-      });
-      //console.log(res);
+      const res = await axios.post(
+        `${process.env.REACT_APP_API}/api/v1/auth/get-otp`,
+        {
+          mobile: mobileno,
+          email: email,
+        }
+      );
+      ////console.log(res);
       if (res && res.data.success) {
         toast.success(res.data.message);
-        ////console.log(res.data.otp);
+        //////console.log(res.data.otp);
         // otppage(mobileno, res.data.otp);
         otppage(mobileno, email);
       } else {

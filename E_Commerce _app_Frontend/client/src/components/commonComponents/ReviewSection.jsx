@@ -25,7 +25,7 @@ const ReviewSection = ({
   canReview,
   orderId,
 }) => {
-  //console.log("reviewsList", reviewsList);
+  ////console.log("reviewsList", reviewsList);
   // const [profilePhoto, setProfilePhoto] = useState(
   //   "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
   // );
@@ -40,7 +40,7 @@ const ReviewSection = ({
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedReview, setSelectedReview] = useState(null);
   // const [canReview, setCanReview] = useState(false);
-  //console.log("selectedReview", selectedReview);
+  ////console.log("selectedReview", selectedReview);
   // useEffect(() => {
   //   const checkEligibility = async () => {
   //     try {
@@ -61,7 +61,7 @@ const ReviewSection = ({
 
   // const photo = auth?.user?.photo;
   // if (photo && photo.data && photo.contentType) {
-  //   //console.log("photo", photo);
+  //   ////console.log("photo", photo);
   //   const base64String = btoa(
   //     String.fromCharCode(...new Uint8Array(photo.data.data))
   //   );
@@ -82,7 +82,7 @@ const ReviewSection = ({
         comment: newReview.comment,
         order: orderId,
       });
-      //console.log(response);
+      ////console.log(response);
       if (response.data.success) {
         const review = {
           _id: response.data.review._id,
@@ -110,7 +110,7 @@ const ReviewSection = ({
         });
       }
     } catch (error) {
-      //console.log(error);
+      ////console.log(error);
       toast.error("Failed to submit review. Please login.");
     }
   };
@@ -122,7 +122,7 @@ const ReviewSection = ({
 
   const handleMenuOpen = (event, review) => {
     setAnchorEl(event.currentTarget);
-    //console.log("review", review);
+    ////console.log("review", review);
     setSelectedReview(review);
   };
 
@@ -133,12 +133,12 @@ const ReviewSection = ({
 
   const handleEditReview = () => {
     // Implement edit functionality here
-    //console.log("Edit review", selectedReview);
+    ////console.log("Edit review", selectedReview);
     handleMenuClose();
   };
 
   const handleDeleteReview = async (reviewId) => {
-    //console.log(typeof(reviewId))
+    ////console.log(typeof(reviewId))
     try {
       const response = await axios.delete(
         `/api/v1/review/delete-review/${reviewId}`
@@ -154,14 +154,14 @@ const ReviewSection = ({
         getLength();
       }
     } catch (error) {
-      //console.log(error);
+      ////console.log(error);
       toast.error("Failed to delete review.");
     }
     handleMenuClose();
   };
-  // //console.log(reviews);
-  // //console.log(reviews.map(r=>r.user));
-  //console.log(auth?.user?._id);
+  // ////console.log(reviews);
+  // ////console.log(reviews.map(r=>r.user));
+  ////console.log(auth?.user?._id);
   return (
     <div>
       {reviews?.length > 0 ? (

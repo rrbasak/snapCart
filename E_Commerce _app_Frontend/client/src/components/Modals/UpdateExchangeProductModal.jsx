@@ -126,7 +126,7 @@ const UpdateExchangeProductModal = ({
     });
     setBrands(newBrands);
   };
-  //console.log(selectedSubCategory);
+  ////console.log(selectedSubCategory);
   const handleOkClick = async () => {
     const payload = {
       category: selectedCategory,
@@ -166,7 +166,7 @@ const UpdateExchangeProductModal = ({
           payload
         );
         if (data?.success) {
-          //console.log(data?.subCategory._id);
+          ////console.log(data?.subCategory._id);
           handleOk(data?.subCategory._id);
         }
       } else {
@@ -175,7 +175,7 @@ const UpdateExchangeProductModal = ({
           payload
         );
         if (data?.success) {
-          //console.log(data?.subCategory._id);
+          ////console.log(data?.subCategory._id);
           handleOk(data?.subCategory._id);
         }
       }

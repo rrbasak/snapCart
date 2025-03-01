@@ -89,7 +89,7 @@ export default function PersonalAndAddress() {
   const handleOk = async () => {
     if (modalField === "name") {
       setName(modalValue);
-      //console.log(modalValue);
+      ////console.log(modalValue);
     } else if (modalField === "dob") {
       setDob(modalValue);
     } else if (modalField === "gender") {
@@ -97,16 +97,19 @@ export default function PersonalAndAddress() {
     }
 
     // API call to update the profile
-    //console.log("name e toh", name);
-    //console.log("name modal e toh", modalValue);
+    ////console.log("name e toh", name);
+    ////console.log("name modal e toh", modalValue);
     try {
-      //console.log("name e toh", modalValue);
-      const { data } = await axios.put(`${process.env.REACT_APP_API}/api/v1/auth/profile`, {
-        name: modalValue,
-        // email,
-        // phone,
-        // address,
-      });
+      ////console.log("name e toh", modalValue);
+      const { data } = await axios.put(
+        `${process.env.REACT_APP_API}/api/v1/auth/profile`,
+        {
+          name: modalValue,
+          // email,
+          // phone,
+          // address,
+        }
+      );
       if (data?.error) {
         toast.error(data.error);
       } else {
@@ -129,7 +132,7 @@ export default function PersonalAndAddress() {
   };
 
   // useEffect(()=>{
-  //   //console.log("hehe",name);
+  //   ////console.log("hehe",name);
   // },[name])
   return (
     <div>

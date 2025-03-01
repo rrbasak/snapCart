@@ -1,5 +1,3 @@
-
-
 // class BloomFilter {
 //   constructor(size, hasCount) {
 //     this.bitarray = new Array(this.size).fill(0);
@@ -21,15 +19,15 @@
 //     }
 //   }
 //   alreadyExists(value) {
-//     console.log("value",value); 
-//     console.log("hasCount", this.hasCount); 
-//     console.log("size",this.size); 
+//     //console.log("value",value);
+//     //console.log("hasCount", this.hasCount);
+//     //console.log("size",this.size);
 //     for (let i = 0; i < this.hasCount; i++) {
 //       const ind = this.hash(value, i);
-//       console.log("ind", ind);
-//       console.log("value", this.bitarray[ind]);
+//       //console.log("ind", ind);
+//       //console.log("value", this.bitarray[ind]);
 //       if(this.bitarray[ind] === 0){
-//         console.log("return")
+//         //console.log("return")
 //         return false;
 //       }
 //     }
@@ -59,34 +57,31 @@
 //       const ind = this.hash(value, i + 1); // Start seed from 1 to vary hash outputs
 //       this.bitarray[ind] = 1;
 //     }
-//     console.log("bitarray", this.bitarray);
+//     //console.log("bitarray", this.bitarray);
 //   }
 
 //   alreadyExists(value) {
-//     console.log("value", value);
-//     console.log("hasCount", this.hasCount);
-//     console.log("size", this.size);
-//     console.log("bitarray", this.bitarray);
+//     //console.log("value", value);
+//     //console.log("hasCount", this.hasCount);
+//     //console.log("size", this.size);
+//     //console.log("bitarray", this.bitarray);
 
 //     for (let i = 0; i < this.hasCount; i++) {
 //       const ind = this.hash(value, i + 1); // Start seed from 1 to vary hash outputs
-//       console.log("ind", ind);
-//       console.log("bitarray[ind]", this.bitarray[ind]); // Access the bitarray at the hashed index
+//       //console.log("ind", ind);
+//       //console.log("bitarray[ind]", this.bitarray[ind]); // Access the bitarray at the hashed index
 
 //       // Check if the bit array at the index is 0, indicating the value is not likely in the filter
 //       if (this.bitarray[ind] === 0) {
-//         console.log("return false");
+//         //console.log("return false");
 //         return false;
 //       }
 //     }
-//     return true; 
+//     return true;
 //   }
 // }
 
 // export default BloomFilter;
-
-
-
 
 // server/utils/BloomFilter.js
 class BloomFilter {

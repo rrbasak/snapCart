@@ -22,7 +22,7 @@ export default function formatTimestamp(timestamp) {
     month: "long",
     day: "numeric",
   };
-  //console.log(date.toLocaleString("en-US", options));
+  ////console.log(date.toLocaleString("en-US", options));
   return date.toLocaleDateString("en-US", options);
 }
 

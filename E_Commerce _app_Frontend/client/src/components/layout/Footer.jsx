@@ -35,7 +35,7 @@ export default function App() {
       accessToken: "",
     });
     localStorage.removeItem("auth");
-    toast.success("Logout Successfully");
+    // toast.success("Logout Successfully");
     navigate("/login");
   };
 

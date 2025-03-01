@@ -373,8 +373,8 @@ const CreateExchangeProductModal = ({
   };
 
   const [brands, setBrands] = useState([initialBrand]);
-  //console.log(subCategories);
-  //console.log(selectedSubCategory?._id);
+  ////console.log(subCategories);
+  ////console.log(selectedSubCategory?._id);
   useEffect(() => {
     if (!isModalOpen) {
       setBrands([initialBrand]);
@@ -490,7 +490,7 @@ const CreateExchangeProductModal = ({
   //       payload
   //     );
   //     if (data?.success) {
-  //       //console.log(data?.subCategory);
+  //       ////console.log(data?.subCategory);
   //       handleOk();
   //     }
   //   } catch (error) {
@@ -535,7 +535,7 @@ const CreateExchangeProductModal = ({
         payload
       );
       if (data?.success) {
-        //console.log(data?.subCategory._id);
+        ////console.log(data?.subCategory._id);
         handleOk(data?.subCategory._id);
       }
     } catch (error) {

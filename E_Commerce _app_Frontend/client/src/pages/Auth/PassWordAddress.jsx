@@ -6,30 +6,28 @@ import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import {
-
-  faHome,
-  faLock,
-  
-} from "@fortawesome/free-solid-svg-icons";
-
+import { faHome, faLock } from "@fortawesome/free-solid-svg-icons";
 
 //css files
 import stylesInput from "../../../src/styles/Input.module.css";
 import "../../styles/AuthStyles.css";
 
-
-const PassWordAddress = ({ lastStep }) => {
+const PassWordAddress = ({ lastStep, nextPage, userType }) => {
   // eslint-disable-next-line no-unused-vars
   const [password, setPassword] = useState("");
   const [address, setAddress] = useState("");
 
   // eslint-disable-next-line no-unused-vars
 
-
   const submitHandler = async (e) => {
     e.preventDefault();
-    lastStep(password,address);
+    if (userType === "deliveryPartner") {
+      //console.log("deliveryPartner");
+      nextPage(password, address);
+    } else {
+      //console.log("buyer");
+      lastStep(password, address);
+    }
   };
   return (
     <div
@@ -79,7 +77,7 @@ const PassWordAddress = ({ lastStep }) => {
             className="btn btn-primary btn-block mb-4"
             style={{ width: "100%" }}
           >
-            you are ready to go
+            {userType === "buyer" ? "you are ready to go" : "next"}
           </button>
         </div>
       </form>

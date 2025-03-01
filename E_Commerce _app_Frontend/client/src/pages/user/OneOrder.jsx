@@ -44,10 +44,10 @@
 //     try {
 //       const { data } = await axios.get(`/api/v1/auth/get-one-order/${orderId}`);
 //       setOrder(data);
-//       //console.log(data);
-//       //console.log("HI");
+//       ////console.log(data);
+//       ////console.log("HI");
 //     } catch (error) {
-//       //console.log(error);
+//       ////console.log(error);
 //     }
 //   };
 //   useEffect(() => {
@@ -273,10 +273,10 @@ export default function OneOrder() {
   const [order, setOrder] = useState([]);
   const [address, setAddress] = useState();
 
-  //console.log("productDetails", productDetails);
+  ////console.log("productDetails", productDetails);
 
   // review
-  //console.log("auth", auth?.user?._id);
+  ////console.log("auth", auth?.user?._id);
   const [canReview, setCanReview] = useState(false);
   const [reviewLength, setReviewsLength] = useState(0);
   const getNumberOfReviewFunc = async () => {
@@ -300,12 +300,12 @@ export default function OneOrder() {
         setReviewsList(response.data.reviews);
       }
     } catch (error) {
-      //console.log("error",error)
+      ////console.log("error",error)
       // toast.error("Failed to get reviews");
     }
   };
   const getLength = () => {
-    //console.log("cacll in ");
+    ////console.log("cacll in ");
     if (productId) {
       getNumberOfReviewFunc();
     }
@@ -340,17 +340,19 @@ export default function OneOrder() {
     }
   }, [productId, auth?.user?._id]);
   useEffect(() => {
-    //console.log("Updated reviewsList:", reviewsList);
+    ////console.log("Updated reviewsList:", reviewsList);
   }, [reviewsList]);
   //end
   const fetchOneOrder = async (req, res) => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/auth/get-one-order/${orderId}`);
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API}/api/v1/auth/get-one-order/${orderId}`
+      );
       setOrder(data);
-      //console.log(data);
-      //console.log("HI");
+      ////console.log(data);
+      ////console.log("HI");
     } catch (error) {
-      //console.log(error);
+      ////console.log(error);
     }
   };
 
@@ -370,7 +372,7 @@ export default function OneOrder() {
   const particularproduct = order[0]?.products?.find(
     (prod) => prod.product?._id.toString() === productId
   );
-  //console.log("particularproduct", particularproduct);
+  ////console.log("particularproduct", particularproduct);
   return (
     <Layout title={"Your Order"}>
       <MDBContainer

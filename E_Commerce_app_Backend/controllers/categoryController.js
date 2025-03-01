@@ -4,7 +4,7 @@ import fs from "fs";
 import redis from "../config/client.js";
 
 export const createCategoryController = async (req, res) => {
-  //console.log("req category", req.fields);
+  ////console.log("req category", req.fields);
   try {
     const { name } = req.fields;
     const { photo } = req.files;
@@ -36,7 +36,7 @@ export const createCategoryController = async (req, res) => {
       category,
     });
   } catch (error) {
-    //console.log("error", error);
+    ////console.log("error", error);
     res.status(500).send({
       success: false,
       error,
@@ -61,7 +61,7 @@ export const updateCategoryController = async (req, res) => {
       category,
     });
   } catch (error) {
-    ////console.log(error);
+    //////console.log(error);
     res.status(500).send({
       success: false,
       error,
@@ -81,7 +81,7 @@ export const categoryControlller = async (req, res) => {
       categories,
     });
   } catch (error) {
-    ////console.log(error);
+    //////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while getting categories",
@@ -101,7 +101,7 @@ export const singleCategoryController = async (req, res) => {
       category,
     });
   } catch (error) {
-    ////console.log(error);
+    //////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while getting category",
@@ -121,7 +121,7 @@ export const categoryPhotoController = async (req, res) => {
       return res.status(200).send(category.photo.data);
     }
   } catch (error) {
-    //console.log("error",error);
+    ////console.log("error",error);
     res.status(500).send({
       success: false,
       message: "Erorr while getting photo",
@@ -142,7 +142,7 @@ export const deleteCategoryCOntroller = async (req, res) => {
       category,
     });
   } catch (error) {
-    ////console.log(error);
+    //////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while deleting category",

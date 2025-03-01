@@ -39,6 +39,7 @@ import stylesInput from "../../../src/styles/Input.module.css";
 import stylesButton from "../../../src/styles/Button.module.css";
 import "../../styles/AuthStyles.css";
 import { addEmail, checkEmail } from "../../frontendUtil/api";
+import VehicleDetailsForm from "../DeliveryPartner/VehicleDetailsForm";
 
 const LoginRegister = () => {
   const [email, setEmail] = useState("");
@@ -56,6 +57,8 @@ const LoginRegister = () => {
   const [activeTab, setActiveTab] = useState("login");
   const [recaptchaValue, setRecaptchaValue] = useState();
   const captchaRef = useRef();
+  const [pass_word, setPass_word] = useState("");
+  const [add_ress, setAddress] = useState("");
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -70,9 +73,9 @@ const LoginRegister = () => {
             },
           }
         );
-        ////console.log(value.data);
+        //////console.log(value.data);
         const email = value?.data?.email;
-        const res = await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/loginViaGoogle`, {
+        const res = await axios.post("/api/v1/auth/loginViaGoogle", {
           email: email,
         });
         if (res && res.data.success) {
@@ -88,7 +91,7 @@ const LoginRegister = () => {
           toast.error(res.data.message);
         }
       } catch (error) {
-        ////console.log(error);
+        //////console.log(error);
       }
     },
   });
@@ -111,14 +114,14 @@ const LoginRegister = () => {
             },
           }
         );
-        ////console.log(value.data);
+        //////console.log(value.data);
         const email = value?.data?.email;
         const name = capitalizeName(value?.data?.name);
-        const res = await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/registerViaGoogle`, {
+        const res = await axios.post("/api/v1/auth/registerViaGoogle", {
           name: name,
           email: email,
         });
-        //console.log(res.data);
+        ////console.log(res.data);
 
         if (res && res?.data && res?.data?.success === true) {
           setAuth({
@@ -130,12 +133,12 @@ const LoginRegister = () => {
           navigate(location.state || "/");
           toast.success(res.data.message);
         } else {
-          //console.log("login er");
+          ////console.log("login er");
           setActiveTab("login");
           toast.success(res.data.message);
         }
       } catch (error) {
-        ////console.log(error);
+        //////console.log(error);
       }
     },
   });
@@ -148,23 +151,23 @@ const LoginRegister = () => {
   //   isLoading,
   // } = useAuth0();
   // {
-  //   isAuthenticated && ////console.log(user);
+  //   isAuthenticated && //////console.log(user);
   // }
 
   const recaptchaHandler = (value) => {
-    ////console.log(value);
+    //////console.log(value);
     setRecaptchaValue(value);
     // captchaRef.current.reset();
   };
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/login`, {
+      const res = await axios.post("/api/v1/auth/login", {
         email,
         password,
         recaptchaValue,
       });
-      //console.log(res);
+      ////console.log(res);
       if (res && res.data.success) {
         setAuth({
           ...auth,
@@ -172,8 +175,22 @@ const LoginRegister = () => {
           accessToken: res.data.accessToken,
         });
         localStorage.setItem("auth", JSON.stringify(res.data));
+        const redirectTo = location?.state?.from?.pathname || "/";
+        const redirectSearch = location?.state?.from?.search || "";
+        // //console.log("location?.state", location?.state);
+        // //console.log("redirectTo + redirectSearch", redirectTo + redirectSearch);
+        // navigate(redirectTo + redirectSearch || location.state);
+        // //console.log("location.state", location.state);
+        // //console.log("auth?.user?.role", auth?.user?.role);
+        // if (res.data?.user?.role === 0) {
+        //   navigate(location.state || "/");
+        // } else if (res.data?.user?.role === 1) {
+        //   navigate(location.state || "/dashboard/admin");
+        // }
+
         navigate(location.state || "/");
-        toast.success(res.data.message);
+
+        // toast.success(res.data.message);
       } else {
         // toast.error(res.data.message);
         toast(res.data.message, {
@@ -210,6 +227,27 @@ const LoginRegister = () => {
     phone: "",
     address: "",
   });
+  const [deliveryPartnerRegisterFormBody, setDeliveryPartnerRegisterFormBody] =
+    useState({
+      name: "",
+      email: "",
+      password: "",
+      phone: "",
+      address: "",
+      vehicleType: "",
+      vehicleModel: "",
+      registrationNumber: "",
+      vehicleColor: "",
+      ownerName: "",
+      drivingLicenseNumber: "",
+      insuranceProvider: "",
+      policyNumber: "",
+      expiryDate: "",
+      drivingLicenseFile: null,
+      vehicleRegistrationFile: null,
+      insuranceFile: null,
+    });
+
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
@@ -244,12 +282,17 @@ const LoginRegister = () => {
         return;
       }
       // const res = await axios.get(`/api/v1/auth/checkMail/${email}`);
-      ////console.log(res);
+      //////console.log(res);
       // const emailExists = await bloomFilter.alreadyExists(email);
       const emailExists = await checkEmail(email);
       if (!emailExists) {
         await addEmail(email);
         setRegisterFormBody((prevFormBody) => ({
+          ...prevFormBody,
+          name: capitalize(firstName) + " " + capitalize(lastName),
+          email: email,
+        }));
+        setDeliveryPartnerRegisterFormBody((prevFormBody) => ({
           ...prevFormBody,
           name: capitalize(firstName) + " " + capitalize(lastName),
           email: email,
@@ -272,7 +315,7 @@ const LoginRegister = () => {
       //   toast.error(res.data.message);
       // }
     } catch (error) {
-      ////console.log(error);
+      //////console.log(error);
       toast.error("Something went wrong");
     }
 
@@ -295,17 +338,17 @@ const LoginRegister = () => {
     //     toast.error(res.data.message);
     //   }
     // } catch (error) {
-    //   ////console.log(error);
+    //   //////console.log(error);
     //   toast.error("Something went wrong");
     // }
   };
   const rememberHandler = () => {
-    ////console.log("rememberHandler");
+    //////console.log("rememberHandler");
     setActiveTab("login");
   };
   const otppageHandler = (email, userId) => {
-    ////console.log("email", email);
-    ////console.log("otp", otp);
+    //////console.log("email", email);
+    //////console.log("otp", otp);
     setOTPEmail(email);
     // setOTP(otp);
     setUserId(userId);
@@ -313,12 +356,22 @@ const LoginRegister = () => {
   };
 
   const resetPage = () => {
-    ////console.log("Reset page");
+    //////console.log("Reset page");
     setActiveTab("resetPage");
   };
   const registrationNextPage = () => {
-    ////console.log("Registration Next page");
     setActiveTab("registrationNextPage");
+  };
+  const deliveryPartner = async (password, address) => {
+    //console.log(password, address);
+    setDeliveryPartnerRegisterFormBody((prevFormBody) => ({
+      ...prevFormBody,
+      password: password,
+      address: address,
+    }));
+    setPass_word(password);
+    setAddress(address);
+    setActiveTab("deliveryPartner");
   };
 
   const resetFormHandler = async (e) => {
@@ -344,7 +397,7 @@ const LoginRegister = () => {
         });
         return;
       }
-      const res = await axios.put(`${process.env.REACT_APP_API}/api/v1/auth/reset-password-otp`, {
+      const res = await axios.put("/api/v1/auth/reset-password-otp", {
         otpEmail,
         resetPassword,
         confirmResetPassword,
@@ -364,7 +417,7 @@ const LoginRegister = () => {
         });
       }
     } catch (error) {
-      ////console.log(error);
+      //////console.log(error);
       toast.error("Something went wrong2");
     }
   };
@@ -376,8 +429,8 @@ const LoginRegister = () => {
         password: password,
         address: address,
       }));
-      ////console.log(registerFormBody);
-      const res = await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/register`, {
+      //////console.log(registerFormBody);
+      const res = await axios.post("/api/v1/auth/register", {
         ...registerFormBody,
         password: password,
         address: address,
@@ -391,15 +444,17 @@ const LoginRegister = () => {
         toast.error(res.data.message);
       }
     } catch (error) {
-      ////console.log(error);
+      //////console.log(error);
       toast.error("Something went wrong3");
     }
   };
   const otppageForMobileValidation = async (mobile, otp) => {
-    ////console.log("OTP page for mobile validation", mobile);
     setRegisterFormBody((prevFormBody) => ({
       ...prevFormBody,
-      // eslint-disable-next-line no-restricted-globals
+      phone: mobile,
+    }));
+    setDeliveryPartnerRegisterFormBody((prevFormBody) => ({
+      ...prevFormBody,
       phone: mobile,
     }));
     setMobileNo(mobile);
@@ -414,6 +469,175 @@ const LoginRegister = () => {
       navigate("/");
     }
   }, [navigate]);
+
+  // const lastStepHandlerasDeliverypartner = async (
+  //   vehicleType,
+  //   vehicleModel,
+  //   registrationNumber,
+  //   vehicleColor,
+  //   ownerName,
+  //   drivingLicenseNumber,
+  //   insuranceProvider,
+  //   policyNumber,
+  //   expiryDate,
+  //   drivingLicenseFile,
+  //   vehicleRegistrationFile,
+  //   insuranceFile
+  // ) => {
+  //   try {
+  //     setDeliveryPartnerRegisterFormBody((prevFormBody) => ({
+  //       ...prevFormBody,
+  //       password:pass_word,
+  //       address:add_ress,
+  //       vehicleType: vehicleType,
+  //       vehicleModel: vehicleModel,
+  //       registrationNumber: registrationNumber,
+  //       vehicleColor: vehicleColor,
+  //       ownerName: ownerName,
+  //       drivingLicenseNumber: drivingLicenseNumber,
+  //       insuranceProvider: insuranceProvider,
+  //       policyNumber: policyNumber,
+  //       expiryDate: expiryDate,
+  //       drivingLicenseFile: drivingLicenseFile,
+  //       vehicleRegistrationFile: vehicleRegistrationFile,
+  //       insuranceFile: insuranceFile,
+  //     }));
+
+  //     //console.log(registerFormBody);
+  //     const res = await axios.post("/api/v1/auth/delivery-partner/register", {
+  //       ...registerFormBody,
+  //       password: pass_word,
+  //       address: add_ress,
+  //       vehicleType: vehicleType,
+  //       vehicleModel: vehicleModel,
+  //       registrationNumber: registrationNumber,
+  //       vehicleColor: vehicleColor,
+  //       ownerName: ownerName,
+  //       drivingLicenseNumber: drivingLicenseNumber,
+  //       insuranceProvider: insuranceProvider,
+  //       policyNumber: policyNumber,
+  //       expiryDate: expiryDate,
+  //       drivingLicenseFile: drivingLicenseFile,
+  //       vehicleRegistrationFile: vehicleRegistrationFile,
+  //       insuranceFile: insuranceFile,
+  //     });
+  //     if (res && res.data.success) {
+  //       toast.success(res.data.message);
+  //       setTimeout(() => {
+  //         setActiveTab("login");
+  //       }, 3000);
+  //     } else {
+  //       toast.error(res.data.message);
+  //     }
+  //   } catch (error) {
+  //     //console.log(error);
+  //     toast.error("Something went wrong here");
+  //   }
+  // };
+
+  const lastStepHandlerasDeliverypartner = async (values, files) => {
+    try {
+      const combinedFormData = {
+        ...deliveryPartnerRegisterFormBody,
+        ...values,
+        ...files,
+        password: pass_word,
+        address: add_ress,
+      };
+
+      // Update state with the combined form data
+      setDeliveryPartnerRegisterFormBody(combinedFormData);
+
+      const deliveryPartnerData = new FormData();
+
+      // Append all fields to the FormData object
+      deliveryPartnerData.append("name", combinedFormData?.name);
+      deliveryPartnerData.append("email", combinedFormData?.email);
+      deliveryPartnerData.append("phone", combinedFormData?.phone);
+      deliveryPartnerData.append("password", combinedFormData?.password);
+      deliveryPartnerData.append("address", combinedFormData?.address);
+      deliveryPartnerData.append("vehicleType", combinedFormData?.vehicleType);
+      deliveryPartnerData.append("vehicleType", combinedFormData?.vehicleType);
+      deliveryPartnerData.append(
+        "vehicleModel",
+        combinedFormData?.vehicleModel
+      );
+      deliveryPartnerData.append(
+        "registrationNumber",
+        combinedFormData?.registrationNumber
+      );
+      deliveryPartnerData.append(
+        "vehicleColor",
+        combinedFormData?.vehicleColor
+      );
+      deliveryPartnerData.append("ownerName", combinedFormData?.ownerName);
+      deliveryPartnerData.append(
+        "drivingLicenseNumber",
+        combinedFormData?.drivingLicenseNumber
+      );
+      deliveryPartnerData.append(
+        "insuranceProvider",
+        combinedFormData?.insuranceProvider
+      );
+      deliveryPartnerData.append(
+        "policyNumber",
+        combinedFormData?.policyNumber
+      );
+      deliveryPartnerData.append("expiryDate", combinedFormData?.expiryDate);
+
+      // Append files to FormData
+      if (combinedFormData?.drivingLicenseFile) {
+        deliveryPartnerData.append(
+          "drivingLicenseFile",
+          combinedFormData?.drivingLicenseFile
+        );
+      }
+      if (combinedFormData?.vehicleRegistrationFile) {
+        deliveryPartnerData.append(
+          "vehicleRegistrationFile",
+          combinedFormData?.vehicleRegistrationFile
+        );
+      }
+      if (combinedFormData?.insuranceFile) {
+        deliveryPartnerData.append(
+          "insuranceFile",
+          combinedFormData?.insuranceFile
+        );
+      }
+
+      for (let [key, value] of deliveryPartnerData.entries()) {
+        //console.log(key, value);
+      }
+      const res = await axios.post(
+        "/api/v1/auth/delivery-partner/register",
+        deliveryPartnerData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (res && res.data.success) {
+        await axios.post("/api/v1/auth/deliver-partner-register-notification", {
+          title: "Rider Registered 🛵",
+          message: `New delivery partner ${res?.data?.deliveryPartner?.name} has joined the platform.`,
+          recipient: "admin",
+          status: "unread",
+          type: "system",
+        });
+        toast.success(res.data.message);
+        setTimeout(() => {
+          setActiveTab("login");
+        }, 3000);
+      } else {
+        toast.error(res.data.message);
+      }
+    } catch (error) {
+      //console.log(error);
+      toast.error("Something went wrong here");
+    }
+  };
 
   return (
     <Layout title="Login/Register - Ecommer App">
@@ -450,7 +674,8 @@ const LoginRegister = () => {
                   activeTab === "resetPage" ||
                   activeTab === "mobileValidation" ||
                   activeTab === "OTP_mobileValidation" ||
-                  activeTab === "registrationNextPage" ? (
+                  activeTab === "registrationNextPage" ||
+                  activeTab === "deliveryPartner" ? (
                     <></>
                   ) : (
                     <ul
@@ -513,10 +738,10 @@ const LoginRegister = () => {
                                   var credentialResponseDecode = jwtDecode(
                                     credentialResponse.credential
                                   );
-                                  ////console.log(credentialResponseDecode);
+                                  //////console.log(credentialResponseDecode);
                                 }}
                                 onError={() => {
-                                  ////console.log("Login Failed");
+                                  //////console.log("Login Failed");
                                 }}
                               /> */}
 
@@ -532,7 +757,7 @@ const LoginRegister = () => {
 
 
                                 // onClick={() => {
-                                //   ////console.log("log out");
+                                //   //////console.log("log out");
                                 //   googleLogout();
                                 // }}
                               >
@@ -642,9 +867,19 @@ const LoginRegister = () => {
                               Don't have an account?{" "}
                               <Link
                                 // to="/"
+                                state={{ role: "buyer" }}
                                 onClick={() => setActiveTab("register")}
                               >
                                 Sign up and get started!
+                              </Link>
+                            </p>
+                            <p>
+                              <Link
+                                // to="/"
+                                state={{ role: "deliveryPartner" }}
+                                onClick={() => setActiveTab("register")}
+                              >
+                                *Sign up as a Delivery Partner and earn!
                               </Link>
                             </p>
                           </div>
@@ -972,7 +1207,18 @@ const LoginRegister = () => {
                     {activeTab === "registrationNextPage" && (
                       <PassWordAddress
                         lastStep={lastStepHandler}
+                        nextPage={deliveryPartner}
+                        userType={
+                          location?.state?.role === "deliveryPartner"
+                            ? "deliveryPartner"
+                            : "buyer"
+                        }
                       ></PassWordAddress>
+                    )}
+                    {activeTab === "deliveryPartner" && (
+                      <VehicleDetailsForm
+                        onSubmit={lastStepHandlerasDeliverypartner}
+                      />
                     )}
                   </div>
                 </div>

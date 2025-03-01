@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 
 export const hashPassword = async (password) => {
-  ////console.log("password", password);
+  //////console.log("password", password);
   try {
     // if (typeof password !== "string") {
     //   throw new Error("Password must be a string");
@@ -10,7 +10,7 @@ export const hashPassword = async (password) => {
     const hashedPassword = await bcrypt.hash(password, saltRound);
     return hashedPassword;
   } catch (error) {
-    ////console.log(error);
+    //////console.log(error);
   }
 };
 export const hashOTP = async (otp) => {
@@ -19,13 +19,13 @@ export const hashOTP = async (otp) => {
     const hashedotp = await bcrypt.hash(otp, saltRound);
     return hashedotp;
   } catch (error) {
-    ////console.log(error);
+    //////console.log(error);
   }
 };
 
 export const comparePassword = async (password, hashedPassword) => {
   try {
-    ////console.log("Comparing passwords:", password, hashedPassword);
+    //////console.log("Comparing passwords:", password, hashedPassword);
 
     // Ensure password is a string
     if (typeof password !== "string") {
@@ -33,11 +33,11 @@ export const comparePassword = async (password, hashedPassword) => {
     }
 
     const match = await bcrypt.compare(password, hashedPassword);
-    ////console.log("Password comparison result:", match);
+    //////console.log("Password comparison result:", match);
 
     return match;
   } catch (error) {
-    ////console.log("Error comparing passwords:", error);
+    //////console.log("Error comparing passwords:", error);
     throw new Error("Error comparing passwords");
   }
 };

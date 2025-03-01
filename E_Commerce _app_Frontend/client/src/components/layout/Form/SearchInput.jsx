@@ -26,7 +26,7 @@
 //   const fetchSearchResults = useCallback(async (value) => {
 //     try {
 //       const { data } = await axios.get(`/api/v1/product/search/${value}`);
-//       //console.log(data);
+//       ////console.log(data);
 
 //       setDropdownValue({ results: data });
 //     } catch (error) {
@@ -51,7 +51,7 @@
 //   };
 
 //   const handleItemClick = async (search) => {
-//     //console.log("search", search);
+//     ////console.log("search", search);
 //     setQuery(search);
 //     setDropdownValue({ results: [] });
 //     const { data } = await axios.get(
@@ -389,8 +389,10 @@ const SearchInput = React.memo(({ isSearchFocused, onFocus, onBlur }) => {
 
   const fetchSearchResults = useCallback(async (value) => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/search/${value}`);
-      //console.log(data);
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API}/api/v1/product/search/${value}`
+      );
+      ////console.log(data);
 
       setDropdownValue({ results: data });
     } catch (error) {
@@ -415,10 +417,10 @@ const SearchInput = React.memo(({ isSearchFocused, onFocus, onBlur }) => {
   };
 
   const handleItemClick = async (search) => {
-    //console.log("search", search);
+    ////console.log("search", search);
 
-    //console.log("clicked");
-    //console.log("dropdownValue", dropdownValue.results.length);
+    ////console.log("clicked");
+    ////console.log("dropdownValue", dropdownValue.results.length);
     setQuery(search);
 
     setDropdownValue({ results: [] });
@@ -438,7 +440,7 @@ const SearchInput = React.memo(({ isSearchFocused, onFocus, onBlur }) => {
       );
       fetchPastSearchData(); // Fetch past searches after inserting the new search
     }
-    //console.log("data", data);
+    ////console.log("data", data);
     // navigate("/Search", { state: { searchValue: search ,isunknown:isUnknownValue} });
     const isUnknownValue = data.length === 0;
     setIsUnknown(isUnknownValue);
@@ -460,7 +462,7 @@ const SearchInput = React.memo(({ isSearchFocused, onFocus, onBlur }) => {
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
-      //console.log("enter press here! ", e.target.value);
+      ////console.log("enter press here! ", e.target.value);
       handleItemClick(e.target.value);
     }
   };
@@ -542,7 +544,7 @@ const SearchInput = React.memo(({ isSearchFocused, onFocus, onBlur }) => {
   };
 
   // useEffect(() => {
-  //   //console.log("useEffect called with auth?.accessToken:", auth?.accessToken);
+  //   ////console.log("useEffect called with auth?.accessToken:", auth?.accessToken);
   //   if (auth?.accessToken) {
   //     fetchPastProductSearchData();
   //   }
@@ -565,15 +567,15 @@ const SearchInput = React.memo(({ isSearchFocused, onFocus, onBlur }) => {
         // if (!pastProducts.some((item) => item._id === data._id)) {
         //   dispatch(addPastProduct(data?.pastproductSearchResults));
         // }
-        //console.log(pastProducts);
+        ////console.log(pastProducts);
         const existingIds = new Set(pastProducts?.map((item) => item._id));
-        //console.log(existingIds);
+        ////console.log(existingIds);
         // Filter out new items that are not already in pastProducts
         const newProducts = data.pastproductSearchResults.filter(
           (item) => !existingIds.has(item._id)
         );
-        //console.log("newProducts", newProducts);
-        //console.log("data", data);
+        ////console.log("newProducts", newProducts);
+        ////console.log("data", data);
 
         if (newProducts.length > 0) {
           dispatch(addPastProduct(newProducts));
@@ -625,7 +627,7 @@ const SearchInput = React.memo(({ isSearchFocused, onFocus, onBlur }) => {
                 }`}
                 onClick={() => handleItemClick(el.matchedTerm)}
                 onKeyDown={(e) => {
-                  //console.log("e", e);
+                  ////console.log("e", e);
                   if (e.key === "Enter") {
                     handleItemClick(el.matchedTerm);
                   }
