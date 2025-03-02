@@ -56,7 +56,7 @@ function Profile() {
 
   const handleSubmit = async (values) => {
     try {
-      const response = await axios.put("/api/v1/user/update-profile", values);
+      const response = await axios.put(`${process.env.REACT_APP_API}/api/v1/user/update-profile`, values);
       if (response.status === 200) {
         message.success("Profile updated successfully");
         // Optionally update auth state with new user data

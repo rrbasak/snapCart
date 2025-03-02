@@ -65,7 +65,9 @@ const AdminOrders = () => {
   const getOrders = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get("/api/v1/auth/all-orders");
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API}/api/v1/auth/all-orders`
+      );
       setOrders(data);
     } catch (error) {
       //console.log("Error fetching orders", error);
@@ -106,9 +108,12 @@ const AdminOrders = () => {
 
   const handleChange = async (orderId, value, userId, products) => {
     try {
-      const { data } = await axios.put(`/api/v1/auth/order-status/${orderId}`, {
-        status: value,
-      });
+      const { data } = await axios.put(
+        `${process.env.REACT_APP_API}/api/v1/auth/order-status/${orderId}`,
+        {
+          status: value,
+        }
+      );
       const productNames = products
         .map((product) => product.productName)
         .join(", ");
@@ -130,16 +135,19 @@ const AdminOrders = () => {
         Canceled: "Order Canceled ❌",
       };
 
-      await axios.post("/api/v1/auth/create-order-placed-notification", {
-        title: notificationTitles[value] || "Order Update",
-        message:
-          statusMessages[value] ||
-          `Your order containing ${productNames} has been updated to '${value}'.`,
-        recipient: "users",
-        recipientId: userId,
-        status: "unread",
-        type: "order_update",
-      });
+      await axios.post(
+        `${process.env.REACT_APP_API}/api/v1/auth/create-order-placed-notification`,
+        {
+          title: notificationTitles[value] || "Order Update",
+          message:
+            statusMessages[value] ||
+            `Your order containing ${productNames} has been updated to '${value}'.`,
+          recipient: "users",
+          recipientId: userId,
+          status: "unread",
+          type: "order_update",
+        }
+      );
 
       getOrders();
       fetchPartners();
@@ -149,7 +157,9 @@ const AdminOrders = () => {
   };
   const fetchPartners = async () => {
     try {
-      const { data } = await axios.get("/api/v1/auth/available-partners");
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API}/api/v1/auth/available-partners`
+      );
       //console.log("data", data);
       if (data.success) {
         const availablePartners = data.availablePartners.filter(
@@ -169,7 +179,7 @@ const AdminOrders = () => {
   const handlePartnerAssign = async (orderId, partnerId) => {
     try {
       const { data } = await axios.put(
-        `/api/v1/auth/assign-partner/${orderId}`,
+        `${process.env.REACT_APP_API}/api/v1/auth/assign-partner/${orderId}`,
         {
           partner: partnerId,
         }
@@ -309,7 +319,7 @@ const AdminOrders = () => {
                   }}
                 >
                   <img
-                    src={`/api/v1/product/product-photo/${product._id}`}
+                    src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${p.product._id}`}
                     alt={product.name}
                     width="50px"
                     height="50px"

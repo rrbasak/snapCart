@@ -206,7 +206,7 @@ function EChart() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const { data } = await axios.get("/api/v1/sales/dashboard-data");
+        const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/sales/dashboard-data`);
         if (data.success) {
           setChartData(data.data);
         }

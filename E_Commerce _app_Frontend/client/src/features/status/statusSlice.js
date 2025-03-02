@@ -6,7 +6,7 @@ export const fetchPartnerStatus = createAsyncThunk(
   "status/fetchPartnerStatus",
   async (userId) => {
     const response = await axios.get(
-      `/api/v1/auth/get-partner-status/${userId}`
+      `${process.env.REACT_APP_API}/api/v1/auth/get-partner-status/${userId}`
     );
     return response.data.status === "Online";
   }
@@ -17,7 +17,7 @@ export const updatePartnerStatus = createAsyncThunk(
   async (userId, { getState }) => {
     const currentStatus = getState().status.isOnline;
     const response = await axios.put(
-      `/api/v1/delivery/update-partner-status/${userId}`
+      `${process.env.REACT_APP_API}/api/v1/delivery/update-partner-status/${userId}`
     );
     return response.data.status === "Online";
   }

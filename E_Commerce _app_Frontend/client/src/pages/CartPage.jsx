@@ -70,7 +70,7 @@ export default function CartPage() {
     ////console.log("selectedItems", selectedItems);
     try {
       const { data } = await axios.delete(
-        `/api/v1/cart/remove-cart/${auth.user._id}/${pid}`
+        `${process.env.REACT_APP_API}/api/v1/cart/remove-cart/${auth.user._id}/${pid}`
       );
       if (data?.success) {
         dispatch(removeItemFromCart({ id: pid }));
@@ -100,7 +100,9 @@ export default function CartPage() {
 
   const getToken = async () => {
     try {
-      const { data } = await axios.get("/api/v1/product/braintree/accessToken");
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API}/api/v1/product/braintree/accessToken`
+      );
       setClientToken(data?.clientToken);
     } catch (error) {
       //////console.log(error);
@@ -137,13 +139,16 @@ export default function CartPage() {
     try {
       setLoading(true);
       const { nonce } = await instance.requestPaymentMethod();
-      const { data } = await axios.post("/api/v1/product/braintree/payment", {
-        nonce,
-        cart: selectedItems,
-        updatedPrice,
-        isQuantityUpdated,
-        quantity,
-      });
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_API}/api/v1/product/braintree/payment`,
+        {
+          nonce,
+          cart: selectedItems,
+          updatedPrice,
+          isQuantityUpdated,
+          quantity,
+        }
+      );
 
       setLoading(false);
 
@@ -163,7 +168,7 @@ export default function CartPage() {
           Canceled: "Order Canceled ❌",
         };
 
-        await axios.post("/api/v1/auth/create-purchased-order-notification", {
+        await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/create-purchased-order-notification`, {
           title: notificationTitles["NewOrder"] || "Order Update",
           message: statusMessages["NewOrder"],
           recipient: "admin",
@@ -181,24 +186,30 @@ export default function CartPage() {
             product?.product?.quantity - product?.quantity > 0
           ) {
             // Low stock warning
-            await axios.post("/api/v1/auth/low-stock-notification", {
-              title: "Low Stock Alert ⚠️",
-              message: `${product.product.name} stock is running low. Only ${
-                product?.product?.quantity - product?.quantity
-              } items left!`,
-              recipient: "admin",
-              status: "unread",
-              type: "system",
-            });
+            await axios.post(
+              `${process.env.REACT_APP_API}/api/v1/auth/low-stock-notification`,
+              {
+                title: "Low Stock Alert ⚠️",
+                message: `${product.product.name} stock is running low. Only ${
+                  product?.product?.quantity - product?.quantity
+                } items left!`,
+                recipient: "admin",
+                status: "unread",
+                type: "system",
+              }
+            );
           } else if (product?.product?.quantity - product?.quantity === 0) {
             // Out of stock notification
-            await axios.post("/api/v1/auth/out-of-stock-notification", {
-              title: "Out of Stock Alert ❌",
-              message: `${product.product.name} is out of stock. Please restock soon.`,
-              recipient: "admin",
-              status: "unread",
-              type: "system",
-            });
+            await axios.post(
+              `${process.env.REACT_APP_API}/api/v1/auth/out-of-stock-notification`,
+              {
+                title: "Out of Stock Alert ❌",
+                message: `${product.product.name} is out of stock. Please restock soon.`,
+                recipient: "admin",
+                status: "unread",
+                type: "system",
+              }
+            );
           }
         }
         localStorage.removeItem("cart");
@@ -241,7 +252,7 @@ export default function CartPage() {
     if (!auth?.user?._id) return;
     try {
       const { data } = await axios.get(
-        `/api/v1/cart/get-cart/${auth.user._id}`
+        `${process.env.REACT_APP_API}/api/v1/cart/get-cart/${auth.user._id}`
       );
       if (data?.success) {
         ////console.log(data?.cartOnUser);
@@ -450,7 +461,7 @@ export default function CartPage() {
                     />
                   )}
                   <img
-                    src={`/api/v1/product/product-photo/${p.product._id}`}
+                    src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${p.product._id}`}
                     alt={p.name}
                     className={styles.productImage}
                   />

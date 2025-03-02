@@ -225,7 +225,7 @@ function Home() {
     async function fetchStats() {
       try {
         const response = await axios.get(
-          `/api/v1/delivery/get-delivery-stats/${auth?.user?._id}`
+          `${process.env.REACT_APP_API}/api/v1/delivery/get-delivery-stats/${auth?.user?._id}`
         );
         setStats(response.data);
       } catch (error) {

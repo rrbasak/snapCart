@@ -75,9 +75,12 @@ const LoginRegister = () => {
         );
         //////console.log(value.data);
         const email = value?.data?.email;
-        const res = await axios.post("/api/v1/auth/loginViaGoogle", {
-          email: email,
-        });
+        const res = await axios.post(
+          `${process.env.REACT_APP_API}/api/v1/auth/loginViaGoogle`,
+          {
+            email: email,
+          }
+        );
         if (res && res.data.success) {
           setAuth({
             ...auth,
@@ -117,10 +120,13 @@ const LoginRegister = () => {
         //////console.log(value.data);
         const email = value?.data?.email;
         const name = capitalizeName(value?.data?.name);
-        const res = await axios.post("/api/v1/auth/registerViaGoogle", {
-          name: name,
-          email: email,
-        });
+        const res = await axios.post(
+          `${process.env.REACT_APP_API}/api/v1/auth/registerViaGoogle`,
+          {
+            name: name,
+            email: email,
+          }
+        );
         ////console.log(res.data);
 
         if (res && res?.data && res?.data?.success === true) {
@@ -162,7 +168,7 @@ const LoginRegister = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("/api/v1/auth/login", {
+      const res = await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/login`, {
         email,
         password,
         recaptchaValue,
@@ -397,11 +403,14 @@ const LoginRegister = () => {
         });
         return;
       }
-      const res = await axios.put("/api/v1/auth/reset-password-otp", {
-        otpEmail,
-        resetPassword,
-        confirmResetPassword,
-      });
+      const res = await axios.put(
+        `${process.env.REACT_APP_API}/api/v1/auth/reset-password-otp`,
+        {
+          otpEmail,
+          resetPassword,
+          confirmResetPassword,
+        }
+      );
       if (res && res.data.success) {
         toast.success(res.data.message);
         setTimeout(() => {
@@ -430,7 +439,7 @@ const LoginRegister = () => {
         address: address,
       }));
       //////console.log(registerFormBody);
-      const res = await axios.post("/api/v1/auth/register", {
+      const res = await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/register`, {
         ...registerFormBody,
         password: password,
         address: address,
@@ -609,7 +618,7 @@ const LoginRegister = () => {
         //console.log(key, value);
       }
       const res = await axios.post(
-        "/api/v1/auth/delivery-partner/register",
+        `${process.env.REACT_APP_API}/api/v1/auth/delivery-partner/register`,
         deliveryPartnerData,
         {
           headers: {
@@ -619,7 +628,7 @@ const LoginRegister = () => {
       );
 
       if (res && res.data.success) {
-        await axios.post("/api/v1/auth/deliver-partner-register-notification", {
+        await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/deliver-partner-register-notification`, {
           title: "Rider Registered 🛵",
           message: `New delivery partner ${res?.data?.deliveryPartner?.name} has joined the platform.`,
           recipient: "admin",

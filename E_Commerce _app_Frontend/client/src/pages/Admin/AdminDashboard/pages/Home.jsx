@@ -365,7 +365,7 @@ function Home() {
   const fetchSalesData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("/api/v1/sales/product-data");
+      const response = await axios.get(`${process.env.REACT_APP_API}/api/v1/sales/product-data`);
       //console.log(response.data);
       setSalesData(response.data.data);
     } catch (error) {

@@ -72,7 +72,7 @@ function LineChart() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await axios.get("/api/v1/track/get-activity");
+        const response = await axios.get(`${process.env.REACT_APP_API}/api/v1/track/get-activity`);
         setChartData((prev) => ({
           ...prev,
           series: response.data.series,

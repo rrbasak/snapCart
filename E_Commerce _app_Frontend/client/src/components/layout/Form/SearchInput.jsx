@@ -429,7 +429,7 @@ const SearchInput = React.memo(({ isSearchFocused, onFocus, onBlur }) => {
     );
     setValues({ ...values, results: data, query: search });
     // const { pastData } = await axios.post(
-    //   `/api/v1/past-search/insert-past-search/`,
+    //   `${process.env.REACT_APP_API}/api/v1/past-search/insert-past-search/`,
     //   { search: search, userId: auth.user._id }
     // );
     // fetchPastSearchData();
@@ -654,7 +654,7 @@ const SearchInput = React.memo(({ isSearchFocused, onFocus, onBlur }) => {
             //           onClick={() => handleItemClick(item?.product?.name)}
             //         >
             //           <img
-            //             src={`/api/v1/product/product-photo/${item?.product?._id}`}
+            //             src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${item?.product?._id}`}
             //             alt={item?.product?.name}
             //             className={styles.productImage}
             //           />

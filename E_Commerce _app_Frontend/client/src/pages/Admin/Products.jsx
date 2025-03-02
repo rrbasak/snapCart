@@ -22,7 +22,7 @@ export default function Products() {
   // Fetch all products
   const getAllProducts = async () => {
     try {
-      const { data } = await axios.get("/api/v1/product/get-product");
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/get-product`);
       setProducts(data.products);
       setFilteredProducts(data.products); // Set filtered products initially to all
     } catch (error) {
@@ -71,7 +71,7 @@ export default function Products() {
       key: "image",
       render: (_, record) => (
         <img
-          src={`/api/v1/product/product-photo/${record.key}`}
+          src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${record.key}`}
           alt={record.name}
           style={{ width: "50px", height: "50px", objectFit: "cover" }}
         />
@@ -107,7 +107,7 @@ export default function Products() {
     key: product._id,
     name: product.name,
     description: product.description,
-    image: `/api/v1/product/product-photo/${product._id}`,
+    image: `${process.env.REACT_APP_API}/api/v1/product/product-photo/${product._id}`,
     slug: product.slug,
     availableInStock: product.availableInStock,
   }));

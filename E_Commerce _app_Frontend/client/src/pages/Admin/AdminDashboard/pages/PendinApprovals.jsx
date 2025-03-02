@@ -16,7 +16,7 @@ const PendinApprovals = () => {
   const handleActionChange = async (action, orderId) => {
     try {
       const response = await axios.put(
-        `/api/v1/auth/update-order-status/${orderId}`,
+        `${process.env.REACT_APP_API}/api/v1/auth/update-order-status/${orderId}`,
         {
           deliverystatus: action,
         }
@@ -34,7 +34,7 @@ const PendinApprovals = () => {
           Delivered: "Order Delivered 🎉",
         };
 
-        await axios.post("/api/v1/auth/create-order-placed-notification", {
+        await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/create-order-placed-notification`, {
           title:
             notificationTitles[response?.data?.order?.status] || "Order Update",
           message:
@@ -58,17 +58,21 @@ const PendinApprovals = () => {
           Canceled: "Order Canceled ❌",
         };
 
-        await axios.post("/api/v1/auth/create-order-placed-notification", {
-          title:
-            notificationTitles[response?.data?.order?.status] || "Order Update",
-          message:
-            statusMessages[response?.data?.order?.status] ||
-            `Your order containing ${productNames} has been updated to '${response?.data?.order?.status}'.`,
-          recipient: "users",
-          recipientId: response?.data?.order?.buyer,
-          status: "unread",
-          type: "order_update",
-        });
+        await axios.post(
+          `${process.env.REACT_APP_API}/api/v1/auth/create-order-placed-notification`,
+          {
+            title:
+              notificationTitles[response?.data?.order?.status] ||
+              "Order Update",
+            message:
+              statusMessages[response?.data?.order?.status] ||
+              `Your order containing ${productNames} has been updated to '${response?.data?.order?.status}'.`,
+            recipient: "users",
+            recipientId: response?.data?.order?.buyer,
+            status: "unread",
+            type: "order_update",
+          }
+        );
       }
     } catch (error) {
       console.error("Error updating order status", error);
@@ -96,7 +100,7 @@ const PendinApprovals = () => {
     setLoading(true);
     try {
       const { data } = await axios.get(
-        "/api/v1/auth/all-pending-approval-orders"
+        `${process.env.REACT_APP_API}/api/v1/auth/all-pending-approval-orders`
       );
       if (data?.success) {
         setPendingApprovalOrders(data?.orders);
@@ -157,7 +161,7 @@ const PendinApprovals = () => {
                   }}
                 >
                   <img
-                    src={`/api/v1/product/product-photo/${product._id}`}
+                    src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product._id}`}
                     alt={product.name}
                     width="50px"
                     height="50px"

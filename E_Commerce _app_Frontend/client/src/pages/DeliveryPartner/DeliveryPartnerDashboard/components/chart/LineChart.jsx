@@ -34,7 +34,7 @@ function LineChart() {
     async function fetchData() {
       try {
         const response = await axios.get(
-          `/api/v1/delivery/get-delivery-activity/${auth?.user?._id}`
+          `${process.env.REACT_APP_API}/api/v1/delivery/get-delivery-activity/${auth?.user?._id}`
         );
 
         setChartData((prev) => ({

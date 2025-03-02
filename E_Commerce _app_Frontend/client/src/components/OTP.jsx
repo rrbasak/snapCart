@@ -78,10 +78,13 @@ export default function OTP({ to, userId, email, mobile, nextPage }) {
     // }
 
     try {
-      const res = await axios.post("/api/v1/auth/verify-otp", {
-        userId: userId || email,
-        otp,
-      });
+      const res = await axios.post(
+        `${process.env.REACT_APP_API}/api/v1/auth/verify-otp`,
+        {
+          userId: userId || email,
+          otp,
+        }
+      );
       if (res && res.data.success) {
         toast.success(res.data.message);
         nextPage();
@@ -122,11 +125,14 @@ export default function OTP({ to, userId, email, mobile, nextPage }) {
   const emailHandller = async () => {
     try {
       const id = userId || email;
-      const res = await axios.post("/api/v1/auth/resend-otp", {
-        userId: id,
-        email: to,
-        mobile: mobile,
-      });
+      const res = await axios.post(
+        `${process.env.REACT_APP_API}/api/v1/auth/resend-otp`,
+        {
+          userId: id,
+          email: to,
+          mobile: mobile,
+        }
+      );
       ////console.log(res);
       if (res && res.data.success) {
         toast.success(res.data.message);

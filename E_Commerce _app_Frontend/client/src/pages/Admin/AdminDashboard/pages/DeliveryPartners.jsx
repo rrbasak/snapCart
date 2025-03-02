@@ -34,7 +34,7 @@ const DeliveryPartners = () => {
     setLoading(true);
     try {
       const { data } = await axios.get(
-        "/api/v1/auth/get-all-delivery-partners"
+        `${process.env.REACT_APP_API}/api/v1/auth/get-all-delivery-partners`
       );
       if (data?.success) {
         setDeliveryPartners(data?.deliveryPartner);

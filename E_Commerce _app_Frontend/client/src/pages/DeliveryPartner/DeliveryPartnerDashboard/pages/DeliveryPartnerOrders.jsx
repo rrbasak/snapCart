@@ -59,7 +59,7 @@ const DeliveryPartnerOrders = () => {
   const getOrders = async () => {
     try {
       const { data } = await axios.get(
-        `/api/v1/delivery/get-pending-orders/${auth?.user?._id}`
+        `${process.env.REACT_APP_API}/api/v1/delivery/get-pending-orders/${auth?.user?._id}`
       );
       setOrders(data);
     } catch (error) {
@@ -103,7 +103,7 @@ const DeliveryPartnerOrders = () => {
   const handleSendOtp = async () => {
     if (selectedOrder?.buyer?.phone) {
       try {
-        const res = await axios.post("/api/v1/auth/get-otp", {
+        const res = await axios.post(`${process.env.REACT_APP_API}auth/get-otp`, {
           mobile: selectedOrder.buyer.phone,
           email: selectedOrder.buyer.email,
         });
@@ -124,17 +124,20 @@ const DeliveryPartnerOrders = () => {
   const handleOtpSubmit = async () => {
     //console.log("selectedOrder", selectedOrder);
     try {
-      const res = await axios.post("/api/v1/auth/verify-otp", {
-        userId: selectedOrder.buyer.email,
-        otp,
-      });
+      const res = await axios.post(
+        `${process.env.REACT_APP_API}/api/v1/auth/verify-otp`,
+        {
+          userId: selectedOrder.buyer.email,
+          otp,
+        }
+      );
 
       if (res && res.data.success) {
         // toast.success(res.data.message);
         setIsModalVisible(false);
         try {
           const { data } = await axios.put(
-            `/api/v1/delivery/update-order-status/${selectedOrder.key}`,
+            `${process.env.REACT_APP_API}/api/v1/delivery/update-order-status/${selectedOrder.key}`,
             { status: "Pending for Approval" }
           );
           if (data?.success) {
@@ -222,7 +225,7 @@ const DeliveryPartnerOrders = () => {
                   }}
                 >
                   <img
-                    src={`/api/v1/product/product-photo/${product._id}`}
+                    src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product._id}`}
                     alt={product.name}
                     width="50px"
                     height="50px"

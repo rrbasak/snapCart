@@ -29,7 +29,7 @@ export default function CreateSubCategory() {
   // Get all sub-categories
   const getAllSub_Category = async () => {
     try {
-      const { data } = await axios.get("/api/v1/subcategory/get-sub-category");
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/subcategory/get-sub-category`);
       if (data.success) {
         setAllSub_Categories(data.sub_categories);
       }
@@ -49,7 +49,7 @@ export default function CreateSubCategory() {
       productData.append("category", category);
 
       const { data } = await axios.post(
-        "/api/v1/subcategory/create-subcategory",
+        `${process.env.REACT_APP_API}/api/v1/subcategory/create-subcategory`,
         productData,
         {
           headers: {
@@ -77,7 +77,9 @@ export default function CreateSubCategory() {
   const getAllCategory = async () => {
     setTableLoading(true);
     try {
-      const { data } = await axios.get("/api/v1/category/get-category");
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API}/api/v1/category/get-category`
+      );
       if (data.success) {
         setCategories(data.categories);
       }
@@ -93,7 +95,7 @@ export default function CreateSubCategory() {
     e.preventDefault();
     try {
       const { data } = await axios.put(
-        `/api/v1/subcategory/update-subcategory/${selected.key}`,
+        `${process.env.REACT_APP_API}/api/v1/subcategory/update-subcategory/${selected.key}`,
         { subname: updatedName }
       );
       if (data.success) {
@@ -114,7 +116,7 @@ export default function CreateSubCategory() {
   const handleDelete = async (id) => {
     try {
       const { data } = await axios.delete(
-        `/api/v1/subcategory/delete-subcategory/${id}`
+        `${process.env.REACT_APP_API}/api/v1/subcategory/delete-subcategory/${id}`
       );
       if (data.success) {
         toast.success("Sub-category deleted");

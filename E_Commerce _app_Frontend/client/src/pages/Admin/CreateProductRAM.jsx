@@ -24,7 +24,7 @@ export default function CreateProductRAM() {
     try {
       setLoading(true);
       const { data } = await axios.post(
-        "/api/v1/product-ram/create-product-ram",
+        `${process.env.REACT_APP_API}/api/v1/product-ram/create-product-ram`,
         { name }
       );
       setLoading(false);
@@ -44,7 +44,9 @@ export default function CreateProductRAM() {
   // Get all Product RAM
   const getAllRAMs = async () => {
     try {
-      const { data } = await axios.get("/api/v1/product-ram/get-product-ram");
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API}/api/v1/product-ram/get-product-ram`
+      );
       if (data.success) {
         setProductRAM(data.ram);
       }
@@ -58,7 +60,7 @@ export default function CreateProductRAM() {
     e.preventDefault();
     try {
       const { data } = await axios.put(
-        `/api/v1/product-ram/update-product-ram/${selected._id}`,
+        `${process.env.REACT_APP_API}/api/v1/product-ram/update-product-ram/${selected._id}`,
         { name: updatedName }
       );
       if (data.success) {
@@ -79,7 +81,7 @@ export default function CreateProductRAM() {
   const handleDelete = async (pId) => {
     try {
       const { data } = await axios.delete(
-        `/api/v1/product-ram/delete-product-ram/${pId}`
+        `${process.env.REACT_APP_API}/api/v1/product-ram/delete-product-ram/${pId}`
       );
       if (data.success) {
         toast.success("Product RAM is deleted");

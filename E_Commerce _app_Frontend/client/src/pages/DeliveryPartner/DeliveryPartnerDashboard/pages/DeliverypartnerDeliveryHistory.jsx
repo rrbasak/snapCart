@@ -54,7 +54,7 @@ const DeliverypartnerDeliveryHistory = () => {
   const getDeliverHistory = async () => {
     try {
       const { data } = await axios.get(
-        `/api/v1/delivery/get-delivery-history/${auth?.user?._id}`
+        `${process.env.REACT_APP_API}/api/v1/delivery/get-delivery-history/${auth?.user?._id}`
       );
       if (data?.success) setDeliveryHistory(data?.ordershistory);
     } catch (error) {
@@ -129,7 +129,7 @@ const DeliverypartnerDeliveryHistory = () => {
                   }}
                 >
                   <img
-                    src={`/api/v1/product/product-photo/${product._id}`}
+                    src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product._id}`}
                     alt={product.name}
                     width="50px"
                     height="50px"

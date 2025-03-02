@@ -267,13 +267,16 @@ export default function AdminPrimeDay() {
     if (primestartDate && primeendDate) {
       setStartLoading(true);
       try {
-        const response = await axios.put("/api/v1/product/prime-start", {
-          primestartDate,
-          primeendDate,
-        });
+        const response = await axios.put(
+          `${process.env.REACT_APP_API}/api/v1/product/prime-start`,
+          {
+            primestartDate,
+            primeendDate,
+          }
+        );
         const eventDetails = getEventDetails(primestartDate);
 
-        await axios.post("/api/v1/auth/prime-day-start-notification", {
+        await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/prime-day-start-notification`, {
           title: eventDetails.title,
           message: eventDetails.message,
           recipient: "users",
@@ -302,7 +305,9 @@ export default function AdminPrimeDay() {
   const handleEndClick = async () => {
     setEndLoading(true);
     try {
-      const response = await axios.put("/api/v1/product/prime-end");
+      const response = await axios.put(
+        `${process.env.REACT_APP_API}/api/v1/product/prime-end`
+      );
       toast.success("Prime Day ended successfully!");
       dispatch(clearPrimeDates());
     } catch (error) {

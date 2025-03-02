@@ -24,10 +24,10 @@ export default function CreateProductColor() {
     e.preventDefault();
     try {
       setLoading(true);
-      const { data } = await axios.post(
-        "/api/v1/product-color/create-product-color",
-        { name }
-      );
+       const { data } = await axios.post(
+         `${process.env.REACT_APP_API}/api/v1/product-color/create-product-color`,
+         { name }
+       );
       setLoading(false);
       if (data?.success) {
         toast.success(`${name} is created`);
@@ -46,7 +46,7 @@ export default function CreateProductColor() {
   const getAllColors = async () => {
     try {
       const { data } = await axios.get(
-        "/api/v1/product-color/get-product-color"
+        `${process.env.REACT_APP_API}/api/v1/product-color/get-product-color`
       );
       if (data.success) {
         setProductColor(data.color);
@@ -61,7 +61,7 @@ export default function CreateProductColor() {
     e.preventDefault();
     try {
       const { data } = await axios.put(
-        `/api/v1/product-color/update-product-color/${selected._id}`,
+        `${process.env.REACT_APP_API}/api/v1/product-color/update-product-color/${selected._id}`,
         { name: updatedName }
       );
       if (data.success) {
@@ -82,7 +82,7 @@ export default function CreateProductColor() {
   const handleDelete = async (pId) => {
     try {
       const { data } = await axios.delete(
-        `/api/v1/product-color/delete-product-color/${pId}`
+        `${process.env.REACT_APP_API}/api/v1/product-color/delete-product-color/${pId}`
       );
       if (data.success) {
         toast.success("Color is deleted");

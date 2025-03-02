@@ -44,7 +44,7 @@ const ReviewSection = ({
   // useEffect(() => {
   //   const checkEligibility = async () => {
   //     try {
-  //       const { data } = await axios.get(`/api/v1/review/can-review/${pid}/${auth?.user?._id}`);
+  //       const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/review/can-review/${pid}/${auth?.user?._id}`);
   //       if (data.success) {
   //         setCanReview(true);
   //       }
@@ -74,14 +74,17 @@ const ReviewSection = ({
     }
 
     try {
-      const response = await axios.post("/api/v1/review/add-review", {
-        product: pid,
-        user: auth.user._id,
-        username: auth.user.name,
-        rating: newReview.rating,
-        comment: newReview.comment,
-        order: orderId,
-      });
+      const response = await axios.post(
+        `${process.env.REACT_APP_API}/api/v1/review/add-review`,
+        {
+          product: pid,
+          user: auth.user._id,
+          username: auth.user.name,
+          rating: newReview.rating,
+          comment: newReview.comment,
+          order: orderId,
+        }
+      );
       ////console.log(response);
       if (response.data.success) {
         const review = {
@@ -141,7 +144,7 @@ const ReviewSection = ({
     ////console.log(typeof(reviewId))
     try {
       const response = await axios.delete(
-        `/api/v1/review/delete-review/${reviewId}`
+        `${process.env.REACT_APP_API}/api/v1/review/delete-review/${reviewId}`
       );
       if (response?.data?.success) {
         setReviews((prevReviews) =>

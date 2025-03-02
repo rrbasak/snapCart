@@ -777,7 +777,8 @@ export const forgotPasswordControllerViaOTPvalidation = async (req, res) => {
         expiresIn: "5m",
       }
     );
-    const link = `http://localhost:8080/api/v1/auth/reset-password/${oldUser._id}/${accessToken}`;
+    // const link = `http://localhost:8080/api/v1/auth/reset-password/${oldUser._id}/${accessToken}`;
+    const link = `${process.env.REACT_APP_API}/api/v1/auth/reset-password/${oldUser._id}/${accessToken}`;
     //////console.log(link);
 
     var transporter = nodemailer.createTransport({
