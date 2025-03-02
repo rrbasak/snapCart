@@ -111,7 +111,7 @@ export const isUserOrDeliveryPartner = async (req, res, next) => {
 export const errorMiddleware = (err, req, res, next) => {
   return res.status(500).send({
     success: false,
-    message: "I think the token expired",
+    message: "Token expired",
     error: err.message || err,
   });
 };

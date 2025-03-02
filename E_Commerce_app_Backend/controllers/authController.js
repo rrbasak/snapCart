@@ -70,6 +70,16 @@ export const registerController = async (req, res) => {
       password: hashedPassword,
       answer,
     }).save();
+    const notification = await new NotificationModel({
+      title: "Welcome to SnapCart 🎉",
+      message: `Hello ${name}, welcome to our platform! 🚀`,
+      recipient: "users",
+      status: "unread",
+      type: "system",
+      recipientId: user?._id,
+    }).save();
+
+
     return res.status(200).send({
       success: "true",
       message: "User registered successfully",
