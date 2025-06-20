@@ -23,7 +23,7 @@ import formatTimestampforOrder from "../utils/dateUtlFoOrder.js";
 import productModel from "../models/productModel.js";
 import { generateOrderBeforeDeliverEmailContent } from "../templates/orderBeforeDeliverEmailTemplate.js";
 import { generateOrderAfterDeliverEmailContent } from "../templates/orderAfterDeliverEmailTemplate.js";
-import { generateCancelByAdminEmailContent } from "../templates/CancelByAdminTemplate.js";
+import { generateCancelByAdminEmailContent } from "../templates/cancelByAdminTemplate.js";
 import NotificationModel from "../models/notificationModel.js";
 import { generateUserWelcomeContent } from "../templates/userWelcomeTemplate.js";
 import { generateEmailVerificationOTPContent } from "../templates/emailVerificationTemplate.js";
