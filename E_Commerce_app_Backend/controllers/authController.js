@@ -19,12 +19,15 @@ import sendEmail from "../utils/emailUtil.js";
 import { generateOrderEmailContent } from "../templates/orderDetailEmailTemplate.js";
 import { generateOrderShippedEmailContent } from "../templates/orderShippedEmailTemplate.js";
 import { generatePasswordResetEmailContent } from "../templates/recoverPasswordEmailTemplate.js";
-import formatTimestampforOrder from "../utils/dateUtlFoOrder.js";
+import formatTimestampforOrder from "../client/src/frontendUtil/dateUtlFoOrder.js";
 import productModel from "../models/productModel.js";
 import { generateOrderBeforeDeliverEmailContent } from "../templates/orderBeforeDeliverEmailTemplate.js";
 import { generateOrderAfterDeliverEmailContent } from "../templates/orderAfterDeliverEmailTemplate.js";
-import { generateCancelByAdminEmailContent } from "../templates/cancelByAdminTemplate.js";
+import { generateCancelByAdminEmailContent } from "../templates/CancelByAdminTemplate .js";
 import NotificationModel from "../models/notificationModel.js";
+import { generateUserWelcomeContent } from "../templates/userWelcomeTemplate.js";
+import { generateEmailVerificationOTPContent } from "../templates/emailVerificationTemplate.js";
+import { generateDeliveryPartnerWelcomeContent } from "../templates/deliverypartnerWelcomeTemplate.js";
 
 //registration
 
@@ -78,15 +81,22 @@ export const registerController = async (req, res) => {
       type: "system",
       recipientId: user?._id,
     }).save();
+    const userDetails = req.body;
+    const emailContent = generateUserWelcomeContent(userDetails);
 
-
+    await sendEmail({
+      service: "gmail",
+      to: email,
+      subject: `🎉 Welcome to Snapcart, ${name}! 🚀`,
+      html: emailContent,
+    });
     return res.status(200).send({
       success: "true",
       message: "User registered successfully",
       user: user,
     });
   } catch (error) {
-    //////console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while registering",
@@ -120,7 +130,7 @@ export const registerControllerViaGoogle = async (req, res) => {
       user: user,
     });
   } catch (error) {
-    //////console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error registering",
@@ -163,7 +173,7 @@ export const loginControllerViaGoogle = async (req, res) => {
       accessToken: accessToken,
     });
   } catch (error) {
-    //////console.log(error);
+    ////console.log(error);
     return res.status(500).send({
       success: false,
       message: "Error in login",
@@ -174,10 +184,10 @@ export const loginControllerViaGoogle = async (req, res) => {
 
 //POST LOGIN
 export const loginController = async (req, res) => {
-  //////console.log(req.body);
+  ////console.log(req.body);
   try {
     const { email, password, recaptchaValue } = req.body;
-    ////console.log(req.body);
+    //console.log(req.body);
 
     if (!email && !password) {
       //validation
@@ -206,7 +216,7 @@ export const loginController = async (req, res) => {
     }
     //check user
     const olduser = await userModel.findOne({ email });
-    // //console.log("olduser", olduser);
+    // console.log("olduser", olduser);
     const oldSocialMediauser = await userModelSocialMedia.findOne({ email });
     const deliveryPartner = await deliveryPartnerModel.findOne({ email });
     if (!olduser && !oldSocialMediauser && !deliveryPartner) {
@@ -248,7 +258,7 @@ export const loginController = async (req, res) => {
     const data = await axios.post(
       `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${recaptchaValue}`
     );
-    //////console.log("success Data", data);
+    ////console.log("success Data", data);
     if (data.status === 200) {
       const loggedInUser = olduser || deliveryPartner;
       const accessToken = JWT.sign(
@@ -333,7 +343,7 @@ export const loginController = async (req, res) => {
         accessToken,
       });
     } else {
-      //////console.log(data);
+      ////console.log(data);
       return res.status(200).send({
         success: false,
         message: "Invalid Recaptcha",
@@ -357,7 +367,7 @@ export const loginController = async (req, res) => {
 
 // test controller
 export const testController = (req, res) => {
-  //////console.log("Protectted Rote");
+  ////console.log("Protectted Rote");
   res.status(200).send({
     success: true,
     message: "Protectted Rote",
@@ -394,7 +404,7 @@ export const forgotPasswordController = async (req, res) => {
     }
     //check
     const user = await userModel.findOne({ email, answer });
-    //////console.log(user);
+    ////console.log(user);
     //validation
     if (!user) {
       return res.status(404).send({
@@ -409,7 +419,7 @@ export const forgotPasswordController = async (req, res) => {
       message: "Password Reset Successfully",
     });
   } catch (error) {
-    //////console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Something went wrong",
@@ -420,7 +430,7 @@ export const forgotPasswordController = async (req, res) => {
 
 //update prfole
 export const updateProfileController = async (req, res) => {
-  ////console.log("HIII req", req.body);
+  //console.log("HIII req", req.body);
   try {
     // const { name, email, password, address, phone } = req.body;
     const { name } = req.body;
@@ -446,7 +456,7 @@ export const updateProfileController = async (req, res) => {
       updatedUser,
     });
   } catch (error) {
-    //////console.log(error);
+    ////console.log(error);
     res.status(400).send({
       success: false,
       message: "Error While Update profile",
@@ -457,7 +467,7 @@ export const updateProfileController = async (req, res) => {
 
 //update contact references
 export const updateContactController = async (req, res) => {
-  ////console.log("HIII req", req.body);
+  //console.log("HIII req", req.body);
   try {
     const updates = req.body;
     const user = await userModel.findById(req.user._id);
@@ -473,7 +483,7 @@ export const updateContactController = async (req, res) => {
       updatedUser,
     });
   } catch (error) {
-    //////console.log(error);
+    ////console.log(error);
     res.status(400).send({
       success: false,
       message: "Error WHile Update profile",
@@ -482,9 +492,9 @@ export const updateContactController = async (req, res) => {
   }
 };
 
-//update contact references
+//update profile picture
 export const uploadPicController = async (req, res) => {
-  ////console.log("request files", req.files);
+  //console.log("request files", req.files);
   try {
     const { photo } = req.files;
     if (!photo) {
@@ -512,10 +522,32 @@ export const uploadPicController = async (req, res) => {
       updatedUser,
     });
   } catch (error) {
-    ////console.log(error);
+    //console.log(error);
     res.status(400).send({
       success: false,
       message: "Error While Update profile picture",
+      error,
+    });
+  }
+};
+
+//delete profile picture
+export const deletePicController = async (req, res) => {
+  try {
+    const user = await userModel.findById(req.user._id);
+    user.photo.data = undefined;
+    user.photo.contentType = undefined;
+    const updatedUser = await user.save();
+    res.status(200).send({
+      success: true,
+      message: "Profile picture deleted successfully",
+      updatedUser,
+    });
+  } catch (error) {
+    //console.log(error);
+    res.status(400).send({
+      success: false,
+      message: "Error While Delete profile picture",
       error,
     });
   }
@@ -533,7 +565,7 @@ export const getOrdersController = async (req, res) => {
       .populate("buyer", "name");
     res.json(orders);
   } catch (error) {
-    //////console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error While Geting Orders",
@@ -551,10 +583,10 @@ export const getOneOrderController = async (req, res) => {
         select: "-photo",
       })
       .populate("buyer", "name");
-    ////console.log("get one orders 2", order);
+    //console.log("get one orders 2", order);
     res.json(order);
   } catch (error) {
-    ////console.log("get one orders", error);
+    //console.log("get one orders", error);
     res.status(500).send({
       success: false,
       message: "Error While Geting one Orders",
@@ -573,7 +605,7 @@ export const getAllOrdersController = async (req, res) => {
       .sort({ updatedAt: -1 });
     res.json(orders);
   } catch (error) {
-    //console.log("error", error);
+    console.log("error", error);
     res.status(500).send({
       success: false,
       message: "Error while geting orders",
@@ -586,11 +618,11 @@ export const getAllOrdersController = async (req, res) => {
 // import { io } from "../server.js";
 export const orderStatusController = async (req, res) => {
   try {
-    ////console.log("hello bruno", req.body);
+    //console.log("hello bruno", req.body);
     const { orderId } = req.params;
     const { status } = req.body;
     const order = await orderModel.findById(orderId).populate("buyer");
-    //console.log("order", order);
+    console.log("order", order);
     const product = await orderModel
       .findById(orderId)
       .populate("products.product");
@@ -606,7 +638,7 @@ export const orderStatusController = async (req, res) => {
     const orgprices = order.products.map((item) => item.orgprice);
     const productname = order.products.map((item) => item.productName);
 
-    // //console.log(
+    // console.log(
     //   "email here 3",
     //   recipientEmail,
     //   recipientName,
@@ -623,7 +655,7 @@ export const orderStatusController = async (req, res) => {
       { status },
       { new: true }
     );
-    ////console.log("orders", orders);
+    //console.log("orders", orders);
     // io.emit("orderStatusUpdated", orders); // Emit the updated order status
 
     // shipped
@@ -635,7 +667,7 @@ export const orderStatusController = async (req, res) => {
       total &&
       arrivalDate
     ) {
-      ////console.log("recipientName", recipientName, recipientAddress, total);
+      //console.log("recipientName", recipientName, recipientAddress, total);
       const orderDetails = {
         customerName: recipientName,
         orderId: order._id.toString(),
@@ -665,7 +697,7 @@ export const orderStatusController = async (req, res) => {
       total &&
       arrivalDate
     ) {
-      ////console.log("recipientName", recipientName, recipientAddress, total);
+      //console.log("recipientName", recipientName, recipientAddress, total);
       const orderDetails = {
         customerName: recipientName,
         orderId: order._id.toString(),
@@ -694,7 +726,7 @@ export const orderStatusController = async (req, res) => {
       total &&
       arrivalDate
     ) {
-      ////console.log("recipientName", recipientName, recipientAddress, total);
+      //console.log("recipientName", recipientName, recipientAddress, total);
       const orderDetails = {
         customerName: recipientName,
         orderId: order._id.toString(),
@@ -726,7 +758,7 @@ export const orderStatusController = async (req, res) => {
       total &&
       arrivalDate
     ) {
-      ////console.log("recipientName", recipientName, recipientAddress, total);
+      //console.log("recipientName", recipientName, recipientAddress, total);
       const orderDetails = {
         customerName: recipientName,
         orderId: order._id.toString(),
@@ -749,7 +781,7 @@ export const orderStatusController = async (req, res) => {
     }
     res.json(orders);
   } catch (error) {
-    //console.log("error", error);
+    console.log("error", error);
     res.status(500).send({
       success: false,
       message: "Error While Updateing Order",
@@ -763,7 +795,7 @@ export const orderStatusController = async (req, res) => {
 export const forgotPasswordControllerViaOTPvalidation = async (req, res) => {
   try {
     const { email } = req.body;
-    //////console.log(email);
+    ////console.log(email);
     // res.status(200).send({
     //   success: true,
     //   message: "Email goota",
@@ -787,9 +819,8 @@ export const forgotPasswordControllerViaOTPvalidation = async (req, res) => {
         expiresIn: "5m",
       }
     );
-    // const link = `http://localhost:8080/api/v1/auth/reset-password/${oldUser._id}/${accessToken}`;
     const link = `${process.env.REACT_APP_API}/api/v1/auth/reset-password/${oldUser._id}/${accessToken}`;
-    //////console.log(link);
+    ////console.log(link);
 
     var transporter = nodemailer.createTransport({
       service: "gmail",
@@ -808,9 +839,9 @@ export const forgotPasswordControllerViaOTPvalidation = async (req, res) => {
 
     // transporter.sendMail(mailOptions, function (error, info) {
     //   if (error) {
-    //     //////console.log(error);
+    //     ////console.log(error);
     //   } else {
-    //     //////console.log("Email sent: " + info.response);
+    //     ////console.log("Email sent: " + info.response);
     //   }
     // });
 
@@ -819,7 +850,7 @@ export const forgotPasswordControllerViaOTPvalidation = async (req, res) => {
       message: "OTP sent successfully",
     });
   } catch (error) {
-    //////console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Something went wrong",
@@ -836,17 +867,19 @@ export const forgotPasswordRecoveryControllerViaOTPvalidation = async (
 ) => {
   try {
     const { email } = req.body;
-    //////console.log(email);
+    ////console.log(email);
 
     if (!email) {
       return res.status(200).send({ message: "Email is required" });
     }
     //check
-    const oldUser = await userModel.findOne({ email });
+    const oldUser =
+      (await userModel.findOne({ email })) ||
+      (await deliveryPartnerModel.findOne({ email }));
     const oldUserinUserSocialMediaModel = await userModelSocialMedia.findOne({
       email: email,
     });
-
+    // console.log("oldUser", oldUser);
     if (oldUserinUserSocialMediaModel) {
       return res.status(200).send({
         success: false,
@@ -872,7 +905,7 @@ export const forgotPasswordRecoveryControllerViaOTPvalidation = async (
       : null;
 
     const userId = oldUserModelUserId || oldUserinUserSocialMediaModelUserId;
-    ////console.log("userId2", userId.toString());
+    //console.log("userId2", userId.toString());
     const result = await sendOtpVerificationEmail(userId.toString(), email);
 
     if (result.success) {
@@ -908,7 +941,7 @@ export const forgotPasswordRecoveryControllerViaOTPvalidation = async (
     //   otp,
     // });
   } catch (error) {
-    //////console.log(error);
+    ////console.log(error);
     if (error.response && error.response.status === 429) {
       return res.status(429).send({
         success: false,
@@ -933,7 +966,7 @@ const sendOtpVerificationEmail = async (userId, email) => {
     // });
 
     const createdAtIST = new Date(Date.now() + 5.5 * 60 * 60 * 1000); // IST is UTC + 5:30
-    const expiresAtIST = new Date(createdAtIST.getTime() + 180000);
+    const expiresAtIST = new Date(createdAtIST.getTime() + 120000);
     const newOTPverification = await new userOTPverificatioonModel({
       userId: userId,
       otp: hashedotp,
@@ -941,32 +974,62 @@ const sendOtpVerificationEmail = async (userId, email) => {
       expiresAt: expiresAtIST,
     });
     await newOTPverification.save();
-    ////console.log("here", newOTPverification);
+    //console.log("here", newOTPverification);
     await sendEmail({
       service: "gmail",
       to: email,
       subject: "Password Reset",
       html: emailContent,
     });
-    return { success: true, message: "OTP sent successfully", userId: userId };
+    return {
+      success: true,
+      message: "OTP resent successfully",
+      userId: userId,
+    };
   } catch (error) {
     console.error("Error in send otp email verification:", error.message);
     return { success: false, message: error.message };
   }
 };
-
+// send Otp Verification Register Email
+const sendOtpVerificationForRegisterEmail = async (email) => {
+  try {
+    const otp = otpGenerator();
+    const hashedotp = await hashOTP(otp);
+    const emailContent = generateEmailVerificationOTPContent(otp);
+    const createdAtIST = new Date(Date.now() + 5.5 * 60 * 60 * 1000);
+    const expiresAtIST = new Date(createdAtIST.getTime() + 120000);
+    const newOTPverification = await new userOTPverificatioonModel({
+      email: email,
+      otp: hashedotp,
+      createdAt: createdAtIST,
+      expiresAt: expiresAtIST,
+    });
+    await newOTPverification.save();
+    await sendEmail({
+      service: "gmail",
+      to: email,
+      subject: "Email Verification",
+      html: emailContent,
+    });
+    return { success: true, message: "OTP resent successfully" };
+  } catch (error) {
+    console.error("Error in send otp email verification:", error.message);
+    return { success: false, message: error.message };
+  }
+};
 //verify otp controller
 // export const verifyOtpController = async (req, res) => {
 //   try {
 //     const { userId, otp } = req.body;
-//     ////console.log("req.body", req.body);
+//     //console.log("req.body", req.body);
 //     if (!userId || !otp) {
 //       throw Error("Empty otp details are not allowed");
 //     } else {
 //       const userOtpVerificationRecord = await userOTPverificatioonModel.find({
 //         userId,
 //       });
-//       ////console.log("userOtpVerificationRecord", userOtpVerificationRecord);
+//       //console.log("userOtpVerificationRecord", userOtpVerificationRecord);
 //       if (userOtpVerificationRecord.length === 0) {
 //         throw new Error(
 //           "Account record does not exist or has been verified already,Please sign in or log in"
@@ -981,7 +1044,7 @@ const sendOtpVerificationEmail = async (userId, email) => {
 //           throw new Error("Code has expired,Please request again");
 //         } else {
 //           const validOtp =await compareOTP(otp, hashedotp);
-//           ////console.log("validOtp", validOtp);
+//           //console.log("validOtp", validOtp);
 //           if (!validOtp) {
 //             throw new Error("Invalid code passed.Check your inbox");
 //           } else {
@@ -995,7 +1058,7 @@ const sendOtpVerificationEmail = async (userId, email) => {
 //       }
 //     }
 //   } catch (error) {
-//     ////console.log(error);
+//     //console.log(error);
 //     res.status(500).send({
 //       success: false,
 //       message: "Something went wrong",
@@ -1005,10 +1068,10 @@ const sendOtpVerificationEmail = async (userId, email) => {
 // };
 
 //verify otp controller
-export const verifyOtpController = async (req, res) => {
+export const verifySmsOtpController = async (req, res) => {
   try {
     const { userId, otp } = req.body;
-    // //console.log("req.body", req.body);
+    // console.log("req.body", req.body);
 
     // if (!userId || !otp) {
     //   // throw new Error("Empty OTP details are not allowed");
@@ -1021,7 +1084,7 @@ export const verifyOtpController = async (req, res) => {
     // const userOtpVerificationRecord = await userOTPverificatioonModel.find({
     //   $or: [{ userId: userId }, { email: userId }],
     // });
-    // //console.log("userOtpVerificationRecord", userOtpVerificationRecord);
+    // console.log("userOtpVerificationRecord", userOtpVerificationRecord);
 
     // if (userOtpVerificationRecord.length === 0) {
     //   // throw new Error(
@@ -1036,8 +1099,8 @@ export const verifyOtpController = async (req, res) => {
 
     // const { expiresAt } = userOtpVerificationRecord[0];
     // const hashedotp = userOtpVerificationRecord[0].otp;
-    // //console.log("expiresAt", expiresAt);
-    // //console.log("current", new Date(Date.now() + 5.5 * 60 * 60 * 1000));
+    // console.log("expiresAt", expiresAt);
+    // console.log("current", new Date(Date.now() + 5.5 * 60 * 60 * 1000));
     // if (expiresAt < new Date(Date.now() + 5.5 * 60 * 60 * 1000)) {
     //   await userOTPverificatioonModel.deleteMany({
     //     $or: [{ userId: userId }, { email: userId }],
@@ -1051,7 +1114,7 @@ export const verifyOtpController = async (req, res) => {
 
     // // Validate the OTP
     // const validOtp = await compareOTP(otp, hashedotp); // Await here
-    // // //console.log("validOtp", validOtp);
+    // // console.log("validOtp", validOtp);
 
     // if (!validOtp) {
     //   return res.status(401).send({
@@ -1064,14 +1127,90 @@ export const verifyOtpController = async (req, res) => {
     // await userOTPverificatioonModel.deleteMany({
     //   $or: [{ userId: userId }, { email: userId }],
     // });
-    const verificationMethod = userId ? "email" : "mobile number";
-    const successMessage = `User ${verificationMethod} verified successfully`;
+    // const verificationMethod = userId ? "email" : "mobile number";
+    const successMessage = `User mobile number verified successfully`;
     res.json({
       success: true,
       message: successMessage,
     });
   } catch (error) {
-    //console.log("error", error);
+    console.log("error", error);
+    res.status(500).send({
+      success: false,
+      message: "Something went wrong",
+      error: error.message,
+    });
+  }
+};
+
+//verify register email otp controller
+export const verifyEmailOtpController = async (req, res) => {
+  try {
+    const { userId, otp } = req.body;
+    console.log("req.body", req.body);
+
+    if (!userId || !otp) {
+      // throw new Error("Empty OTP details are not allowed");
+      return res.status(401).send({
+        success: false,
+        message: "Empty OTP details are not allowed",
+      });
+    }
+
+    const userOtpVerificationRecord = await userOTPverificatioonModel.find({
+      $or: [{ userId: userId }, { email: userId }],
+    });
+    console.log("userOtpVerificationRecord", userOtpVerificationRecord);
+
+    if (userOtpVerificationRecord.length === 0) {
+      // throw new Error(
+      //   "Account record does not exist or has been verified already, please sign in or log in"
+      // );
+      return res.status(401).send({
+        success: false,
+        message:
+          "Account record does not exist or has been verified already, please sign in or log in",
+      });
+    }
+
+    const { expiresAt } = userOtpVerificationRecord[0];
+    const hashedotp = userOtpVerificationRecord[0].otp;
+    console.log("expiresAt", expiresAt);
+    console.log("current", new Date(Date.now() + 5.5 * 60 * 60 * 1000));
+    if (expiresAt < new Date(Date.now() + 5.5 * 60 * 60 * 1000)) {
+      await userOTPverificatioonModel.deleteMany({
+        $or: [{ userId: userId }, { email: userId }],
+      });
+      // throw new Error("Code has expired, please request again");
+      return res.status(401).send({
+        success: false,
+        message: "Code has expired, please request again",
+      });
+    }
+
+    // Validate the OTP
+    const validOtp = await compareOTP(otp, hashedotp); // Await here
+    // console.log("validOtp", validOtp);
+
+    if (!validOtp) {
+      return res.status(401).send({
+        success: false,
+        message: "Invalid code passed. Check your inbox",
+      });
+    }
+
+    // OTP is valid, proceed with the next steps
+    await userOTPverificatioonModel.deleteMany({
+      $or: [{ userId: userId }, { email: userId }],
+    });
+
+    const successMessage = "User email verified successfully";
+    res.json({
+      success: true,
+      message: successMessage,
+    });
+  } catch (error) {
+    console.log("error", error);
     res.status(500).send({
       success: false,
       message: "Something went wrong",
@@ -1084,7 +1223,7 @@ export const verifyOtpController = async (req, res) => {
 export const resendOtpverifyController = async (req, res) => {
   try {
     const { userId, email, mobile } = req.body;
-    ////console.log("req.body 123", req.body);
+    //console.log("req.body 123", req.body);
     await userOTPverificatioonModel.deleteMany({ userId });
     let result;
     if (email) {
@@ -1111,7 +1250,7 @@ export const resendOtpverifyController = async (req, res) => {
       });
     }
   } catch (error) {
-    ////console.log(error);
+    //console.log(error);
     res.status(500).send({
       success: false,
       message: "Something went wrong",
@@ -1120,11 +1259,42 @@ export const resendOtpverifyController = async (req, res) => {
   }
 };
 
+//resend register email otp controller
+export const resendRegisterEmailOtpverifyController = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    await userOTPverificatioonModel.deleteMany({ email });
+    let result;
+    if (email) {
+      result = await sendOtpVerificationForRegisterEmail(email);
+    }
+
+    if (result.success) {
+      return res.status(200).send({
+        success: true,
+        message: result.message,
+      });
+    } else {
+      return res.status(500).send({
+        success: false,
+        message: result.message || "Failed to resend OTP",
+      });
+    }
+  } catch (error) {
+    //console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Something went wrong",
+      error,
+    });
+  }
+};
 //reset password
 export const resetPasswordController = async (req, res) => {
   try {
     const { id, accessToken } = req.params;
-    //////console.log(req.params);
+    ////console.log(req.params);
     const oldUser = await userModel.findOne({ _id: id });
     if (!oldUser) {
       return res.status(200).send({
@@ -1141,7 +1311,7 @@ export const resetPasswordController = async (req, res) => {
       //   message: "Verified",
       // });
     } catch (error) {
-      //////console.log(error);
+      ////console.log(error);
       res.status(500).send({
         success: false,
         message: "Not Verified",
@@ -1149,7 +1319,7 @@ export const resetPasswordController = async (req, res) => {
       });
     }
   } catch (error) {
-    //////console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Something went wrong",
@@ -1162,12 +1332,12 @@ export const resetPasswordController = async (req, res) => {
 export const afterResetPasswordController = async (req, res) => {
   try {
     const { id, accessToken } = req.params;
-    // //////console.log(req.params);
+    // ////console.log(req.params);
     const { password, cPassword } = req.body;
-    //////console.log(req.body);
+    ////console.log(req.body);
     // const passwordString = String(password);
     const oldUser = await userModel.findOne({ _id: id });
-    //////console.log(oldUser);
+    ////console.log(oldUser);
     if (!oldUser) {
       return res.status(200).send({
         success: false,
@@ -1178,7 +1348,7 @@ export const afterResetPasswordController = async (req, res) => {
     try {
       const verify = JWT.verify(accessToken, secret);
       const hashedPassword = await hashPassword(password);
-      //////console.log("hashedPassword", hashedPassword);
+      ////console.log("hashedPassword", hashedPassword);
       await userModel.findByIdAndUpdate(oldUser._id, {
         password: hashedPassword,
       });
@@ -1188,7 +1358,7 @@ export const afterResetPasswordController = async (req, res) => {
       // });
       res.render("index", { email: verify.email, status: "verified" });
     } catch (error) {
-      //////console.log(error);
+      ////console.log(error);
       res.status(500).send({
         success: false,
         message: "Not Verified",
@@ -1196,7 +1366,7 @@ export const afterResetPasswordController = async (req, res) => {
       });
     }
   } catch (error) {
-    //////console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Something went wrong",
@@ -1215,23 +1385,39 @@ export const resetPasswordControllerAfterOTPvalidation = async (req, res) => {
       });
     }
     const oldUser = await userModel.findOne({ email: otpEmail });
-    //////console.log(oldUser);
-    if (!oldUser) {
+    const deliveryPartner = await deliveryPartnerModel.findOne({
+      email: otpEmail,
+    });
+    console.log("oldUser", oldUser);
+    console.log("deliveryPartner", deliveryPartner);
+    if (!oldUser && !deliveryPartner) {
       return res.status(200).send({
         success: false,
         message: "User not exists!",
       });
     }
     const hashedPassword = await hashPassword(resetPassword);
-    await userModel.findByIdAndUpdate(oldUser._id, {
-      password: hashedPassword,
-    });
+    if (oldUser) {
+      await userModel.findByIdAndUpdate(oldUser._id, {
+        password: hashedPassword,
+      });
+    } else if (deliveryPartner) {
+      await deliveryPartnerModel.findByIdAndUpdate(deliveryPartner._id, {
+        password: hashedPassword,
+      });
+    } else {
+      return res.status(200).send({
+        success: false,
+        message: "User not exists!",
+      });
+    }
+
     return res.status(200).send({
       success: true,
       message: "Password Updated Successfully",
     });
   } catch (error) {
-    //////console.log(error);
+    // console.log("error", error);
     res.status(500).send({
       success: false,
       message: "Something went wrong",
@@ -1245,7 +1431,7 @@ export const resetPasswordControllerAfterOTPvalidation = async (req, res) => {
 export const checkMailController = async (req, res) => {
   try {
     const { email } = req.params;
-    //////console.log(req.body);
+    ////console.log(req.body);
     if (!email) {
       return res.status(200).send({
         success: false,
@@ -1256,8 +1442,8 @@ export const checkMailController = async (req, res) => {
     const oldUserinUserSocialMediaModel = await userModelSocialMedia.findOne({
       email: email,
     });
-    //////console.log(oldUserinUserModel);
-    //////console.log(oldUserinUserSocialMediaModel);
+    ////console.log(oldUserinUserModel);
+    ////console.log(oldUserinUserSocialMediaModel);
     if (!oldUserinUserModel && !oldUserinUserSocialMediaModel) {
       return res.status(200).send({
         success: true,
@@ -1269,7 +1455,7 @@ export const checkMailController = async (req, res) => {
       });
     }
   } catch (error) {
-    //////console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Something went wrong",
@@ -1278,18 +1464,10 @@ export const checkMailController = async (req, res) => {
   }
 };
 // sms otp controller
-export const smsController = async (req, res) => {
+export const smsOTPController = async (req, res) => {
   const { mobile, email } = req.body;
 
   try {
-    // const otp = otpGenerator();
-    // const smsVal = await sendSMS(
-    //   mobile,
-    //   "Hello from facebook.Thanks for choosing us here is your OTP",
-    //   otp
-    // );
-    //////console.log(smsVal);
-
     // const result = await sendOtpVerificationMobile(mobile, email);
     // if (result.success) {
     //   return res.status(200).send({
@@ -1314,7 +1492,32 @@ export const smsController = async (req, res) => {
     //   otp: otp,
     // });
   } catch (error) {
-    //////console.log(error);
+    ////console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Something went wrong",
+      error: error.message,
+    });
+  }
+};
+export const emailOTPController = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const result = await sendOtpVerificationForRegisterEmail(email);
+    if (result.success) {
+      return res.status(200).send({
+        success: true,
+        message: result.message,
+      });
+    } else {
+      return res.status(500).send({
+        success: false,
+        message: result.message || "Failed to send OTP",
+      });
+    }
+  } catch (error) {
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Something went wrong",
@@ -1326,7 +1529,7 @@ export const smsController = async (req, res) => {
 const sendOtpVerificationMobile = async (mobile, email) => {
   try {
     const otp = otpGenerator();
-    //console.log("Otp Verification Mobile", otp);
+    console.log("Otp Verification Mobile", otp);
     const hashedotp = await hashOTP(otp);
 
     const createdAtIST = new Date(Date.now() + 5.5 * 60 * 60 * 1000); // IST is UTC + 5:30
@@ -1338,7 +1541,7 @@ const sendOtpVerificationMobile = async (mobile, email) => {
       expiresAt: expiresAtIST,
     });
     await newOTPverification.save();
-    //console.log("here", newOTPverification);
+    console.log("here", newOTPverification);
     await sendSMS(
       mobile,
       "Hello from Snapcart.Thanks for choosing us here is your OTP",
@@ -1371,7 +1574,7 @@ export const refreshTokenController = async (req, res) => {
       accessToken,
     });
   } catch (error) {
-    //////console.log(error);
+    ////console.log(error);
     return res.status(500).send({
       success: false,
       message: "Error in refreshing token",
@@ -1390,7 +1593,7 @@ export const userDetailsController = async (req, res) => {
       user,
     });
   } catch (error) {
-    ////console.log(error);
+    //console.log(error);
     return res.status(500).send({
       success: false,
       message: "Error in getting user information",
@@ -1410,7 +1613,7 @@ export const userPhotoController = async (req, res) => {
       return res.status(200).send(user.photo.data);
     }
   } catch (error) {
-    ////console.log(error);
+    //console.log(error);
     res.status(500).send({
       success: false,
       message: "Erorr while user getting photo",
@@ -1420,8 +1623,8 @@ export const userPhotoController = async (req, res) => {
 };
 // add delivrey partner
 // export const deliverytPartnerRegisterController = async (req, res) => {
-//   //console.log("req body", req.fields);
-//   //console.log("res here", req.files);
+//   console.log("req body", req.fields);
+//   console.log("res here", req.files);
 //   try {
 //     const { email, password } = req.fields;
 //     const { drivingLicenseFile, vehicleRegistrationFile, insuranceFile } =
@@ -1466,7 +1669,7 @@ export const userPhotoController = async (req, res) => {
 //       user: deliveryPartner,
 //     });
 //   } catch (error) {
-//     //console.log("error", error);
+//     console.log("error", error);
 //     res.status(500).send({
 //       success: false,
 //       message: "Error while registering",
@@ -1479,7 +1682,7 @@ export const deliverytPartnerRegisterController = async (req, res) => {
     const { email, password } = req.fields;
     const { drivingLicenseFile, vehicleRegistrationFile, insuranceFile } =
       req.files;
-    //console.log("req.files", req.files);
+    console.log("req.files", req.files);
     if (!email || !password) {
       return res
         .status(400)
@@ -1514,7 +1717,23 @@ export const deliverytPartnerRegisterController = async (req, res) => {
     }
 
     await deliveryPartner.save();
+    const notification = await new NotificationModel({
+      title: "Welcome to SnapCart 🎉",
+      message: `Hello ${deliveryPartner?.name}, welcome to our platform! 🚀`,
+      recipient: "delivery_partner",
+      status: "unread",
+      type: "system",
+      recipientId: deliveryPartner?._id,
+    }).save();
 
+    const emailContent = generateDeliveryPartnerWelcomeContent(deliveryPartner);
+
+    await sendEmail({
+      service: "gmail",
+      to: email,
+      subject: `🎉 Welcome to Snapcart, ${deliveryPartner?.name}! 🚀`,
+      html: emailContent,
+    });
     res.status(201).send({
       success: true,
       message: "Delivery Partner Registered Successfully",
@@ -1528,8 +1747,8 @@ export const deliverytPartnerRegisterController = async (req, res) => {
 
 // // add delivrey partner
 // export const deliverytPartnerRegisterController = async (req, res, fields, files) => {
-//   //console.log("fields:", fields);
-//   //console.log("files:", files);
+//   console.log("fields:", fields);
+//   console.log("files:", files);
 //   try {
 //     const { email, password } = fields;
 //     const { drivingLicenseFile, vehicleRegistrationFile, insuranceFile } = files;
@@ -1573,7 +1792,7 @@ export const deliverytPartnerRegisterController = async (req, res) => {
 //       user: deliveryPartner,
 //     });
 //   } catch (error) {
-//     //console.log("error", error);
+//     console.log("error", error);
 //     res.status(500).send({
 //       success: false,
 //       message: "Error while registering",
@@ -1680,8 +1899,8 @@ export const assignPartnerController = async (req, res) => {
 //     // Fetch all partners and check their availability
 //     const deliveryPartner = await deliveryPartnerModel.find({});
 //     const allPartners = deliveryPartner;
-//     //console.log("allPartners", allPartners);
-//     //console.log("deliveryPartner", deliveryPartner);
+//     console.log("allPartners", allPartners);
+//     console.log("deliveryPartner", deliveryPartner);
 //     const availablePartners = allPartners.map((partner) => ({
 //       name: partner?.name,
 //       id: partner?._id,
@@ -1711,7 +1930,7 @@ export const getAvailableDeliveryPartnersController = async (req, res) => {
       return acc;
     }, {});
 
-    //console.log("partnerCounts", partnerCounts);
+    console.log("partnerCounts", partnerCounts);
     const deliveryPartners = await deliveryPartnerModel.find({
       status: "Online",
     });
@@ -1744,7 +1963,7 @@ export const getAllPendingApprovalOrdersController = async (req, res) => {
       .sort({ updatedAt: -1 });
     res.status(200).send({ success: true, orders });
   } catch (error) {
-    ////console.log("error", error);
+    //console.log("error", error);
     res.status(500).send({
       success: false,
       message: "Error WHile Geting Orders",
@@ -1876,10 +2095,10 @@ export const deliveryOrderStatusController = async (req, res) => {
 export const getPartnerStatusController = async (req, res) => {
   try {
     const { deliveryId } = req.params;
-    //console.log("deliveryId", deliveryId);
+    console.log("deliveryId", deliveryId);
 
     const delivery = await deliveryPartnerModel.findById(deliveryId);
-    //console.log("delivery", delivery);
+    console.log("delivery", delivery);
 
     if (!delivery) {
       return res.status(404).json({ message: "Delivery not found" });

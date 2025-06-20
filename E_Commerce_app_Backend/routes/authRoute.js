@@ -20,14 +20,13 @@ import {
   forgotPasswordRecoveryControllerViaOTPvalidation,
   resetPasswordControllerAfterOTPvalidation,
   checkMailController,
-  smsController,
+  smsOTPController,
   refreshTokenController,
   updateContactController,
   uploadPicController,
   userDetailsController,
   userPhotoController,
   getOneOrderController,
-  verifyOtpController,
   resendOtpverifyController,
   deliverytPartnerRegisterController,
   getAllDeliveryPartnersController,
@@ -36,6 +35,11 @@ import {
   getAllPendingApprovalOrdersController,
   deliveryOrderStatusController,
   getPartnerStatusController,
+  emailOTPController,
+  verifyEmailOtpController,
+  resendRegisterEmailOtpverifyController,
+  verifySmsOtpController,
+  deletePicController,
 } from "../controllers/authController.js";
 
 import {
@@ -68,9 +72,9 @@ import {
 
 // Configure env
 dotenv.config();
-////console.log("auth routes", process.env.OTP_RATE_LIMIT_WINDOW_MS);
-////console.log(process.env.LOGIN_RATE_LIMIT_REQUESTS);
-////console.log(process.env.LOGIN_RATE_LIMIT_MESSAGE);
+//console.log("auth routes", process.env.OTP_RATE_LIMIT_WINDOW_MS);
+//console.log(process.env.LOGIN_RATE_LIMIT_REQUESTS);
+//console.log(process.env.LOGIN_RATE_LIMIT_MESSAGE);
 
 const router = express.Router();
 
@@ -113,10 +117,17 @@ router.put("/profile", requireSignIn, updateProfileController);
 router.put("/contactref", requireSignIn, updateContactController);
 //upload photo
 router.put(
-  "/uploadpic",
+  "/upload-pic",
   requireSignIn,
   formidableMiddleware(),
   uploadPicController
+);
+//delete photo
+router.delete(
+  "/delete-pic",
+  requireSignIn,
+  formidableMiddleware(),
+  deletePicController
 );
 
 //orders
@@ -157,13 +168,19 @@ router.put("/reset-password-otp", resetPasswordControllerAfterOTPvalidation);
 //check Mail
 router.get("/checkMail/:email", checkMailController);
 
-//sms - for -otp
-router.post("/get-otp", smsController);
+//otp - for -sms
+router.post("/get-sms-otp", smsOTPController);
+//otp - for -email
+router.post("/get-email-otp", emailOTPController);
 
 //verify otp
-router.post("/verify-otp", verifyOtpController);
+router.post("/verify-sms-otp", verifySmsOtpController);
+//verify email otp
+router.post("/verify-email-otp", verifyEmailOtpController);
 //resend otp
 router.post("/resend-otp", resendOtpverifyController);
+//resend Register email otp
+router.post("/resend-email-otp", resendRegisterEmailOtpverifyController);
 
 //get user
 router.get("/get-user/:uid", requireSignIn, userDetailsController);
@@ -190,8 +207,8 @@ router.post(
 //       });
 //     }
 
-//     //console.log("Parsed fields:", fields);
-//     //console.log("Parsed files:", files);
+//     console.log("Parsed fields:", fields);
+//     console.log("Parsed files:", files);
 
 //     // Pass the parsed fields and files to your controller
 //     deliverytPartnerRegisterController(req, res, fields, files);

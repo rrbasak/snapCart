@@ -132,7 +132,7 @@ const Header = memo(() => {
   };
 
   // const handleOpenPageMenu = (event) => {
-  //   //console.log(event)
+  //   console.log(event)
   //   setAnchorElPage(event.currentTarget);
   // };
 
@@ -191,12 +191,12 @@ const Header = memo(() => {
     if (!auth?.user?._id || auth?.user?.role !== 0) return;
     try {
       const { data } = await axios.get(
-        `${process.env.REACT_APP_API}/api/v1/cart/get-cart/${auth.user._id}`
+        `/api/v1/cart/get-cart/${auth.user._id}`
       );
       if (data?.success) {
         dispatch(setCart(data?.cartOnUser));
       } else {
-        // //console.log("Failed to fetch cart data");
+        // console.log("Failed to fetch cart data");
       }
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -208,11 +208,11 @@ const Header = memo(() => {
 
     let apiUrl = "";
     if (auth?.user?.role === 0) {
-      apiUrl = `${process.env.REACT_APP_API}/api/v1/auth/get-user-order-notifications/${auth?.user?._id}?page=${page}&limit=4`;
+      apiUrl = `/api/v1/auth/get-user-order-notifications/${auth?.user?._id}?page=${page}&limit=4`;
     } else if (auth?.user?.role === 1) {
-      apiUrl = `${process.env.REACT_APP_API}/api/v1/auth/get-admin-order-notifications/${auth?.user?._id}?page=${page}&limit=4`;
+      apiUrl = `/api/v1/auth/get-admin-order-notifications/${auth?.user?._id}?page=${page}&limit=4`;
     } else if (auth?.user?.role === 2) {
-      apiUrl = `${process.env.REACT_APP_API}/api/v1/auth/get-delivery-update-notification/${auth?.user?._id}?page=${page}&limit=4`;
+      apiUrl = `/api/v1/auth/get-delivery-update-notification/${auth?.user?._id}?page=${page}&limit=4`;
     } else {
       console.warn("Invalid user role for fetching notifications");
       return;
@@ -239,11 +239,11 @@ const Header = memo(() => {
     let apiUrl = "";
 
     if (auth.user.role === 0) {
-      apiUrl = `${process.env.REACT_APP_API}/api/v1/auth/update-user-order-notifications/${auth.user._id}`;
+      apiUrl = `/api/v1/auth/update-user-order-notifications/${auth.user._id}`;
     } else if (auth.user.role === 1) {
-      apiUrl = `${process.env.REACT_APP_API}/api/v1/auth/update-admin-notifications/${auth.user._id}`;
+      apiUrl = `/api/v1/auth/update-admin-notifications/${auth.user._id}`;
     } else if (auth.user.role === 2) {
-      apiUrl = `${process.env.REACT_APP_API}/api/v1/auth/update-delivery-order-notifications/${auth.user._id}`;
+      apiUrl = `/api/v1/auth/update-delivery-order-notifications/${auth.user._id}`;
     } else {
       console.warn("Invalid user role for fetching notifications");
       return;
@@ -284,7 +284,7 @@ const Header = memo(() => {
   }, [anchorEl]);
 
   const handleOpenPageMenu = (event, page) => {
-    // //console.log(page);
+    // console.log(page);
     if (page === "Orders") {
       navigate("/dashboard/profile", { state: { activeTab: "orders" } });
     } else {
@@ -558,7 +558,7 @@ const Header = memo(() => {
                   <MenuItem
                     key={c._id}
                     onClick={() => {
-                      // //console.log("cid", c._id);
+                      // console.log("cid", c._id);
                       navigate(`/category/${c.slug}`, {
                         state: { cid: c._id },
                       });
@@ -660,11 +660,11 @@ const Header = memo(() => {
                         >
                           <Avatar
                             alt={auth?.user?.name || "User"}
-                            src={
-                              auth?.user?.photo?.data
-                                ? `${process.env.REACT_APP_API}/api/v1/auth/user-photo/${auth?.user?._id}`
-                                : null
-                            }
+                            // src={
+                            //   auth?.user?.photo?.data
+                            //     ? `/api/v1/auth/user-photo/${auth?.user?._id}`
+                            //     : null
+                            // }
                             sx={{
                               backgroundColor: auth?.user?.photo?.data
                                 ? "transparent"
@@ -811,11 +811,11 @@ const Header = memo(() => {
                   >
                     <Avatar
                       alt={auth?.user?.name || "User"}
-                      src={
-                        auth?.user?.photo?.data
-                          ? `${process.env.REACT_APP_API}/api/v1/auth/user-photo/${auth?.user?._id}`
-                          : null
-                      }
+                      // src={
+                      //   auth?.user?.photo?.data
+                      //     ? `/api/v1/auth/user-photo/${auth?.user?._id}`
+                      //     : null
+                      // }
                       sx={{
                         backgroundColor: auth?.user?.photo?.data
                           ? "transparent"

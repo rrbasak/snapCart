@@ -8,6 +8,7 @@ import exchangeReducer from "../features/exchangeProduct/exchangeSlice.js";
 import pastProductReducer from "../features/pastProduct/pastProductSlice.js";
 import categoryReducer from "../features/categories/categoriesSlice.js";
 import statusReducer from "../features/status/statusSlice.js";
+import authReducer from "../features/auth/authSlice"; 
 
 import {thunk} from "redux-thunk";
 
@@ -23,7 +24,8 @@ const rootReducer = combineReducers({
   exchangeProduct: exchangeReducer,
   pastProduct: pastProductReducer,
   categories: categoryReducer,
-  status:statusReducer,
+  status: statusReducer,
+  auth: authReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

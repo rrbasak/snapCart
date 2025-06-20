@@ -34,9 +34,11 @@ import {
   Marker,
   DirectionsService,
   DirectionsRenderer,
+  Polyline,
 } from "@react-google-maps/api";
 import { Button } from "antd";
 import LocationFetcher from "../../frontendUtil/LocationFetcherUtil.jsx";
+import MapWithDirections from "../../components/commonComponents/MapWithDirections.jsx";
 
 export default function OneOrder() {
   const { width } = useWindowDimensions();
@@ -65,7 +67,11 @@ export default function OneOrder() {
   });
   const [map, setMap] = useState(/** @type google.maps.Map */ (null));
 
-  // This function will get the user's current location
+  //new
+  const [userLocation, setUserLocation] = useState(null); // User's location (lat/lng)
+  const [deliveryPartnerLocation, setDeliveryPartnerLocation] = useState(null);
+
+  // Get the user's current location
   const getUserLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -73,33 +79,80 @@ export default function OneOrder() {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         };
-        setCenter(userLocation); // Update the map center with the user's location
+        setUserLocation(userLocation);
       });
     } else {
       console.log("Geolocation is not supported by this browser.");
     }
   };
 
-  const moveAdminLocation = (newLocation) => {
-    setAdminLocation(newLocation);
+  const getDeliveryPartnerLocation = () => {
+    // setDeliveryPartnerLocation({
+    //   lat: 22.576,
+    //   lng: 88.365,
+    // });
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const deliveryPartnerLocation = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+        setDeliveryPartnerLocation(deliveryPartnerLocation);
+      });
+    } else {
+      console.log("Geolocation is not supported by this browser.");
+    }
   };
 
-  // Run getUserLocation when the component mounts
   useEffect(() => {
+    // Get the user's location and simulate delivery partner location
     getUserLocation();
+    getDeliveryPartnerLocation(); // Replace with real-time location data from the delivery partner
 
-    // Simulate admin location moving every 5 seconds for demonstration
-    const moveInterval = setInterval(() => {
-      const newAdminLocation = {
-        lat: adminLocation.lat + 0.0001, // Example movement of admin
-        lng: adminLocation.lng + 0.0001,
-      };
-      moveAdminLocation(newAdminLocation);
-    }, 2000000); // Move admin location every 5 seconds
+    // // Fetch order details after authentication
+    // if (auth?.accessToken) {
+    //   fetchOneOrder();
+    // }
+  }, [auth]);
 
-    // Clear the interval on component unmount
-    return () => clearInterval(moveInterval);
-  }, []);
+  //new end
+  // // This function will get the user's current location
+  // const getUserLocation = () => {
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition((position) => {
+  //       const userLocation = {
+  //         lat: position.coords.latitude,
+  //         lng: position.coords.longitude,
+  //       };
+  //       setCenter(userLocation); // Update the map center with the user's location
+  //     });
+  //   } else {
+  //     console.log("Geolocation is not supported by this browser.");
+  //   }
+  // };
+
+  // const moveAdminLocation = (newLocation) => {
+  //   setAdminLocation(newLocation);
+  // };
+  // useEffect(() => {
+  //   console.log("Updated directions:", directions);
+  // }, [directions]);
+  // // Run getUserLocation when the component mounts
+  // useEffect(() => {
+  //   getUserLocation();
+
+  //   // Simulate admin location moving every 5 seconds for demonstration
+  //   const moveInterval = setInterval(() => {
+  //     const newAdminLocation = {
+  //       lat: adminLocation.lat + 0.0001, // Example movement of admin
+  //       lng: adminLocation.lng + 0.0001,
+  //     };
+  //     moveAdminLocation(newAdminLocation);
+  //   }, 5000); // Move admin location every 5 seconds
+
+  //   // Clear the interval on component unmount
+  //   return () => clearInterval(moveInterval);
+  // }, []);
 
   const getNumberOfReviewFunc = async () => {
     try {
@@ -214,13 +267,43 @@ export default function OneOrder() {
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: "AlzaSyQH7Yn3-18ZyYGAzqNoPYJQoA_-S9jUX7s",
+    // googleMapsApiKey: "AIzaSyDrdGO4WZZUva2vHxOAP4VF7sArwO5-IP0",
+    // googleMapsApiKey: process.env.REACT_APP_GO_MAPS_API_KEYS,
+    googleMapsApiKey: process.env.REACT_APP_GO_MAPS_SEC_API_KEYS,
     // libraries: ["places"],
   });
 
   if (!isLoaded) {
     return <div>Loading...</div>;
   }
+
+  //maps functions
+
+  const fetchDirections = async (origin, destination) => {
+    try {
+      const response = await fetch(
+        `https://maps.gomaps.pro/maps/api/directions/json?destination=${destination}&origin=${origin}&key=YOUR_API_KEY`
+      );
+      const data = await response.json();
+
+      console.log("Directions Data:", data); // Debugging
+
+      if (data.routes.length > 0) {
+        setDirections(data.routes[0]); // Store the first route
+      } else {
+        console.error("No route found.");
+      }
+    } catch (error) {
+      console.error("Error fetching directions:", error);
+    }
+  };
+
+  const polylinePath = directions?.legs?.flatMap((leg) =>
+    leg.steps.map((step) => ({
+      lat: step.end_location.lat,
+      lng: step.end_location.lng,
+    }))
+  );
 
   return (
     <Layout title={"Your Order"}>
@@ -242,7 +325,7 @@ export default function OneOrder() {
                   <MDBRow>
                     <div>
                       <div style={{ width: "100%", height: "400px" }}>
-                        {center && (
+                        {/* {center && (
                           <GoogleMap
                             center={center}
                             zoom={15}
@@ -250,10 +333,11 @@ export default function OneOrder() {
                               width: "100%",
                               height: "100%",
                             }}
-                            options={{
-                              streetViewControl: false,
-                              fullscreenControl: false,
-                            }}
+                            // options={{
+                            //   streetViewControl: true,
+                            //   fullscreenControl: true,
+                            //   mapTypeControl: true,
+                            // }}
                             onLoad={(map) => setMap(map)}
                           >
                             <Marker position={center} />
@@ -262,11 +346,33 @@ export default function OneOrder() {
                               options={{
                                 origin: adminLocation,
                                 destination: center,
-                                travelMode: "DRIVING",
+                                // travelMode: "DRIVING",
+                                travelMode:
+                                  window.google.maps.TravelMode.DRIVING,
                               }}
-                              callback={(response) => {
-                                if (response?.status === "OK") {
+                              // callback={(response) => {
+                              //   if (response?.status === "OK") {
+                              //     setDirections(response);
+                              //   }
+                              // }}
+                              callback={(response, status) => {
+                                console.log(
+                                  "Directions Response:",
+                                  response,
+                                  "Status:",
+                                  status
+                                );
+                                if (
+                                  status ===
+                                  window.google.maps.DirectionsStatus.OK
+                                ) {
+                                  console.log("Directions response:", response);
                                   setDirections(response);
+                                } else {
+                                  console.error(
+                                    "Error fetching directions:",
+                                    status
+                                  );
                                 }
                               }}
                             />
@@ -274,10 +380,20 @@ export default function OneOrder() {
                               <DirectionsRenderer options={{ directions }} />
                             )}
                           </GoogleMap>
+                        )} */}
+
+                        {userLocation && deliveryPartnerLocation && (
+                          <MapWithDirections
+                            userLocation={userLocation}
+                            deliveryPartnerLocation={deliveryPartnerLocation}
+                            setMapRef={setMap}
+                            UserLabel="User"
+                            deliveryPartnerLabel="Delivery Partner"
+                          />
                         )}
                       </div>
                       <div className="d-flex justify-content-center mt-2">
-                        <Button onClick={() => map.panTo(center)}>
+                        <Button onClick={() => map.panTo(userLocation)}>
                           Center
                         </Button>
                       </div>
@@ -455,7 +571,7 @@ export default function OneOrder() {
                                   <div className="d-flex align-items-center">
                                     <div className={styles.imageContainer}>
                                       <MDBCardImage
-                                        src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product?.product._id}`}
+                                        src={`/api/v1/product/product-photo/${product?.product._id}`}
                                         alt={product?.product.name}
                                         fluid
                                       />
@@ -520,7 +636,7 @@ export default function OneOrder() {
                                 <div className="d-flex align-items-center">
                                   <div className={styles.imageContainer}>
                                     <MDBCardImage
-                                      src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${particularproduct?.product?._id}`}
+                                      src={`/api/v1/product/product-photo/${particularproduct?.product?._id}`}
                                       alt={particularproduct?.name}
                                       fluid
                                     />

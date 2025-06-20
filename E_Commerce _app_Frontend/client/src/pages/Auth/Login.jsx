@@ -18,7 +18,7 @@ import { jwtDecode } from "jwt-decode";
 import { googleLogout } from "@react-oauth/google";
 import { useGoogleLogin } from "@react-oauth/google";
 import ForgotPasssword from "./ForgotPassword";
-import OTP from "../../components/OTP";
+import MobileValidationOTP from "../../components/MobileValidationOTP";
 import PhoneNumber from "./PhoneNumber";
 import PassWordAddress from "./PassWordAddress";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -30,6 +30,8 @@ import {
   faLock,
   faSignature,
   faUser,
+  faEye,
+  faEyeSlash,
 } from "@fortawesome/free-solid-svg-icons";
 
 import ReCAPTCHA from "react-google-recaptcha";
@@ -38,8 +40,15 @@ import ReCAPTCHA from "react-google-recaptcha";
 import stylesInput from "../../../src/styles/Input.module.css";
 import stylesButton from "../../../src/styles/Button.module.css";
 import "../../styles/AuthStyles.css";
-import { addEmail, checkEmail } from "../../frontendUtil/api";
+import { addEmail, checkEmail } from "../../frontendUtil/api.js";
 import VehicleDetailsForm from "../DeliveryPartner/VehicleDetailsForm";
+import EmailvalidationOTP from "../../components/EmailvalidationOTP";
+import PasswordAndConfirmPassword from "./PasswordAndConfirmPassword.jsx";
+import { Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+import { CircularProgress } from "@mui/material";
+import LoginPage from "./LoginPage.jsx";
+import RegisterPage from "./RegisterPage.jsx";
 
 const LoginRegister = () => {
   const [email, setEmail] = useState("");
@@ -59,6 +68,8 @@ const LoginRegister = () => {
   const captchaRef = useRef();
   const [pass_word, setPass_word] = useState("");
   const [add_ress, setAddress] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [startLoading, setStartLoading] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -73,14 +84,11 @@ const LoginRegister = () => {
             },
           }
         );
-        //////console.log(value.data);
+        ////console.log(value.data);
         const email = value?.data?.email;
-        const res = await axios.post(
-          `${process.env.REACT_APP_API}/api/v1/auth/loginViaGoogle`,
-          {
-            email: email,
-          }
-        );
+        const res = await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/loginViaGoogle`, {
+          email: email,
+        });
         if (res && res.data.success) {
           setAuth({
             ...auth,
@@ -94,7 +102,7 @@ const LoginRegister = () => {
           toast.error(res.data.message);
         }
       } catch (error) {
-        //////console.log(error);
+        ////console.log(error);
       }
     },
   });
@@ -117,17 +125,14 @@ const LoginRegister = () => {
             },
           }
         );
-        //////console.log(value.data);
+        ////console.log(value.data);
         const email = value?.data?.email;
         const name = capitalizeName(value?.data?.name);
-        const res = await axios.post(
-          `${process.env.REACT_APP_API}/api/v1/auth/registerViaGoogle`,
-          {
-            name: name,
-            email: email,
-          }
-        );
-        ////console.log(res.data);
+        const res = await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/registerViaGoogle`, {
+          name: name,
+          email: email,
+        });
+        //console.log(res.data);
 
         if (res && res?.data && res?.data?.success === true) {
           setAuth({
@@ -139,12 +144,12 @@ const LoginRegister = () => {
           navigate(location.state || "/");
           toast.success(res.data.message);
         } else {
-          ////console.log("login er");
+          //console.log("login er");
           setActiveTab("login");
           toast.success(res.data.message);
         }
       } catch (error) {
-        //////console.log(error);
+        ////console.log(error);
       }
     },
   });
@@ -157,15 +162,17 @@ const LoginRegister = () => {
   //   isLoading,
   // } = useAuth0();
   // {
-  //   isAuthenticated && //////console.log(user);
+  //   isAuthenticated && ////console.log(user);
   // }
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   const recaptchaHandler = (value) => {
-    //////console.log(value);
+    ////console.log(value);
     setRecaptchaValue(value);
     // captchaRef.current.reset();
   };
   const handleLogin = async (e) => {
+    setStartLoading(true);
     e.preventDefault();
     try {
       const res = await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/login`, {
@@ -173,21 +180,22 @@ const LoginRegister = () => {
         password,
         recaptchaValue,
       });
-      ////console.log(res);
+      console.log(res);
       if (res && res.data.success) {
         setAuth({
           ...auth,
           user: res.data.user,
           accessToken: res.data.accessToken,
         });
+
         localStorage.setItem("auth", JSON.stringify(res.data));
         const redirectTo = location?.state?.from?.pathname || "/";
         const redirectSearch = location?.state?.from?.search || "";
-        // //console.log("location?.state", location?.state);
-        // //console.log("redirectTo + redirectSearch", redirectTo + redirectSearch);
+        // console.log("location?.state", location?.state);
+        // console.log("redirectTo + redirectSearch", redirectTo + redirectSearch);
         // navigate(redirectTo + redirectSearch || location.state);
-        // //console.log("location.state", location.state);
-        // //console.log("auth?.user?.role", auth?.user?.role);
+        // console.log("location.state", location.state);
+        // console.log("auth?.user?.role", auth?.user?.role);
         // if (res.data?.user?.role === 0) {
         //   navigate(location.state || "/");
         // } else if (res.data?.user?.role === 1) {
@@ -220,6 +228,8 @@ const LoginRegister = () => {
         console.error(error);
         toast.error("Something went wrong");
       }
+    } finally {
+      setStartLoading(false);
     }
   };
 
@@ -253,9 +263,12 @@ const LoginRegister = () => {
       vehicleRegistrationFile: null,
       insuranceFile: null,
     });
+  const activeTabHandler = (nextPage) => {
+    console.log(nextPage);
+    setActiveTab(nextPage);
+  };
 
-  const handleRegister = async (e) => {
-    e.preventDefault();
+  const handleRegister = async (firstName, lastName, email) => {
     try {
       if (!firstName) {
         toast.error("Please provide first name", {
@@ -288,11 +301,12 @@ const LoginRegister = () => {
         return;
       }
       // const res = await axios.get(`/api/v1/auth/checkMail/${email}`);
-      //////console.log(res);
+      ////console.log(res);
       // const emailExists = await bloomFilter.alreadyExists(email);
-      const emailExists = await checkEmail(email);
-      if (!emailExists) {
-        await addEmail(email);
+
+      // const emailExists = await checkEmail(email);
+      if (true) {
+        // await addEmail(email);
         setRegisterFormBody((prevFormBody) => ({
           ...prevFormBody,
           name: capitalize(firstName) + " " + capitalize(lastName),
@@ -303,7 +317,23 @@ const LoginRegister = () => {
           name: capitalize(firstName) + " " + capitalize(lastName),
           email: email,
         }));
-        setActiveTab("mobileValidation");
+        try {
+          const res = await axios.post(
+            `${process.env.REACT_APP_API}/api/v1/auth/get-email-otp`,
+            {
+              email: email,
+            }
+          );
+          if (res && res.data.success) {
+            toast.success(res.data.message);
+            setActiveTab("OTP_registerEmailValidation");
+          } else {
+            toast.error(res.data.message);
+          }
+        } catch (error) {
+          toast.error("Something went wrong");
+          console.error("Error:", error);
+        }
       } else {
         toast.error(
           "Unable to proceed. Please check your details and try again."
@@ -321,8 +351,10 @@ const LoginRegister = () => {
       //   toast.error(res.data.message);
       // }
     } catch (error) {
-      //////console.log(error);
+      ////console.log(error);
       toast.error("Something went wrong");
+    } finally {
+      setStartLoading(false);
     }
 
     // try {
@@ -344,32 +376,35 @@ const LoginRegister = () => {
     //     toast.error(res.data.message);
     //   }
     // } catch (error) {
-    //   //////console.log(error);
+    //   ////console.log(error);
     //   toast.error("Something went wrong");
     // }
   };
   const rememberHandler = () => {
-    //////console.log("rememberHandler");
+    ////console.log("rememberHandler");
     setActiveTab("login");
   };
   const otppageHandler = (email, userId) => {
-    //////console.log("email", email);
-    //////console.log("otp", otp);
+    ////console.log("email", email);
+    ////console.log("otp", otp);
     setOTPEmail(email);
     // setOTP(otp);
     setUserId(userId);
-    setActiveTab("otppage");
+    setActiveTab("OTP_emailValidation");
   };
 
   const resetPage = () => {
-    //////console.log("Reset page");
+    ////console.log("Reset page");
     setActiveTab("resetPage");
+  };
+  const mobileNumberHandler = () => {
+    setActiveTab("mobileValidation");
   };
   const registrationNextPage = () => {
     setActiveTab("registrationNextPage");
   };
   const deliveryPartner = async (password, address) => {
-    //console.log(password, address);
+    console.log(password, address);
     setDeliveryPartnerRegisterFormBody((prevFormBody) => ({
       ...prevFormBody,
       password: password,
@@ -426,7 +461,7 @@ const LoginRegister = () => {
         });
       }
     } catch (error) {
-      //////console.log(error);
+      ////console.log(error);
       toast.error("Something went wrong2");
     }
   };
@@ -438,13 +473,17 @@ const LoginRegister = () => {
         password: password,
         address: address,
       }));
-      //////console.log(registerFormBody);
-      const res = await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/register`, {
-        ...registerFormBody,
-        password: password,
-        address: address,
-      });
+      ////console.log(registerFormBody);
+      const res = await axios.post(
+        `${process.env.REACT_APP_API}/api/v1/auth/register`,
+        {
+          ...registerFormBody,
+          password: password,
+          address: address,
+        }
+      );
       if (res && res.data.success) {
+        await addEmail(registerFormBody?.email);
         toast.success(res.data.message);
         setTimeout(() => {
           setActiveTab("login");
@@ -453,10 +492,43 @@ const LoginRegister = () => {
         toast.error(res.data.message);
       }
     } catch (error) {
-      //////console.log(error);
+      ////console.log(error);
       toast.error("Something went wrong3");
     }
   };
+
+  const forgotpasswordStepHandler = async (
+    resetPassword,
+    confirmResetPassword
+  ) => {
+    try {
+      const res = await axios.put(
+        `${process.env.REACT_APP_API}/api/v1/auth/reset-password-otp`,
+        {
+          otpEmail,
+          resetPassword,
+          confirmResetPassword,
+        }
+      );
+      if (res && res.data.success) {
+        toast.success(res.data.message);
+        setTimeout(() => {
+          setActiveTab("login");
+        }, 3000);
+      } else {
+        toast.error(res.data.message, {
+          icon: "⚠️",
+          style: {
+            background: "#fff9c4",
+            color: "#000",
+          },
+        });
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
+  };
+
   const otppageForMobileValidation = async (mobile, otp) => {
     setRegisterFormBody((prevFormBody) => ({
       ...prevFormBody,
@@ -512,7 +584,7 @@ const LoginRegister = () => {
   //       insuranceFile: insuranceFile,
   //     }));
 
-  //     //console.log(registerFormBody);
+  //     console.log(registerFormBody);
   //     const res = await axios.post("/api/v1/auth/delivery-partner/register", {
   //       ...registerFormBody,
   //       password: pass_word,
@@ -539,7 +611,7 @@ const LoginRegister = () => {
   //       toast.error(res.data.message);
   //     }
   //   } catch (error) {
-  //     //console.log(error);
+  //     console.log(error);
   //     toast.error("Something went wrong here");
   //   }
   // };
@@ -615,7 +687,7 @@ const LoginRegister = () => {
       }
 
       for (let [key, value] of deliveryPartnerData.entries()) {
-        //console.log(key, value);
+        console.log(key, value);
       }
       const res = await axios.post(
         `${process.env.REACT_APP_API}/api/v1/auth/delivery-partner/register`,
@@ -635,6 +707,7 @@ const LoginRegister = () => {
           status: "unread",
           type: "system",
         });
+        await addEmail(combinedFormData?.email);
         toast.success(res.data.message);
         setTimeout(() => {
           setActiveTab("login");
@@ -643,7 +716,7 @@ const LoginRegister = () => {
         toast.error(res.data.message);
       }
     } catch (error) {
-      //console.log(error);
+      console.log(error);
       toast.error("Something went wrong here");
     }
   };
@@ -679,7 +752,8 @@ const LoginRegister = () => {
               <div className="card">
                 <div className="card-body py-5 px-md-5">
                   {activeTab === "forgotpassword" ||
-                  activeTab === "otppage" ||
+                  activeTab === "OTP_emailValidation" ||
+                  activeTab === "OTP_registerEmailValidation" ||
                   activeTab === "resetPage" ||
                   activeTab === "mobileValidation" ||
                   activeTab === "OTP_mobileValidation" ||
@@ -723,176 +797,7 @@ const LoginRegister = () => {
                         role="tabpanel"
                         aria-labelledby="tab-login"
                       >
-                        <form onSubmit={handleLogin}>
-                          <div className="text-center mb-3">
-                            <p>Sign in with:</p>
-                            {/* <button
-                              type="button"
-                              className="btn btn-link btn-floating mx-1"
-                            >
-                              <i className="fab fa-facebook-f"></i>
-                            </button> */}
-                            <button
-                              type="button"
-                              className="btn btn-link btn-floating mx-1"
-                            >
-                              <i
-                                // onClick={() => loginWithRedirect()}
-                                onClick={() => login()}
-                                className="fab fa-google"
-                              ></i>
-                            </button>
-                            {/* <GoogleLogin
-                                onSuccess={(credentialResponse) => {
-                                  var credentialResponseDecode = jwtDecode(
-                                    credentialResponse.credential
-                                  );
-                                  //////console.log(credentialResponseDecode);
-                                }}
-                                onError={() => {
-                                  //////console.log("Login Failed");
-                                }}
-                              /> */}
-
-                            {/* <button
-                                // onClick={() =>
-                                //   logout({
-                                //     logoutParams: {
-                                //       returnTo: window.location.origin,
-                                //     },
-                                //   })
-                                // }
-
-
-
-                                // onClick={() => {
-                                //   //////console.log("log out");
-                                //   googleLogout();
-                                // }}
-                              >
-                                Log Out
-                              </button> */}
-                            {/* <button
-                              type="button"
-                              className="btn btn-link btn-floating mx-1"
-                            >
-                              <i className="fab fa-twitter"></i>
-                            </button>
-                            <button
-                              type="button"
-                              className="btn btn-link btn-floating mx-1"
-                            >
-                              <i className="fab fa-github"></i>
-                            </button> */}
-                          </div>
-                          <p className="text-center">or:</p>
-
-                          {/* Email */}
-                          <div className={stylesInput.inputContainer}>
-                            <label
-                              className={stylesInput.formLabel}
-                              htmlFor="email"
-                            >
-                              Email
-                            </label>
-                            <span className={stylesInput.iconInside}>
-                              <FontAwesomeIcon
-                                icon={faEnvelope}
-                                className={stylesInput.icon}
-                              />
-                            </span>
-                            <input
-                              type="email"
-                              id="loginName"
-                              className={stylesInput.inputField}
-                              value={email}
-                              onChange={(e) => setEmail(e.target.value)}
-                              placeholder="e.g. tchalla@wakanda.gov"
-                              autoFocus
-                            />
-                          </div>
-
-                          {/* Password */}
-                          <div className={stylesInput.inputContainer}>
-                            <label
-                              className={stylesInput.formLabel}
-                              htmlFor="password"
-                            >
-                              Password
-                            </label>
-                            <span className={stylesInput.iconInside}>
-                              <FontAwesomeIcon
-                                icon={faLock}
-                                className={stylesInput.icon}
-                              />
-                            </span>
-                            <input
-                              type="password"
-                              id="loginPassword"
-                              className={stylesInput.inputField}
-                              value={password}
-                              onChange={(e) => setPassword(e.target.value)}
-                              placeholder="Password"
-                            />
-                          </div>
-                          <div className={stylesInput.inputContainer}>
-                            {/* <div className="recaptcha-container"> */}
-                            <div
-                              className={`g-recaptcha ${stylesInput.gRecaptchaContainer}`}
-                              data-theme="light"
-                              data-sitekey="XXXXXXXXXXXXX"
-                            >
-                              <ReCAPTCHA
-                                // sitekey={process.env.RECAPTCHA_SITE_KEY}
-                                sitekey="6LcclwQqAAAAABe5-jb24MgWm3TeK73zeeD2PsNT"
-                                onChange={recaptchaHandler}
-                                // ref={captchaRef}
-                                className="recaptcha-fixed"
-                              />
-                              {/* </div> */}
-                            </div>
-                          </div>
-                          <div className={stylesInput.inputContainer}>
-                            <button
-                              type="submit"
-                              className="btn btn-primary btn-block mb-4 "
-                              style={{ width: "100%" }}
-                            >
-                              Sign In{" "}
-                              <span>
-                                <FontAwesomeIcon icon={faRightToBracket} />
-                              </span>
-                            </button>
-                          </div>
-                          <div className="text-center">
-                            <div>
-                              <Link
-                                onClick={() => setActiveTab("forgotpassword")}
-                              >
-                                Forgot your password?
-                              </Link>
-                            </div>
-                            <p>
-                              Don't have an account?{" "}
-                              <Link
-                                // to="/"
-                                state={{ role: "buyer" }}
-                                onClick={() => setActiveTab("register")}
-                              >
-                                Sign up and get started!
-                              </Link>
-                            </p>
-                            <p>
-                              <Link
-                                // to="/"
-                                state={{ role: "deliveryPartner" }}
-                                onClick={() => setActiveTab("register")}
-                              >
-                                *Sign up as a Delivery Partner and earn!
-                              </Link>
-                            </p>
-                          </div>
-                        </form>
+                        <LoginPage activeTabHandler={activeTabHandler} />
                       </div>
                     )}
 
@@ -903,206 +808,10 @@ const LoginRegister = () => {
                         role="tabpanel"
                         aria-labelledby="tab-register"
                       >
-                        <form onSubmit={handleRegister}>
-                          <div className="text-center mb-3">
-                            <p>Sign up with:</p>
-                            {/* <button
-                              type="button"
-                              className="btn btn-link btn-floating mx-1"
-                            >
-                              <i className="fab fa-facebook-f"></i>
-                            </button> */}
-                            <button
-                              type="button"
-                              className="btn btn-link btn-floating mx-1"
-                            >
-                              <i
-                                onClick={() => registration()}
-                                className="fab fa-google"
-                              ></i>
-                            </button>
-                            {/* <button
-                              type="button"
-                              className="btn btn-link btn-floating mx-1"
-                            >
-                              <i className="fab fa-twitter"></i>
-                            </button> */}
-                            {/* <button
-                              type="button"
-                              className="btn btn-link btn-floating mx-1"
-                            >
-                              <i className="fab fa-github"></i>
-                            </button> */}
-                          </div>
-                          <p className="text-center">or:</p>
-
-                          {/* <div className="row">
-                           
-                            <div className="col-md-6 mb-4">
-                              <label
-                                className={stylesInput.formLabel}
-                                htmlFor="firstname"
-                              >
-                                First name
-                              </label>
-                              <span className={stylesInput.iconOnelineInside}>
-                                <FontAwesomeIcon
-                                  icon={faUser}
-                                  className={stylesInput.icon}
-                                />
-                              </span>
-
-                              <input
-                                type="text"
-                                id="firstname"
-                                className={stylesInput.inputField}
-                                value={firstName}
-                                onChange={(e) => setFirstName(e.target.value)}
-                                placeholder="Virat"
-                                autoFocus
-                              />
-                            </div>
-                   
-                            <div className="col-md-6 mb-4">
-                              <label
-                                className={stylesInput.formLabel}
-                                htmlFor="lastname"
-                              >
-                                Last name
-                              </label>
-                              <div className="form-outline">
-                                <input
-                                  type="text"
-                                  id="form3Example2"
-                                  className={stylesInput.inputField}
-                                  value={lastName}
-                                  onChange={(e) => setLastName(e.target.value)}
-                                  placeholder="Kohli"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                          <div className="form-outline mb-4">
-                            <label
-                              className={stylesInput.formLabel}
-                              htmlFor="registerEmail"
-                            >
-                              Email
-                            </label>
-                            <span
-                              className={stylesInput.emailIconOnelineInside}
-                            >
-                              <FontAwesomeIcon
-                                icon={faEnvelope}
-                                className={stylesInput.icon}
-                              />
-                            </span>
-                            <input
-                              type="email"
-                              id="registerEmail"
-                              className={stylesInput.inputField}
-                              value={email}
-                              onChange={(e) => setEmail(e.target.value)}
-                              placeholder="e.g. tchalla@wakanda.gov"
-                            />
-                          </div> */}
-
-                          <div className="row">
-                            <div className="col-md-6 mb-4">
-                              <label
-                                className={stylesInput.formLabel}
-                                htmlFor="firstname"
-                              >
-                                First name
-                              </label>
-                              <div
-                                className={`${stylesInput.inputContainer} d-flex align-items-center`}
-                              >
-                                <span className={stylesInput.iconRegInside}>
-                                  <FontAwesomeIcon
-                                    icon={faUser}
-                                    className={stylesInput.icon}
-                                  />
-                                </span>
-
-                                <input
-                                  type="text"
-                                  id="firstname"
-                                  className={stylesInput.inputField}
-                                  value={firstName}
-                                  onChange={(e) => setFirstName(e.target.value)}
-                                  placeholder="Virat"
-                                  autoFocus
-                                />
-                              </div>
-                            </div>
-
-                            <div className="col-md-6 mb-4">
-                              <label
-                                className={stylesInput.formLabel}
-                                htmlFor="lastname"
-                              >
-                                Last name
-                              </label>
-                              <div
-                                className={`${stylesInput.inputContainer} d-flex align-items-center`}
-                              >
-                                <span className={stylesInput.iconRegInside}>
-                                  <FontAwesomeIcon
-                                    icon={faUser}
-                                    className={stylesInput.icon}
-                                  />
-                                </span>
-
-                                <input
-                                  type="text"
-                                  id="lastname"
-                                  className={stylesInput.inputField}
-                                  value={lastName}
-                                  onChange={(e) => setLastName(e.target.value)}
-                                  placeholder="Kohli"
-                                />
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="form-outline mb-4">
-                            <label
-                              className={stylesInput.formLabel}
-                              htmlFor="registerEmail"
-                            >
-                              Email
-                            </label>
-                            <div
-                              className={`${stylesInput.inputContainer} d-flex align-items-center`}
-                            >
-                              <span className={stylesInput.iconRegInside}>
-                                <FontAwesomeIcon
-                                  icon={faEnvelope}
-                                  className={stylesInput.icon}
-                                />
-                              </span>
-
-                              <input
-                                type="email"
-                                id="registerEmail"
-                                className={stylesInput.inputField}
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="e.g. tchalla@wakanda.gov"
-                              />
-                            </div>
-                          </div>
-
-                          <div className="row mb-4">
-                            <button
-                              type="submit"
-                              className="btn btn-primary btn-block mb-4"
-                            >
-                              Go
-                            </button>
-                          </div>
-                        </form>
+                        <RegisterPage
+                          handleRegister={handleRegister}
+                          registration={registration}
+                        />
                       </div>
                     )}
 
@@ -1113,89 +822,104 @@ const LoginRegister = () => {
                       ></ForgotPasssword>
                     )}
 
-                    {activeTab === "otppage" && (
-                      <OTP
+                    {activeTab === "OTP_emailValidation" && (
+                      <EmailvalidationOTP
                         to={otpEmail}
                         userId={userId}
                         email={email}
                         mobile={mobileno}
                         nextPage={resetPage}
-                      ></OTP>
+                      ></EmailvalidationOTP>
                     )}
 
                     {activeTab === "resetPage" && (
-                      <div
-                        className="tab-pane fade show active"
-                        id="pills-login"
-                        role="tabpanel"
-                        aria-labelledby="tab-login"
-                      >
-                        <form onSubmit={resetFormHandler}>
-                          {/* password */}
-                          <div className={stylesInput.inputContainer}></div>
-                          <label
-                            className={stylesInput.formLabel}
-                            htmlFor="resetpassword"
-                          >
-                            Password
-                          </label>
-                          <span className={stylesInput.iconTwoEmailInside}>
-                            <FontAwesomeIcon
-                              icon={faLock}
-                              className={stylesInput.icon}
-                            />
-                          </span>
-                          <input
-                            type="password"
-                            id="password"
-                            className={stylesInput.inputField}
-                            value={resetPassword}
-                            onChange={(e) => setResetPassword(e.target.value)}
-                            placeholder="**********"
-                            autoFocus
-                          />
-                          {/* confirm password */}
-                          <div className={stylesInput.inputContainer}>
-                            <label
-                              className={stylesInput.formLabel}
-                              htmlFor="loginName"
-                            >
-                              Confirm Password
-                            </label>
-                            <span className={stylesInput.iconInside}>
-                              <FontAwesomeIcon
-                                icon={faLock}
-                                className={stylesInput.icon}
-                              />
-                            </span>
-                            <input
-                              type="password"
-                              id="confirmpassword"
-                              className={stylesInput.inputField}
-                              value={confirmResetPassword}
-                              onChange={(e) =>
-                                setConfirmResetPassword(e.target.value)
-                              }
-                              placeholder="**********"
-                              autoFocus
-                            />
-                          </div>
+                      // <div
+                      //   className="tab-pane fade show active"
+                      //   id="pills-login"
+                      //   role="tabpanel"
+                      //   aria-labelledby="tab-login"
+                      // >
+                      //   <form onSubmit={resetFormHandler}>
+                      //     {/* password */}
+                      //     <div className={stylesInput.inputContainer}></div>
+                      //     <label className={stylesInput.formLabel}>
+                      //       Password <span style={{ color: "red" }}>*</span>
+                      //     </label>
+                      //     <span className={stylesInput.iconTwoEmailInside}>
+                      //       <FontAwesomeIcon
+                      //         icon={faLock}
+                      //         className={stylesInput.icon}
+                      //       />
+                      //     </span>
+                      //     <input
+                      //       type="password"
+                      //       id="password"
+                      //       className={stylesInput.inputField}
+                      //       value={resetPassword}
+                      //       onChange={(e) => setResetPassword(e.target.value)}
+                      //       placeholder="Enter new  password"
+                      //       autoFocus
+                      //     />
+                      //     {/* confirm password */}
+                      //     <div className={stylesInput.inputContainer}>
+                      //       <label className={stylesInput.formLabel}>
+                      //         Confirm Password
+                      //         <span style={{ color: "red" }}>*</span>
+                      //       </label>
+                      //       <span className={stylesInput.iconInside}>
+                      //         <FontAwesomeIcon
+                      //           icon={faLock}
+                      //           className={stylesInput.icon}
+                      //         />
+                      //       </span>
+                      //       <input
+                      //         type="password"
+                      //         id="confirmpassword"
+                      //         className={stylesInput.inputField}
+                      //         value={confirmResetPassword}
+                      //         onChange={(e) =>
+                      //           setConfirmResetPassword(e.target.value)
+                      //         }
+                      //         placeholder="Re-enter new password"
+                      //         autoFocus
+                      //       />
+                      //     </div>
 
-                          <div className={stylesInput.inputContainer}>
-                            <button
-                              type="submit"
-                              className="btn btn-primary btn-block mb-4"
-                              style={{ width: "100%" }}
-                            >
-                              Reset my password
-                            </button>
-                          </div>
+                      //     <div className={stylesInput.inputContainer}>
+                      //       <button
+                      //         type="submit"
+                      //         className="btn btn-primary btn-block mb-4"
+                      //         style={{ width: "100%" }}
+                      //       >
+                      //         Reset my password
+                      //       </button>
+                      //     </div>
 
-                          <div className="text-center"></div>
-                        </form>
-                      </div>
+                      //     <div className="text-center"></div>
+                      //   </form>
+                      // </div>
+                      <PasswordAndConfirmPassword
+                        lastStep={forgotpasswordStepHandler}
+                      />
                     )}
-
+                    {activeTab === "OTP_registerEmailValidation" && (
+                      <EmailvalidationOTP
+                        to={
+                          registerFormBody?.email ||
+                          deliveryPartnerRegisterFormBody?.email
+                        }
+                        userId={
+                          registerFormBody?.email ||
+                          deliveryPartnerRegisterFormBody?.email
+                        }
+                        email={
+                          registerFormBody?.email ||
+                          deliveryPartnerRegisterFormBody?.email
+                        }
+                        mobile={mobileno}
+                        nextPage={mobileNumberHandler}
+                      ></EmailvalidationOTP>
+                    )}
                     {activeTab === "mobileValidation" && (
                       <PhoneNumber
                         otppage={otppageForMobileValidation}
@@ -1204,14 +928,14 @@ const LoginRegister = () => {
                     )}
 
                     {activeTab === "OTP_mobileValidation" && (
-                      <OTP
+                      <MobileValidationOTP
                         to={otpEmail}
-                        // OTP={otpForMobileValidation}
+                        // MobileValidationOTP={otpForMobileValidation}
                         userId={userId}
                         email={email}
                         mobile={mobileno}
                         nextPage={registrationNextPage}
-                      ></OTP>
+                      ></MobileValidationOTP>
                     )}
                     {activeTab === "registrationNextPage" && (
                       <PassWordAddress

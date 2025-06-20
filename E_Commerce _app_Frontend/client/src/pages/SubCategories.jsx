@@ -14,8 +14,11 @@ import {
 } from "mdb-react-ui-kit";
 import styles from "../styles/Categories.module.css";
 import axios from "axios";
+import CategorySkeleton from "../skeleton/Users/Category/CategorySkeleton";
 
 export default function SubCategories() {
+  //loader
+  const [subcategoryloader, setSubCategoryLoader] = useState(false);
   const { slug } = useParams();
   const location = useLocation();
   useEffect(() => {
@@ -23,7 +26,7 @@ export default function SubCategories() {
   }, [slug, location.state]);
 
   const cid = location.state.cid;
-  ////console.log("cid",cid)
+  //console.log("cid",cid)
   const [subcategories, setSubcategories] = useState([]);
   const categoryBasedsubcategories = async () => {
     try {
@@ -37,7 +40,14 @@ export default function SubCategories() {
       console.error("Error checking review eligibility:", error);
     }
   };
-  ////console.log("subcategories", subcategories);
+  //console.log("subcategories", subcategories);
+  useEffect(() => {
+    if (subcategories.length === 0) {
+      setSubCategoryLoader(true);
+    } else {
+      setSubCategoryLoader(false);
+    }
+  }, [subcategories]);
   return (
     <Layout title={"All Categories"}>
       <div style={{ marginTop: "20px" }}>
@@ -45,36 +55,45 @@ export default function SubCategories() {
           <div className={styles.titleContainer}>
             <h2 className={styles.title}>Shop by Category</h2>
           </div>
+
           <MDBRow className={`mb-4 ${styles.cardContainer}`}>
-            {subcategories?.map((s) => (
-              <MDBCol
-                md="4"
-                className={`mb-4 d-flex justify-content-center ${styles.cardCol}`}
-                key={s._id}
-              >
-                <Link
-                  to={`/category/${cid}/${s.subname}`}
-                  className={styles.cardText}
-                >
-                  <MDBCard className={styles.card}>
-                    <MDBCardImage
-                      // src="/images/m2.png"
-                      src={
-                        s.photo
-                          ? `${process.env.REACT_APP_API}/api/v1/subcategory/subcategory-photo/${s?._id}`
-                          : "/images/m2.png"
-                      }
-                      position="top"
-                      alt={`${s.subname} image`}
-                      className={styles.cardImage}
-                    />
-                    <MDBCardBody className={styles.cardBody}>
-                      <MDBCardText>{s.subname}</MDBCardText>
-                    </MDBCardBody>
-                  </MDBCard>
-                </Link>
-              </MDBCol>
-            ))}
+            {subcategoryloader ? (
+              <>
+                <CategorySkeleton />
+              </>
+            ) : (
+              <>
+                {subcategories?.map((s) => (
+                  <MDBCol
+                    md="4"
+                    className={`mb-4 d-flex justify-content-center ${styles.cardCol}`}
+                    key={s._id}
+                  >
+                    <Link
+                      to={`/category/${cid}/${s.subname}`}
+                      className={styles.cardText}
+                    >
+                      <MDBCard className={styles.card}>
+                        <MDBCardImage
+                          // src="/images/m2.png"
+                          src={
+                            s.photo
+                              ? `/api/v1/subcategory/subcategory-photo/${s?._id}`
+                              : "/images/m2.png"
+                          }
+                          position="top"
+                          alt={`${s.subname} image`}
+                          className={styles.cardImage}
+                        />
+                        <MDBCardBody className={styles.cardBody}>
+                          <MDBCardText>{s.subname}</MDBCardText>
+                        </MDBCardBody>
+                      </MDBCard>
+                    </Link>
+                  </MDBCol>
+                ))}
+              </>
+            )}
           </MDBRow>
         </MDBContainer>
       </div>

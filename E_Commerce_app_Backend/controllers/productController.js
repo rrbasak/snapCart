@@ -18,7 +18,7 @@ import { generateOrderShippedEmailContent } from "../templates/orderShippedEmail
 import { generateOrderBeforeDeliverEmailContent } from "../templates/orderBeforeDeliverEmailTemplate.js";
 import { generateOrderAfterDeliverEmailContent } from "../templates/orderAfterDeliverEmailTemplate.js";
 import { generateCancelByUserEmailContent } from "../templates/cancelByUserTemplate.js";
-import formatTimestampforOrder from "../utils/dateUtlFoOrder.js";
+import formatTimestampforOrder from "../client/src/frontendUtil/dateUtlFoOrder.js";
 import Fuse from "fuse.js";
 // import formatTimestamp from "../client/src/frontendUtil/dateUtil.js";
 // const formatTimestampforOrder = require("../client/src/frontendUtill/dateUtlFoOrder.js");
@@ -35,8 +35,8 @@ var gateway = new braintree.BraintreeGateway({
 
 // //Create Product
 // export const createProductController = async (req, res) => {
-//   ////console.log("req", req.fields);
-//   ////console.log("files here dada",req.files);
+//   //console.log("req", req.fields);
+//   //console.log("files here dada",req.files);
 
 //   try {
 //     const {
@@ -135,7 +135,7 @@ var gateway = new braintree.BraintreeGateway({
 //       products,
 //     });
 //   } catch (error) {
-//     ////console.log(error);
+//     //console.log(error);
 //     res.status(500).send({
 //       success: false,
 //       error,
@@ -146,8 +146,8 @@ var gateway = new braintree.BraintreeGateway({
 
 //Create Product
 export const createProductController = async (req, res) => {
-  ////console.log("req", req.body);
-  ////console.log("files here dada", req.files);
+  //console.log("req", req.body);
+  //console.log("files here dada", req.files);
 
   try {
     const {
@@ -190,7 +190,7 @@ export const createProductController = async (req, res) => {
         return res.status(500).send({ message: "Error parsing priceVariants" });
       }
     }
-    ////console.log("parsedPriceVariants", parsedPriceVariants);
+    //console.log("parsedPriceVariants", parsedPriceVariants);
     switch (true) {
       case !name:
         return res
@@ -238,7 +238,7 @@ export const createProductController = async (req, res) => {
         return res.status(500).send({ message: "put a minimum combination" });
     }
 
-    ////console.log("parsedPriceVariants", parsedPriceVariants);
+    //console.log("parsedPriceVariants", parsedPriceVariants);
     const products = new productModel({
       ...req.body,
       priceVariants: parsedPriceVariants,
@@ -264,7 +264,7 @@ export const createProductController = async (req, res) => {
       products,
     });
   } catch (error) {
-    ////console.log(error);
+    //console.log(error);
     res.status(500).send({
       success: false,
       error,
@@ -289,7 +289,7 @@ export const getProductController = async (req, res) => {
       products,
     });
   } catch (error) {
-    //////console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Erorr in getting products",
@@ -321,7 +321,7 @@ export const getSingleProductController = async (req, res) => {
       product,
     });
   } catch (error) {
-    //////console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Eror while getitng single product",
@@ -339,7 +339,7 @@ export const deleteProductController = async (req, res) => {
       message: "Product Deleted successfully",
     });
   } catch (error) {
-    //////console.log(error);
+    ////console.log(error);
     res.status(500).send({
       success: false,
       message: "Error while deleting product",
@@ -350,7 +350,8 @@ export const deleteProductController = async (req, res) => {
 
 //upate producta
 export const updateProductController = async (req, res) => {
-  ////console.log("updating product", req.body);
+  console.log("updating product photo", req.files);
+  console.log("updating product fields", req.body);
   try {
     const {
       name,
@@ -379,7 +380,17 @@ export const updateProductController = async (req, res) => {
           .status(500)
           .send({ message: "photo is Required and should be less then 1 GB" });
     }
-
+    const existingProduct = await productModel.findById(req.params.pid);
+    if (!existingProduct) {
+      return res.status(404).send({ error: "Product not found" });
+    }
+    const updatedPhotos =
+      photos.length > 0
+        ? photos.map((photo) => ({
+            data: photo.buffer,
+            contentType: photo.mimetype,
+          }))
+        : existingProduct.photo;
     const products = await productModel.findByIdAndUpdate(
       req.params.pid,
       {
@@ -389,10 +400,7 @@ export const updateProductController = async (req, res) => {
           closetime: fastestdeliverytime,
         },
         slug: slugify(name),
-        photo: photos.map((photo) => ({
-          data: photo.buffer,
-          contentType: photo.mimetype,
-        })),
+        photo: updatedPhotos,
       },
       { new: true }
     );
@@ -407,7 +415,7 @@ export const updateProductController = async (req, res) => {
       products,
     });
   } catch (error) {
-    ////console.log("here is error", error);
+    //console.log("here is error", error);
     res.status(500).send({
       success: false,
       error: error,
@@ -427,7 +435,7 @@ export const updateProductController = async (req, res) => {
 //       return res.status(200).send(product.photo.data);
 //     }
 //   } catch (error) {
-//     //////console.log(error);
+//     ////console.log(error);
 //     res.status(500).send({
 //       success: false,
 //       message: "Erorr while getting photo",
@@ -515,7 +523,7 @@ export const productFilterCount = async (req, res) => {
       products,
     });
   } catch (error) {
-    //////console.log(error);
+    ////console.log(error);
     res.status(400).send({
       success: false,
       message: "Error WHile Filtering Products",
@@ -533,7 +541,7 @@ export const productCountController = async (req, res) => {
       total,
     });
   } catch (error) {
-    //////console.log(error);
+    ////console.log(error);
     res.status(400).send({
       message: "Error in product count",
       error,
@@ -558,7 +566,7 @@ export const productCountController = async (req, res) => {
 //       products,
 //     });
 //   } catch (error) {
-//     //////console.log(error);
+//     ////console.log(error);
 //     res.status(400).send({
 //       success: false,
 //       message: "error in per page ctrl",
@@ -579,7 +587,7 @@ export const productListController = async (req, res) => {
       products,
     });
   } catch (error) {
-    //////console.log(error);
+    ////console.log(error);
     res.status(400).send({
       success: false,
       message: "error in per page ctrl",
@@ -601,9 +609,9 @@ export const productListController = async (req, res) => {
 //       })
 //       .select("-photo");
 //     res.json(resutls);
-//     ////console.log("result",resutls);
+//     //console.log("result",resutls);
 //   } catch (error) {
-//     //////console.log(error);
+//     ////console.log(error);
 //     res.status(400).send({
 //       success: false,
 //       message: "Error In Search Product API",
@@ -620,9 +628,9 @@ export const productListController = async (req, res) => {
 //       .find({ search: { $regex: keyword, $options: "i" } })
 //       .select("-photo");
 //     res.json(resutls);
-//     ////console.log("result",resutls);
+//     //console.log("result",resutls);
 //   } catch (error) {
-//     //////console.log(error);
+//     ////console.log(error);
 //     res.status(400).send({
 //       success: false,
 //       message: "Error In Search Product API",
@@ -639,7 +647,7 @@ export const productListController = async (req, res) => {
 //     const results = await productModel
 //       .find({ search: regex })
 //       .select("-photo");
-//     ////console.log("results", results);
+//     //console.log("results", results);
 //     const uniqueResults = Array.from(
 //       new Set(
 //         results.map((product) => {
@@ -653,7 +661,7 @@ export const productListController = async (req, res) => {
 //     );
 
 //     res.json(uniqueResults);
-//     ////console.log("uniqueResults", uniqueResults);
+//     //console.log("uniqueResults", uniqueResults);
 //   } catch (error) {
 //     res.status(400).send({
 //       success: false,
@@ -667,7 +675,7 @@ export const productListController = async (req, res) => {
 //   try {
 //     const { keyword } = req.params;
 //     const regex = new RegExp(`^${keyword}`, "i");
-//     ////console.log("regex", regex);
+//     //console.log("regex", regex);
 //     //fuzzy logic for search optimizations
 //     const options = {
 //       includeScore: true,
@@ -676,16 +684,16 @@ export const productListController = async (req, res) => {
 //     // Find all products
 //     const results = await productModel.find({}).select("-photo");
 
-//     ////console.log("results111", results);
+//     //console.log("results111", results);
 
 //     // Extract and filter search terms
 //     const matchingTerms = results.flatMap((product) => {
 //       // Split the search terms by comma and filter
 //       const terms = product.search[0].split(/,\s*/);
-//       ////console.log("termsssss123", terms);
+//       //console.log("termsssss123", terms);
 //       const fuse = new Fuse(terms, options);
 //       const result = fuse.search(keyword);
-//       ////console.log("result12345", result);
+//       //console.log("result12345", result);
 //       return terms
 //         .filter((term) => regex.test(term))
 //         .map((term) => ({
@@ -698,7 +706,7 @@ export const productListController = async (req, res) => {
 //     const uniqueResults = [];
 //     const seenTerms = new Set();
 
-//     ////console.log("matchingTerms11111", matchingTerms);
+//     //console.log("matchingTerms11111", matchingTerms);
 //     matchingTerms.forEach(({ _id, matchedTerm }) => {
 //       if (!seenTerms.has(matchedTerm)) {
 //         seenTerms.add(matchedTerm);
@@ -710,7 +718,7 @@ export const productListController = async (req, res) => {
 //     });
 
 //     res.json(uniqueResults);
-//     ////console.log("uniqueResults111", uniqueResults); // Check unique results
+//     //console.log("uniqueResults111", uniqueResults); // Check unique results
 //   } catch (error) {
 //     res.status(400).send({
 //       success: false,
@@ -724,7 +732,7 @@ export const searchProductController = async (req, res) => {
   try {
     const { keyword } = req.params;
     const regex = new RegExp(`^${keyword}`, "i");
-    ////console.log("regex", regex);
+    //console.log("regex", regex);
 
     // Fuzzy search options
     const options = {
@@ -735,17 +743,17 @@ export const searchProductController = async (req, res) => {
     // Find all products
     const results = await productModel.find({}).select("-photo");
 
-    ////console.log("results111", results);
+    //console.log("results111", results);
 
     // Extract and filter search terms
     const matchingTerms = results.flatMap((product) => {
       // Split the search terms by comma and filter
       const terms = product.search[0].split(/,\s*/);
-      ////console.log("termsssss123", terms);
+      //console.log("termsssss123", terms);
 
       const fuse = new Fuse(terms, options);
       const result = fuse.search(keyword);
-      ////console.log("result12345", result);
+      //console.log("result12345", result);
 
       // Map through the result to get the matched terms
       return result.map(({ item, score }) => ({
@@ -759,7 +767,7 @@ export const searchProductController = async (req, res) => {
     const uniqueResults = [];
     const seenTerms = new Set();
 
-    ////console.log("matchingTerms11111", matchingTerms);
+    //console.log("matchingTerms11111", matchingTerms);
     matchingTerms.forEach(({ _id, matchedTerm }) => {
       if (!seenTerms.has(matchedTerm)) {
         seenTerms.add(matchedTerm);
@@ -771,7 +779,7 @@ export const searchProductController = async (req, res) => {
     });
 
     res.json(uniqueResults);
-    ////console.log("uniqueResults111", uniqueResults); // Check unique results
+    //console.log("uniqueResults111", uniqueResults); // Check unique results
   } catch (error) {
     res.status(400).send({
       success: false,
@@ -786,7 +794,7 @@ export const searchProductController = async (req, res) => {
 //   try {
 //     const { keyword } = req.params;
 //     const regex = new RegExp(`^${keyword}`, "i");
-//     ////console.log("regex", regex);
+//     //console.log("regex", regex);
 
 //     // Fuzzy search options
 //     const options = {
@@ -798,14 +806,14 @@ export const searchProductController = async (req, res) => {
 //     // Find all products
 //     const results = await productModel.find({}).select("-photo");
 
-//     ////console.log("results111", results);
+//     //console.log("results111", results);
 
 //     // Initialize Fuse with the list of terms
 //     const fuse = new Fuse(results, options);
 
 //     // Perform fuzzy search on the product search terms
 //     const fuzzyResults = fuse.search(keyword);
-//     ////console.log("fuzzyResults", fuzzyResults);
+//     //console.log("fuzzyResults", fuzzyResults);
 
 //     // Map fuzzy results to match the required structure
 //     const matchingTerms = fuzzyResults.map(({ item, score }) => {
@@ -820,7 +828,7 @@ export const searchProductController = async (req, res) => {
 //     const uniqueResults = [];
 //     const seenTerms = new Set();
 
-//     ////console.log("matchingTerms11111", matchingTerms);
+//     //console.log("matchingTerms11111", matchingTerms);
 //     matchingTerms.forEach(({ _id, matchedTerm }) => {
 //       if (!seenTerms.has(matchedTerm)) {
 //         seenTerms.add(matchedTerm);
@@ -832,7 +840,7 @@ export const searchProductController = async (req, res) => {
 //     });
 
 //     res.json(uniqueResults);
-//     ////console.log("uniqueResults111", uniqueResults); // Check unique results
+//     //console.log("uniqueResults111", uniqueResults); // Check unique results
 //   } catch (error) {
 //     res.status(400).send({
 //       success: false,
@@ -852,7 +860,7 @@ export const searchProductController = async (req, res) => {
 //     const products = await productModel
 //       .find({ search: regex })
 //       .select("-photo");
-//     ////console.log("products", products);
+//     //console.log("products", products);
 
 //     // const uniqueResults = Array.from(
 //     //   new Set(
@@ -877,7 +885,7 @@ export const searchProductController = async (req, res) => {
 //     });
 
 //     // Remove duplicates by using a Set
-//     ////console.log("matchingTerms", matchingTerms);
+//     //console.log("matchingTerms", matchingTerms);
 //     const uniqueMatches = [...new Set(matchingTerms)];
 
 //     res.json(uniqueMatches);
@@ -899,9 +907,9 @@ export const searchProductController = async (req, res) => {
 //       .select("-photo");
 
 //     res.json(resutls);
-//     ////console.log("result 2 ", resutls);
+//     //console.log("result 2 ", resutls);
 //   } catch (error) {
-//     ////console.log("1234error", error);
+//     //console.log("1234error", error);
 //     res.status(400).send({
 //       success: false,
 //       message: "Error In Search Product API",
@@ -921,7 +929,7 @@ export const searchRelatedProductController = async (req, res) => {
       .populate("reviews")
       .select("-photo");
 
-    ////console.log("allProducts", allProducts);
+    //console.log("allProducts", allProducts);
 
     // Set up Fuse.js options
     // (more strict) search
@@ -958,8 +966,8 @@ export const searchRelatedProductController = async (req, res) => {
       ...item._doc, // Include the full product object
     }));
 
-    ////console.log("StrictrefinedResults", StrictrefinedResults);
-    ////console.log("LenientrefinedResults", LenientrefinedResults);
+    //console.log("StrictrefinedResults", StrictrefinedResults);
+    //console.log("LenientrefinedResults", LenientrefinedResults);
     // res.json(
     //   StrictrefinedResults.length === 0
     //     ? LenientrefinedResults
@@ -972,9 +980,9 @@ export const searchRelatedProductController = async (req, res) => {
 
     res.json(refinedResults);
 
-    ////console.log("refinedResults", refinedResults); // Check refined results
+    //console.log("refinedResults", refinedResults); // Check refined results
   } catch (error) {
-    ////console.log("Error in searchRelatedProductController", error);
+    //console.log("Error in searchRelatedProductController", error);
     res.status(400).send({
       success: false,
       message: "Error In Search Product API",
@@ -1014,7 +1022,7 @@ export const realtedProductController = async (req, res) => {
       total,
     });
   } catch (error) {
-    //////console.log(error);
+    ////console.log(error);
     res.status(400).send({
       success: false,
       message: "error while geting related product",
@@ -1039,7 +1047,7 @@ export const realtedPrevProductController = async (req, res) => {
       products,
     });
   } catch (error) {
-    //////console.log(error);
+    ////console.log(error);
     res.status(400).send({
       success: false,
       message: "error while geting related product",
@@ -1052,19 +1060,19 @@ export const realtedPrevProductController = async (req, res) => {
 // export const productCategoryController = async (req, res) => {
 //   try {
 //     const category = await categoryModel.findOne({ slug: req.params.slug });
-//     ////console.log("category", category);
+//     //console.log("category", category);
 //     const products = await productModel
 //       .find({ category: category })
 //       .populate("category")
 //       .populate("subcategory");
-//     ////console.log("products", products);
+//     //console.log("products", products);
 //     res.status(200).send({
 //       success: true,
 //       category,
 //       products,
 //     });
 //   } catch (error) {
-//     ////console.log(error);
+//     //console.log(error);
 //     res.status(400).send({
 //       success: false,
 //       error,
@@ -1078,20 +1086,20 @@ export const productCategoryController = async (req, res) => {
   const { cname, subname } = req.params;
   try {
     const category = await categoryModel.findOne({ _id: cname });
-    ////console.log("category here", category);
+    //console.log("category here", category);
     const products = await productModel
       .find({ $and: [{ category: cname }, { subcategoryName: subname }] })
       .populate("category")
       .populate("subcategory")
       .populate("reviews");
-    ////console.log("products", products);
+    //console.log("products", products);
     res.status(200).send({
       success: true,
       category,
       products,
     });
   } catch (error) {
-    ////console.log(error);
+    //console.log(error);
     res.status(400).send({
       success: false,
       error,
@@ -1112,7 +1120,7 @@ export const braintreeTokenController = async (req, res) => {
       }
     });
   } catch (error) {
-    ////console.log("hello", error);
+    //console.log("hello", error);
   }
 };
 
@@ -1120,8 +1128,8 @@ export const braintreeTokenController = async (req, res) => {
 // export const brainTreePaymentController = async (req, res) => {
 //   try {
 //     const { nonce, cart, updatedPrice, isQuantityUpdated, quantity } = req.body;
-//     ////console.log("cart 200", cart);
-//     ////console.log("updatedPrice 200", updatedPrice);
+//     //console.log("cart 200", cart);
+//     //console.log("updatedPrice 200", updatedPrice);
 //     const userFromModel = await userModel.findOne({ _id: req.user._id });
 //     const userFromSocialMediaModel = await userModelSocialMedia.findOne({
 //       _id: req.user._id,
@@ -1154,7 +1162,7 @@ export const braintreeTokenController = async (req, res) => {
 //       total += item.orgprice * itemQuantity;
 //     });
 
-//     ////console.log("Total", total);
+//     //console.log("Total", total);
 //     let newTransaction = gateway.transaction.sale(
 //       {
 //         amount: updatedPrice,
@@ -1189,13 +1197,13 @@ export const braintreeTokenController = async (req, res) => {
 //           //     });
 //           //   })
 //           // );
-//           // ////console.log("emailUserModel", emailUserModel);
-//           // ////console.log("emailUserModelSocialMedia", emailUserModelSocialMedia);
+//           // //console.log("emailUserModel", emailUserModel);
+//           // //console.log("emailUserModelSocialMedia", emailUserModelSocialMedia);
 //           const recipientEmail = emailUserModel || emailUserModelSocialMedia;
 //           const recipientName = nameUserModel || nameUserModelSocialMedia;
 //           const recipientAddress =
 //             addressUserModel || addressUserModelSocialMedia;
-//           ////console.log("free", cart[0]?.product?.freedeliveryDate);
+//           //console.log("free", cart[0]?.product?.freedeliveryDate);
 //           if (recipientEmail) {
 //             const orderDetails = {
 //               customerName: recipientName,
@@ -1285,8 +1293,8 @@ export const brainTreePaymentController = async (req, res) => {
   try {
     const { nonce, cart, updatedPrice, isQuantityUpdated, quantity } = req.body;
 
-    ////console.log("cart 200", cart);
-    ////console.log("updatedPrice 200", updatedPrice);
+    //console.log("cart 200", cart);
+    //console.log("updatedPrice 200", updatedPrice);
     const userFromModel = await userModel.findOne({ _id: req.user._id });
     const userFromSocialMediaModel = await userModelSocialMedia.findOne({
       _id: req.user._id,
@@ -1412,7 +1420,7 @@ export const brainTreePaymentController = async (req, res) => {
           const recipientName = nameUserModel || nameUserModelSocialMedia;
           const recipientAddress =
             addressUserModel || addressUserModelSocialMedia;
-          ////console.log("free", cart[0]?.product?.freedeliveryDate);
+          //console.log("free", cart[0]?.product?.freedeliveryDate);
           if (recipientEmail) {
             const orderDetails = {
               customerName: recipientName,
@@ -1477,7 +1485,7 @@ export const brainTreePaymentController = async (req, res) => {
       }
     );
   } catch (error) {
-    //console.log("Error processing payment:", error);
+    console.log("Error processing payment:", error);
     res
       .status(500)
       .json({ success: false, error: "An unexpected error occurred" });
@@ -1489,7 +1497,7 @@ export const brainTreePaymentController = async (req, res) => {
 //   try {
 
 //   } catch (error) {
-//     ////console.log(error);
+//     //console.log(error);
 //     res.status(400).send({
 //       success: false,
 //       error: error,
@@ -1535,7 +1543,7 @@ export const primeStartDayController = async (req, res) => {
       primestartDate: { $lte: new Date() },
       primeendDate: { $gte: new Date() },
     });
-    //console.log("activePrimeDay1", activePrimeDay);
+    console.log("activePrimeDay1", activePrimeDay);
     if (activePrimeDay) {
       return res.status(400).json({
         success: false,
@@ -1602,7 +1610,7 @@ export const primeEndDayController = async (req, res) => {
       primestartDate: { $lte: new Date() },
       primeendDate: { $gte: new Date() },
     });
-    //console.log("activePrimeDay2", activePrimeDay);
+    console.log("activePrimeDay2", activePrimeDay);
     if (!activePrimeDay) {
       return res.status(400).json({
         success: false,
@@ -1647,7 +1655,7 @@ export const filterProducts = async (req, res) => {
       category,
       subcategory,
     } = req.body;
-    ////console.log("here mr", req.body);
+    //console.log("here mr", req.body);
     let query = {};
 
     if (category && category.length > 0) {
@@ -1658,7 +1666,7 @@ export const filterProducts = async (req, res) => {
       // const existingSubCategory = await sub_categoryModel.findOne({
       //   subname: subcategory,
       // });
-      // ////console.log("existingSubCategory1212", existingSubCategory);
+      // //console.log("existingSubCategory1212", existingSubCategory);
       query.subcategoryName = { $in: subcategory };
     }
 
@@ -1689,7 +1697,7 @@ export const filterProducts = async (req, res) => {
       query["reviews.rating"] = { $gte: rating };
     }
 
-    ////console.log("query", query);
+    //console.log("query", query);
     const products = await productModel.find(query).populate("reviews");
     res.status(200).json(products);
   } catch (error) {
@@ -1737,7 +1745,7 @@ export const getDummyOneProductsController = async (req, res) => {
       products,
     });
   } catch (error) {
-    //////console.log(error);
+    ////console.log(error);
     res.status(400).send({
       success: false,
       message: "error while geting related product",
@@ -1761,7 +1769,7 @@ export const getDummySecProductsController = async (req, res) => {
       products,
     });
   } catch (error) {
-    //////console.log(error);
+    ////console.log(error);
     res.status(400).send({
       success: false,
       message: "error while geting related product",
@@ -1773,7 +1781,7 @@ export const getDummySecProductsController = async (req, res) => {
 //cancel order controller
 export const cancelOrderController = async (req, res) => {
   const { oid, userId, reason, buyerName, status, email } = req.body;
-  ////console.log("hi", req.body);
+  //console.log("hi", req.body);
   try {
     const deletedOrder = await orderModel.findOneAndDelete({
       _id: oid,
@@ -1813,7 +1821,7 @@ export const cancelOrderController = async (req, res) => {
       });
     }
   } catch (error) {
-    ////console.log(error);
+    //console.log(error);
     res.status(400).send({
       success: false,
       message: "Error while cancelling the order",

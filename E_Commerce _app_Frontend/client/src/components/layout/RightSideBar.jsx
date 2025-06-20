@@ -14,9 +14,9 @@ export default function RightSideBar({ open, onClose }) {
 
   // Derive the current active tab from the route
   const currentPath = location.pathname;
-  //console.log("location", location);
-  //console.log('currentPath',currentPath);
-  //console.log("activeTab", location.state?.activeTab);
+  console.log("location", location);
+  console.log("currentPath", currentPath);
+  console.log("activeTab", location.state?.activeTab);
   // Map paths to keys for active tab tracking
   const menuKeyMap = {
     "/dashboard/admin": "dashboard",
@@ -47,8 +47,11 @@ export default function RightSideBar({ open, onClose }) {
       ? "userprofile"
       : menuKeyMap[currentPath] || "dashboard";
 
-  const handleNavigation = (path) => {
-    navigate(path);
+  // const handleNavigation = (path) => {
+  //   navigate(path);
+  // };
+  const handleNavigation = (path, state = {}) => {
+    navigate(path, state);
   };
 
   const Header = () => {
@@ -66,7 +69,7 @@ export default function RightSideBar({ open, onClose }) {
     // toast.success("Logout Successfully");
     navigate("/login");
   };
-  //console.log("activeKey", activeKey);
+  console.log("activeKey", activeKey);
   return (
     <Drawer
       title={<Header />}
@@ -110,9 +113,18 @@ export default function RightSideBar({ open, onClose }) {
               <Menu.Item
                 key="profile"
                 icon={<Icon type="profile" color="#1890ff" />}
-                onClick={() => handleNavigation("/dashboard/profile")}
+                onClick={() =>
+                  handleNavigation("/dashboard/profile", {
+                    state: { activeTab: "personalAndAddress" },
+                  })
+                }
                 style={{ paddingLeft: "17px" }}
-                className={activeKey === "userprofile" ? styles.selected : ""}
+                className={
+                  activeKey === "userprofile" &&
+                  location.state?.activeTab === "personalAndAddress"
+                    ? styles.selected
+                    : ""
+                }
               >
                 Profile
               </Menu.Item>

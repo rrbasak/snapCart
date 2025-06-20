@@ -1,96 +1,10 @@
-/* eslint-disable no-unused-vars */
-// import React, { useState } from "react";
-// import Layout from "../../components/layout/Layout";
-// import axios from "axios";
-// import { useNavigate } from "react-router-dom";
-// import toast from "react-hot-toast";
-// import "../../styles/AuthStyles.css";
-
-// const ForgotPasssword = () => {
-//   const [email, setEmail] = useState("");
-//   const [newPassword, setNewPassword] = useState("");
-//   const [answer, setAnswer] = useState("");
-
-//   const navigate = useNavigate();
-
-//   // form function
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     try {
-//       const res = await axios.post("/api/v1/auth/forgot-password", {
-//         email,
-//         newPassword,
-//         answer,
-//       });
-//       if (res && res.data.success) {
-//         toast.success(res.data && res.data.message);
-
-//         navigate("/login");
-//       } else {
-//         toast.error(res.data.message);
-//       }
-//     } catch (error) {
-//       //////console.log(error);
-//       toast.error("Something went wrong");
-//     }
-//   };
-//   return (
-//     <Layout title={"Forgot Password - Ecommerce APP"}>
-//       <div className="form-container ">
-//         <form onSubmit={handleSubmit}>
-//           <h4 className="title">RESET PASSWORD</h4>
-
-//           <div className="mb-3">
-//             <input
-//               type="email"
-//               value={email}
-//               onChange={(e) => setEmail(e.target.value)}
-//               className="form-control"
-//               id="exampleInputEmail1"
-//               placeholder="Enter Your Email "
-//               required
-//             />
-//           </div>
-//           <div className="mb-3">
-//             <input
-//               type="text"
-//               value={answer}
-//               onChange={(e) => setAnswer(e.target.value)}
-//               className="form-control"
-//               id="exampleInputEmail1"
-//               placeholder="Enter Your favorite Sport Name "
-//               required
-//             />
-//           </div>
-//           <div className="mb-3">
-//             <input
-//               type="password"
-//               value={newPassword}
-//               onChange={(e) => setNewPassword(e.target.value)}
-//               className="form-control"
-//               id="exampleInputPassword1"
-//               placeholder="Enter Your Password"
-//               required
-//             />
-//           </div>
-
-//           <button type="submit" className="btn btn-primary">
-//             RESET
-//           </button>
-//         </form>
-//       </div>
-//     </Layout>
-//   );
-// };
-
-// export default ForgotPasssword;
-
 import React, { useState } from "react";
 import Layout from "../../components/layout/Layout";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import "../../styles/AuthStyles.css";
+import { CircularProgress } from "@mui/material";
 
 //css files
 import stylesInput from "../../../src/styles/Input.module.css";
@@ -102,6 +16,8 @@ const ForgotPasssword = ({ remember, otppage }) => {
   // eslint-disable-next-line no-unused-vars
   const [newPassword, setNewPassword] = useState("");
   const [answer, setAnswer] = useState("");
+  const [startLoading, setStartLoading] = useState(false);
+  const [emailError, setEmailError] = useState("");
 
   // eslint-disable-next-line no-unused-vars
 
@@ -115,10 +31,10 @@ const ForgotPasssword = ({ remember, otppage }) => {
     //   const res = await axios.post("/api/v1/auth/forgot-password", {
     //     email: email,
     //   });
-    //   //////console.log(res);
+    //   ////console.log(res);
     //   if (res && res.data.success) {
     //     toast.success(res.data.message);
-    //     //////console.log(res.data.otp);
+    //     ////console.log(res.data.otp);
     //     otppage(email, res.data.otp);
     //   } else {
     //     toast.error(res.data.message, {
@@ -133,15 +49,19 @@ const ForgotPasssword = ({ remember, otppage }) => {
     //   toast.error("Something went wrong");
     //   console.error("Error:", error);
     // }
-    ////console.log(email)
+    //console.log(email)
+    if (!email) {
+      setEmailError("Email is required");
+      return;
+    } else {
+      setEmailError("");
+    }
+    setStartLoading(true);
     try {
-      const res = await axios.post(
-        `${process.env.REACT_APP_API}/api/v1/auth/forgot-password`,
-        {
-          email: email,
-        }
-      );
-      ////console.log("res", res);
+      const res = await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/forgot-password`, {
+        email: email,
+      });
+      //console.log("res", res);
       if (res && res.data.success) {
         toast.success(res.data.message);
         // otppage(email, res.data.otp);
@@ -157,7 +77,7 @@ const ForgotPasssword = ({ remember, otppage }) => {
       }
     } catch (error) {
       // Catch 429 too many requests error
-      ////console.log("hiii", error.response);
+      //console.log("hiii", error.response);
       if (error.response && error.response.status === 429) {
         // Show the custom message from the backend in a toast
         toast.error(
@@ -182,6 +102,8 @@ const ForgotPasssword = ({ remember, otppage }) => {
           },
         });
       }
+    } finally {
+      setStartLoading(false);
     }
   };
   return (
@@ -215,15 +137,39 @@ const ForgotPasssword = ({ remember, otppage }) => {
             placeholder="e.g. tchalla@wakanda.gov"
             autoFocus
           />
+          {emailError && <p className={stylesInput.errorText}>{emailError}</p>}
         </div>
 
         <div className={stylesInput.inputContainer}>
-          <button
+          {/* <button
             type="submit"
             className="btn btn-primary btn-block mb-4"
             style={{ width: "100%" }}
           >
             Sent OTP
+          </button> */}
+          <button
+            type="submit"
+            className="btn btn-primary btn-block mb-4"
+            style={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              opacity: startLoading ? 0.7 : 1,
+              cursor: startLoading ? "not-allowed" : "pointer",
+            }}
+            disabled={startLoading}
+          >
+            {startLoading ? (
+              <>
+                <CircularProgress size="20px" style={{ color: "white" }} />
+                <span>Sending OTP...</span>
+              </>
+            ) : (
+              <span>Sent OTP</span>
+            )}
           </button>
         </div>
 

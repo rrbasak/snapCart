@@ -12,15 +12,19 @@ import { useAuth } from "../context/auth";
 import { useDispatch, useSelector } from "react-redux";
 import ImageCarousel from "./ImageCarousel";
 import useCategory from "../hooks/useCategory";
+import HomePagePickUpSkeleton from "../skeleton/Users/HomePage/HomePagePickUpSkeleton";
+import { Skeleton } from "@mui/material";
+import HomePageHorizontalSkeleton from "../skeleton/Users/HomePage/HomePageHorizontalSkeleton";
+import HomePageHorizontalHistorySkeleton from "../skeleton/Users/HomePage/HomePageHorizontalHistorySkeleton";
 
 const HomePage = () => {
   const pastProducts = useSelector((state) => state.pastProduct.pastProducts);
-  ////console.log("pastProducts", pastProducts);
+  //console.log("pastProducts", pastProducts);
   const [cart, setCart] = useCart();
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [allPrimeproducts, setAllPrimeProducts] = useState([]);
-  // const [categories, setCategories] = useState([]);
+  const [categoriess, setCategories] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [auth, setAuth] = useAuth();
@@ -30,11 +34,20 @@ const HomePage = () => {
   const [dummyOneProducts, setDummyOneProducts] = useState([]);
   const [dummySecProducts, setDummySecProducts] = useState([]);
 
+  //loaders
+  const [pickuploader, setPickupLoader] = useState(false);
+  const [keeploader, setKeepLoader] = useState(false);
+  const [categoryloader, setCategoryloader] = useState(false);
+  const [horizontalLoader, setHorizontalLoader] = useState(false);
+  const [historyloader, setHistoryloader] = useState(false);
+
   // const categories = useCategory();
   const categories = useSelector((state) => state.categories.list.categories);
-  // //console.log("categories", categories);
+  // console.log("categories", categories);
   useEffect(() => {
-    // getAllCategory();
+    if (categories?.length === 0) {
+      getAllCategory();
+    }
     getAllProducts();
     getAllPrimeProducts();
     getDummyOneProduct();
@@ -46,15 +59,15 @@ const HomePage = () => {
       const lastProduct = pastProducts[pastProducts.length - 1]?.product;
 
       if (lastProduct) {
-        ////console.log("lastProduct", lastProduct);
+        //console.log("lastProduct", lastProduct);
         getSimilarProduct(lastProduct?._id, lastProduct.category);
       }
     } else if (pastProducts.length >= 2) {
       const lastProduct = pastProducts[pastProducts.length - 1]?.product;
       const prevlastProduct = pastProducts[pastProducts.length - 2]?.product;
       if (lastProduct && prevlastProduct) {
-        ////console.log(lastProduct);
-        ////console.log("prevlastProduct", prevlastProduct);
+        //console.log(lastProduct);
+        //console.log("prevlastProduct", prevlastProduct);
         getSimilarProduct(lastProduct?._id, lastProduct.category);
         getPrevSimilarProduct(prevlastProduct?._id, prevlastProduct.category);
       }
@@ -83,23 +96,29 @@ const HomePage = () => {
       behavior: "smooth",
     });
   };
-  // const getAllCategory = async () => {
-  //   try {
-  //     const { data } = await axios.get("/api/v1/category/get-category");
-  //     if (data?.success) {
-  //       setCategories(data?.categories);
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+  const getAllCategory = async () => {
+    try {
+      setCategoryloader(true);
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/category/get-category`);
+      if (data?.success) {
+        setCategories(data?.categories);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setCategoryloader(false);
+    }
+  };
 
   const getAllProducts = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/product-list/`);
+      setHorizontalLoader(true);
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/product-list`);
       setProducts(data.products);
     } catch (error) {
       console.error(error);
+    } finally {
+      setHorizontalLoader(false);
     }
   };
   const getAllPrimeProducts = async () => {
@@ -111,44 +130,56 @@ const HomePage = () => {
     }
   };
 
-  ////console.log(categories);
+  //console.log(categories);
 
   const getSimilarProduct = async (pid, cid) => {
     try {
+      setPickupLoader(true);
       const { data } = await axios.get(
         `${process.env.REACT_APP_API}/api/v1/product/related-product/${pid}/${cid}`
       );
-      ////console.log("data here", data);
+      //console.log("data here", data);
       setRelatedProducts(data?.products.slice(0, 3));
     } catch (error) {
-      //////console.log(error);
+      ////console.log(error);
+    } finally {
+      setPickupLoader(false);
     }
   };
   const getPrevSimilarProduct = async (pid, cid) => {
     try {
+      setKeepLoader(true);
+      setHistoryloader(true);
       const { data } = await axios.get(
         `${process.env.REACT_APP_API}/api/v1/product/related-prev-product/${pid}/${cid}`
       );
-      ////console.log("data here prev", data);
+      //console.log("data here prev", data);
       setPrevRelatedProducts(data?.products.slice(0, 3));
     } catch (error) {
-      //////console.log(error);
+      ////console.log(error);
+    } finally {
+      setKeepLoader(false);
+      setHistoryloader(false);
     }
   };
   const getDummyOneProduct = async (pid, cid) => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/dummy-one-products`);
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API}/api/v1/product/dummy-one-products`
+      );
       setDummyOneProducts(data?.products.slice(0, 3));
     } catch (error) {
-      //////console.log(error);
+      ////console.log(error);
     }
   };
   const getDummySecProduct = async (pid, cid) => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/dummy-sec-products`);
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API}/api/v1/product/dummy-sec-products`
+      );
       setDummySecProducts(data?.products.slice(0, 3));
     } catch (error) {
-      //////console.log(error);
+      ////console.log(error);
     }
   };
   const images = [
@@ -158,7 +189,7 @@ const HomePage = () => {
     { src: "/images/banner4.jpg", alt: "Image 4" },
     { src: "/images/banner5.jpg", alt: "Image 4" },
   ];
-  ////console.log("pervrelatedProducts", pervrelatedProducts);
+  //console.log("pervrelatedProducts", pervrelatedProducts);
 
   useEffect(() => {
     const userAgent = navigator.userAgent.toLowerCase();
@@ -169,7 +200,7 @@ const HomePage = () => {
     //     trackUserActivity("website");
     //   }
     // }
-    //console.log("User agent:", userAgent);
+    console.log("User agent:", userAgent);
     if (userAgent.includes("mobi")) {
       trackUserActivity("mobile");
     } else {
@@ -179,11 +210,11 @@ const HomePage = () => {
 
   const trackUserActivity = async (source) => {
     try {
-      //console.log("Tracking user activity...");
+      console.log("Tracking user activity...");
       const response = await axios.post(`${process.env.REACT_APP_API}/api/v1/track/track-activity`, {
         source,
       });
-      //console.log(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error("Error tracking user activity:", error);
     }
@@ -206,7 +237,7 @@ const HomePage = () => {
                     {dummyOneProducts.map((product) => (
                       <div key={product._id} className={styles.productCard}>
                         <img
-                          src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product._id}`}
+                          src={`/api/v1/product/product-photo/${product._id}`}
                           alt={product.name}
                           onClick={() => navigate(`/product/${product.slug}`)}
                         />
@@ -224,7 +255,7 @@ const HomePage = () => {
                     {dummyOneProducts.map((product) => (
                       <div key={product._id} className={styles.productCard}>
                         <img
-                          src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product._id}`}
+                          src={`/api/v1/product/product-photo/${product._id}`}
                           alt={product.name}
                           onClick={() => navigate(`/product/${product.slug}`)}
                         />
@@ -236,51 +267,69 @@ const HomePage = () => {
               </>
             ) : (
               <>
-                <h3>Pick up where you left off</h3>
-                <div className={styles.productList}>
-                  {pastProducts?.length > 0 && (
-                    <div
-                      key={
-                        pastProducts[pastProducts.length - 1]?.product
-                          ?.pastProducts_id
-                      }
-                      className={styles.productCard}
-                    >
-                      <img
-                        src={`${
-                          process.env.REACT_APP_API
-                        }/api/v1/product/product-photo/${
-                          pastProducts[pastProducts?.length - 1]?.product?._id
-                        }`}
-                        alt={
-                          pastProducts[pastProducts?.length - 1]?.product?.name
-                        }
-                        onClick={() =>
-                          navigate(
-                            `/product/${
-                              pastProducts[pastProducts?.length - 1]?.product
-                                ?.slug
-                            }`
-                          )
-                        }
-                      />
-                      <p>
-                        {pastProducts[pastProducts?.length - 1]?.product?.name}
-                      </p>
-                    </div>
-                  )}
-                  {relatedProducts?.length > 0 &&
-                    relatedProducts?.map((product) => (
-                      <div key={product?._id} className={styles.productCard}>
-                        <img
-                          src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product?._id}`}
-                          alt={product?.name}
-                          onClick={() => navigate(`/product/${product.slug}`)}
-                        />
-                        <p>{product?.name}</p>
+                <>
+                  <h3>Pick up where you left off</h3>
+                  <div>
+                    {pickuploader ? (
+                      <div className={styles.pickupskeleton}>
+                        <HomePagePickUpSkeleton />
                       </div>
-                    ))}
-                </div>
+                    ) : (
+                      <div className={styles.productList}>
+                        {pastProducts?.length > 0 && (
+                          <div
+                            key={
+                              pastProducts[pastProducts.length - 1]?.product
+                                ?.pastProducts_id
+                            }
+                            className={styles.productCard}
+                          >
+                            <img
+                              src={`/api/v1/product/product-photo/${
+                                pastProducts[pastProducts?.length - 1]?.product
+                                  ?._id
+                              }`}
+                              alt={
+                                pastProducts[pastProducts?.length - 1]?.product
+                                  ?.name
+                              }
+                              onClick={() =>
+                                navigate(
+                                  `/product/${
+                                    pastProducts[pastProducts?.length - 1]
+                                      ?.product?.slug
+                                  }`
+                                )
+                              }
+                            />
+                            <p>
+                              {
+                                pastProducts[pastProducts?.length - 1]?.product
+                                  ?.name
+                              }
+                            </p>
+                          </div>
+                        )}
+                        {relatedProducts?.length > 0 &&
+                          relatedProducts?.map((product) => (
+                            <div
+                              key={product?._id}
+                              className={styles.productCard}
+                            >
+                              <img
+                                src={`/api/v1/product/product-photo/${product?._id}`}
+                                alt={product?.name}
+                                onClick={() =>
+                                  navigate(`/product/${product.slug}`)
+                                }
+                              />
+                              <p>{product?.name}</p>
+                            </div>
+                          ))}
+                      </div>
+                    )}
+                  </div>
+                </>
               </>
             )}
           </div>
@@ -290,26 +339,43 @@ const HomePage = () => {
               <>
                 <h3>Categories to explore</h3>
                 <div className={styles.productList}>
-                  {categories &&
-                    categories?.map((category) => (
-                      <div key={category?._id} className={styles.productCard}>
-                        <img
-                          src={
-                            category.photo
-                              ? `${process.env.REACT_APP_API}/api/v1/category/category-photo/${category?._id}`
-                              : "/images/a3.png"
-                          }
-                          alt={category.name}
-                          onClick={() => {
-                            // ////console.log("cid", category._id);
-                            navigate(`/category/${category?.slug}`, {
-                              state: { cid: category._id },
-                            });
-                          }}
-                        />
-                        <p>{category.name}</p>
-                      </div>
-                    ))}
+                  {categories?.length > 0
+                    ? categories.map((category) => (
+                        <div key={category?._id} className={styles.productCard}>
+                          <img
+                            src={
+                              category.photo
+                                ? `/api/v1/category/category-photo/${category?._id}`
+                                : "/images/a3.png"
+                            }
+                            alt={category.name}
+                            onClick={() =>
+                              navigate(`/category/${category?.slug}`, {
+                                state: { cid: category._id },
+                              })
+                            }
+                          />
+                          <p>{category.name}</p>
+                        </div>
+                      ))
+                    : categoriess?.map((category) => (
+                        <div key={category?._id} className={styles.productCard}>
+                          <img
+                            src={
+                              category.photo
+                                ? `/api/v1/category/category-photo/${category?._id}`
+                                : "/images/a3.png"
+                            }
+                            alt={category.name}
+                            onClick={() =>
+                              navigate(`/category/${category?.slug}`, {
+                                state: { cid: category._id },
+                              })
+                            }
+                          />
+                          <p>{category.name}</p>
+                        </div>
+                      ))}
                 </div>
               </>
             ) : pastProducts.length === 1 || pastProducts.length === 0 ? (
@@ -320,7 +386,7 @@ const HomePage = () => {
                     {dummySecProducts.map((product) => (
                       <div key={product._id} className={styles.productCard}>
                         <img
-                          src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product._id}`}
+                          src={`/api/v1/product/product-photo/${product._id}`}
                           alt={product.name}
                           onClick={() => navigate(`/product/${product.slug}`)}
                         />
@@ -333,50 +399,58 @@ const HomePage = () => {
             ) : (
               <>
                 <h3>Keep shopping for</h3>
-                <div className={styles.productList}>
-                  {pastProducts?.length > 0 && (
-                    <div
-                      key={
-                        pastProducts[pastProducts.length - 2]?.product
-                          ?.pastProducts_id
-                      }
-                      className={styles.productCard}
-                    >
-                      <img
-                        src={`${
-                          process.env.REACT_APP_API
-                        }/api/v1/product/product-photo/${
-                          pastProducts[pastProducts?.length - 2]?.product?._id
-                        }`}
-                        alt={
-                          pastProducts[pastProducts?.length - 2]?.product?.name
+                {keeploader ? (
+                  <div className={styles.pickupskeleton}>
+                    <HomePagePickUpSkeleton />
+                  </div>
+                ) : (
+                  <div className={styles.productList}>
+                    {pastProducts?.length > 0 && (
+                      <div
+                        key={
+                          pastProducts[pastProducts.length - 2]?.product
+                            ?.pastProducts_id
                         }
-                        onClick={() =>
-                          navigate(
-                            `/product/${
-                              pastProducts[pastProducts?.length - 2]?.product
-                                ?.slug
-                            }`
-                          )
-                        }
-                      />
-                      <p>
-                        {pastProducts[pastProducts?.length - 2]?.product?.name}
-                      </p>
-                    </div>
-                  )}
-                  {pervrelatedProducts?.length > 0 &&
-                    pervrelatedProducts?.map((product) => (
-                      <div key={product?._id} className={styles.productCard}>
+                        className={styles.productCard}
+                      >
                         <img
-                          src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product?._id}`}
-                          alt={product?.name}
-                          onClick={() => navigate(`/product/${product.slug}`)}
+                          src={`/api/v1/product/product-photo/${
+                            pastProducts[pastProducts?.length - 2]?.product?._id
+                          }`}
+                          alt={
+                            pastProducts[pastProducts?.length - 2]?.product
+                              ?.name
+                          }
+                          onClick={() =>
+                            navigate(
+                              `/product/${
+                                pastProducts[pastProducts?.length - 2]?.product
+                                  ?.slug
+                              }`
+                            )
+                          }
                         />
-                        <p>{product?.name}</p>
+                        <p>
+                          {
+                            pastProducts[pastProducts?.length - 2]?.product
+                              ?.name
+                          }
+                        </p>
                       </div>
-                    ))}
-                </div>
+                    )}
+                    {pervrelatedProducts?.length > 0 &&
+                      pervrelatedProducts?.map((product) => (
+                        <div key={product?._id} className={styles.productCard}>
+                          <img
+                            src={`/api/v1/product/product-photo/${product?._id}`}
+                            alt={product?.name}
+                            onClick={() => navigate(`/product/${product.slug}`)}
+                          />
+                          <p>{product?.name}</p>
+                        </div>
+                      ))}
+                  </div>
+                )}
               </>
             )}
           </div>
@@ -396,26 +470,32 @@ const HomePage = () => {
             ) : (
               <>
                 <h3>Categories to explore</h3>
-                <div className={styles.productList}>
-                  {categories?.map((category) => (
-                    <div key={category?._id} className={styles.productCard}>
-                      <img
-                        src={
-                          category.photo
-                            ? `${process.env.REACT_APP_API}/api/v1/category/category-photo/${category?._id}`
-                            : "/images/a3.png"
-                        }
-                        alt={category.name}
-                        onClick={() =>
-                          navigate(`/category/${category?.slug}`, {
-                            state: { cid: category._id },
-                          })
-                        }
-                      />
-                      <p>{category.name}</p>
-                    </div>
-                  ))}
-                </div>
+                {categoryloader ? (
+                  <div className={styles.pickupskeleton}>
+                    <HomePagePickUpSkeleton />
+                  </div>
+                ) : (
+                  <div className={styles.productList}>
+                    {categories?.map((category) => (
+                      <div key={category?._id} className={styles.productCard}>
+                        <img
+                          src={
+                            category.photo
+                              ? `/api/v1/category/category-photo/${category?._id}`
+                              : "/images/a3.png"
+                          }
+                          alt={category.name}
+                          onClick={() =>
+                            navigate(`/category/${category?.slug}`, {
+                              state: { cid: category._id },
+                            })
+                          }
+                        />
+                        <p>{category.name}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </>
             )}
           </div>
@@ -435,56 +515,79 @@ const HomePage = () => {
           {allPrimeproducts.length > 0 ? (
             <>
               <h3 className={styles.scrollbarheader}>Prime Products</h3>
-              <ArrowBackIosOutlinedIcon
-                className={`${styles.arrowIcon} ${styles.arrowBack}`}
-                onClick={scrollLeft}
-              />
-              <div ref={scrollContainerRef} className={styles.horizontalScroll}>
-                {allPrimeproducts.map((product) => (
+              {horizontalLoader ? (
+                <div>
+                  <HomePageHorizontalSkeleton />
+                </div>
+              ) : (
+                <>
+                  <ArrowBackIosOutlinedIcon
+                    className={`${styles.arrowIcon} ${styles.arrowBack}`}
+                    onClick={scrollLeft}
+                  />
                   <div
-                    key={product?._id}
-                    className={styles.productCardInHorizontal}
+                    ref={scrollContainerRef}
+                    className={styles.horizontalScroll}
                   >
-                    <img
-                      src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product?._id}`}
-                      alt={product.name}
-                      onClick={() => navigate(`/product/${product.slug}`)}
-                    />
-                    <p>{product.name}</p>
+                    {allPrimeproducts.map((product) => (
+                      <div
+                        key={product?._id}
+                        className={styles.productCardInHorizontal}
+                      >
+                        <img
+                          src={`/api/v1/product/product-photo/${product?._id}`}
+                          alt={product.name}
+                          onClick={() => navigate(`/product/${product.slug}`)}
+                        />
+                        <p>{product.name}</p>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-              <ArrowForwardIosOutlinedIcon
-                className={`${styles.arrowIcon} ${styles.arrowForward}`}
-                onClick={scrollRight}
-              />
+                  <ArrowForwardIosOutlinedIcon
+                    className={`${styles.arrowIcon} ${styles.arrowForward}`}
+                    onClick={scrollRight}
+                  />
+                </>
+              )}
             </>
           ) : (
             <>
               <h3 className={styles.scrollbarheader}>Featured Products</h3>
-              <ArrowBackIosOutlinedIcon
-                className={`${styles.arrowIcon} ${styles.arrowBack}`}
-                onClick={scrollLeft}
-              />
-              <div ref={scrollContainerRef} className={styles.horizontalScroll}>
-                {products.map((product) => (
+
+              {horizontalLoader ? (
+                <div>
+                  <HomePageHorizontalSkeleton />
+                </div>
+              ) : (
+                <>
+                  <ArrowBackIosOutlinedIcon
+                    className={`${styles.arrowIcon} ${styles.arrowBack}`}
+                    onClick={scrollLeft}
+                  />
                   <div
-                    key={product?._id}
-                    className={styles.productCardInHorizontal}
+                    ref={scrollContainerRef}
+                    className={styles.horizontalScroll}
                   >
-                    <img
-                      src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product?._id}`}
-                      alt={product.name}
-                      onClick={() => navigate(`/product/${product.slug}`)}
-                    />
-                    <p>{product.name}</p>
+                    {products.map((product) => (
+                      <div
+                        key={product?._id}
+                        className={styles.productCardInHorizontal}
+                      >
+                        <img
+                          src={`/api/v1/product/product-photo/${product?._id}`}
+                          alt={product.name}
+                          onClick={() => navigate(`/product/${product.slug}`)}
+                        />
+                        <p>{product.name}</p>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-              <ArrowForwardIosOutlinedIcon
-                className={`${styles.arrowIcon} ${styles.arrowForward}`}
-                onClick={scrollRight}
-              />
+                  <ArrowForwardIosOutlinedIcon
+                    className={`${styles.arrowIcon} ${styles.arrowForward}`}
+                    onClick={scrollRight}
+                  />
+                </>
+              )}
             </>
           )}
         </div>
@@ -494,45 +597,58 @@ const HomePage = () => {
         {auth?.user?._id ? (
           <div className={styles.horizontalScrollContainer}>
             <h3 className={styles.scrollbarheader}>Your browsing history</h3>
-            <ArrowBackIosOutlinedIcon
-              className={`${styles.arrowIcon} ${styles.arrowBack}`}
-              onClick={footerscrollLeft}
-            />
-            <div
-              ref={footerscrollContainerRef}
-              className={styles.horizontalScroll}
-            >
-              {pastProducts?.length > 0 ? (
-                pastProducts.map((fullItem) => (
-                  <div
-                    key={fullItem?.product?._id}
-                    className={styles.productCard}
-                  >
-                    <img
-                      src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${fullItem?.product?._id}`}
-                      alt={fullItem?.product?.name}
-                      onClick={() =>
-                        navigate(`/product/${fullItem?.product?.slug}`)
-                      }
-                    />
-                    <p>{fullItem?.product?.name}</p>
-                  </div>
-                ))
-              ) : (
-                <div className={styles.horizontalScrollContainerBeforeLogin}>
-                  <p
-                    className={styles.horizontalScrollContainerBeforeLoginPara}
-                  >
-                    After viewing product detail pages, look here to find an
-                    easy way to navigate back to pages you are interested in.
-                  </p>
+            {historyloader ? (
+              <div>
+                <HomePageHorizontalHistorySkeleton />
+              </div>
+            ) : (
+              <>
+                <ArrowBackIosOutlinedIcon
+                  className={`${styles.arrowIcon} ${styles.arrowBack}`}
+                  onClick={footerscrollLeft}
+                />
+                <div
+                  ref={footerscrollContainerRef}
+                  className={styles.horizontalScroll}
+                >
+                  {pastProducts?.length > 0 ? (
+                    pastProducts.map((fullItem) => (
+                      <div
+                        key={fullItem?.product?._id}
+                        className={styles.productCard}
+                      >
+                        <img
+                          src={`/api/v1/product/product-photo/${fullItem?.product?._id}`}
+                          alt={fullItem?.product?.name}
+                          onClick={() =>
+                            navigate(`/product/${fullItem?.product?.slug}`)
+                          }
+                        />
+                        <p>{fullItem?.product?.name}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <div
+                      className={styles.horizontalScrollContainerBeforeLogin}
+                    >
+                      <p
+                        className={
+                          styles.horizontalScrollContainerBeforeLoginPara
+                        }
+                      >
+                        After viewing product detail pages, look here to find an
+                        easy way to navigate back to pages you are interested
+                        in.
+                      </p>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-            <ArrowForwardIosOutlinedIcon
-              className={`${styles.arrowIcon} ${styles.arrowForward}`}
-              onClick={footerscrollRight}
-            />
+                <ArrowForwardIosOutlinedIcon
+                  className={`${styles.arrowIcon} ${styles.arrowForward}`}
+                  onClick={footerscrollRight}
+                />
+              </>
+            )}
           </div>
         ) : (
           <div className={styles.horizontalScrollContainerBeforeLogin}>

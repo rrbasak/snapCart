@@ -16,6 +16,8 @@ import DeliveryPartnerLayout from "../../../../components/layout/DeliveryPartner
 import { createStyles } from "antd-style";
 import toast from "react-hot-toast";
 import OtpInput from "react-otp-input";
+import DeliveryHistorySkeleton from "../../../../skeleton/DeliveryPartner/DeliveryHistorySkeleton";
+
 const { Option } = Select;
 
 const useStyle = createStyles(({ css, token }) => {
@@ -43,6 +45,7 @@ const DeliverypartnerDeliveryHistory = () => {
   const [auth, setAuth] = useAuth();
   const pageSize = 5;
   const [isMobileView, setIsMobileView] = useState(false);
+  const [loading, setLoading] = useState(false);
   // Modal state
 
   // Handle page change
@@ -52,16 +55,19 @@ const DeliverypartnerDeliveryHistory = () => {
 
   // Get deliveryHistory from API
   const getDeliverHistory = async () => {
+    setLoading(true);
     try {
       const { data } = await axios.get(
         `${process.env.REACT_APP_API}/api/v1/delivery/get-delivery-history/${auth?.user?._id}`
       );
       if (data?.success) setDeliveryHistory(data?.ordershistory);
     } catch (error) {
-      //console.log("Error fetching Delivery History", error);
+      console.log("Error fetching Delivery History", error);
+    } finally {
+      setLoading(false);
     }
   };
-  //console.log("hello");
+  console.log("hello");
   useEffect(() => {
     getDeliverHistory();
   }, []);
@@ -129,7 +135,7 @@ const DeliverypartnerDeliveryHistory = () => {
                   }}
                 >
                   <img
-                    src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product._id}`}
+                    src={`/api/v1/product/product-photo/${product._id}`}
                     alt={product.name}
                     width="50px"
                     height="50px"
@@ -162,28 +168,34 @@ const DeliverypartnerDeliveryHistory = () => {
   }));
 
   return (
-    <DeliveryPartnerLayout title={"Dashboard - Pending Deliveries"}>
+    <DeliveryPartnerLayout title={"Dashboard - Delivery History"}>
       <div className="col-md-12">
         <Row gutter={[24, 0]}>
           <Col xs="24" xl={24}>
             <Card
               bordered={false}
               className="criclebox tablespace mb-24"
-              title="Assigned Deliveries"
+              title="Delivery History"
             >
               <div className="table-responsive">
-                <Table
-                  className={styles.customTable}
-                  bordered
-                  columns={columns}
-                  dataSource={data}
-                  pagination={{
-                    current: currentPage,
-                    onChange: handlePageChange,
-                    pageSize: pageSize,
-                  }}
-                  scroll={{ x: "max-content" }}
-                />
+                {loading ? (
+                  <div className={styles.customTable}>
+                    <DeliveryHistorySkeleton />
+                  </div>
+                ) : (
+                  <Table
+                    className={styles.customTable}
+                    bordered
+                    columns={columns}
+                    dataSource={data}
+                    pagination={{
+                      current: currentPage,
+                      onChange: handlePageChange,
+                      pageSize: pageSize,
+                    }}
+                    scroll={{ x: "max-content" }}
+                  />
+                )}
               </div>
             </Card>
           </Col>

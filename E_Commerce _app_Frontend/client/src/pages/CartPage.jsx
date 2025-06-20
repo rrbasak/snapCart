@@ -17,6 +17,8 @@ import CustomTooltip from "../components/Tooltip/CustomTooltip";
 import { Modal, Button, Collapse } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import NumberInputWithReset from "../components/Butons/NumberInputWithReset ";
+import CartsSkeleton from "../skeleton/Users/CartAndCheckout.jsx/CartsSkeleton";
+import CartCheckOutSkeleton from "../skeleton/Users/CartAndCheckout.jsx/CartCheckOutSkeleton";
 const { Panel } = Collapse;
 
 export default function CartPage() {
@@ -34,13 +36,17 @@ export default function CartPage() {
   const [selectedItems, setSelectedItems] = useState([]);
   const [isPaymentSectionExpanded, setIsPaymentSectionExpanded] =
     useState(false);
+
+  //loader
+  const [cartloader, setCartLoader] = useState(false);
+  const [checkoutloader, setCheckoutloader] = useState(false);
   const navigate = useNavigate();
-  ////console.log(instance);
+  //console.log(instance);
   // const totalPrice = () => {
   //   try {
   //     let total = 0;
   //     selectedItems?.map((item) => {
-  //       ////console.log(item);
+  //       //console.log(item);
   //       total = total + item.orgprice * (quantities[item._id] || item.quantity);
 
   //     });
@@ -50,7 +56,7 @@ export default function CartPage() {
   //       currency: "INR",
   //     });
   //   } catch (error) {
-  //     //////console.log(error);
+  //     ////console.log(error);
   //   }
   // };
 
@@ -66,8 +72,8 @@ export default function CartPage() {
   };
   const [subtotal, setSubTotal] = useState();
   const removeCartItem = async (pid) => {
-    ////console.log("pid", pid);
-    ////console.log("selectedItems", selectedItems);
+    //console.log("pid", pid);
+    //console.log("selectedItems", selectedItems);
     try {
       const { data } = await axios.delete(
         `${process.env.REACT_APP_API}/api/v1/cart/remove-cart/${auth.user._id}/${pid}`
@@ -77,7 +83,7 @@ export default function CartPage() {
         setSelectedItems(selectedItems.filter((item) => item._id !== pid));
         toast.success("Item removed from cart");
       } else {
-        ////console.log("Failed to delete cart");
+        //console.log("Failed to delete cart");
       }
     } catch (error) {
       console.error("Error deleting cart data:", error);
@@ -105,7 +111,7 @@ export default function CartPage() {
       );
       setClientToken(data?.clientToken);
     } catch (error) {
-      //////console.log(error);
+      ////console.log(error);
     }
   };
   // // payment method function
@@ -120,7 +126,7 @@ export default function CartPage() {
   //       isQuantityUpdated,
   //       quantity,
   //     });
-  //     ////console.log(selectedItems);
+  //     //console.log(selectedItems);
   //     setLoading(false);
   //     localStorage.removeItem("cart");
   //     setCart([]);
@@ -129,7 +135,7 @@ export default function CartPage() {
   //     navigate("/dashboard/profile", { state: { activeTab: "orders" } });
   //     toast.success("Payment Completed Successfully");
   //   } catch (error) {
-  //     ////console.log(error);
+  //     //console.log(error);
   //     setLoading(false);
   //   }
   // };
@@ -139,16 +145,13 @@ export default function CartPage() {
     try {
       setLoading(true);
       const { nonce } = await instance.requestPaymentMethod();
-      const { data } = await axios.post(
-        `${process.env.REACT_APP_API}/api/v1/product/braintree/payment`,
-        {
-          nonce,
-          cart: selectedItems,
-          updatedPrice,
-          isQuantityUpdated,
-          quantity,
-        }
-      );
+      const { data } = await axios.post(`${process.env.REACT_APP_API}/api/v1/product/braintree/payment`, {
+        nonce,
+        cart: selectedItems,
+        updatedPrice,
+        isQuantityUpdated,
+        quantity,
+      });
 
       setLoading(false);
 
@@ -157,8 +160,8 @@ export default function CartPage() {
         const productNames = data?.cart
           ?.map((product) => product.name)
           .join(", ");
-        // //console.log(productNames);
-        // //console.log(data?.cart);
+        // console.log(productNames);
+        // console.log(data?.cart);
         const statusMessages = {
           NewOrder: `A new order has been placed for: ${productNames}.`,
         };
@@ -176,40 +179,34 @@ export default function CartPage() {
           type: "order_update",
         });
         for (const product of data?.cart || []) {
-          //console.log("product", product);
-          //console.log(
-          //   "product?.product?.quantity - product?.quantity",
-          //   product?.product?.quantity - product?.quantity
-          // );
+          console.log("product", product);
+          console.log(
+            "product?.product?.quantity - product?.quantity",
+            product?.product?.quantity - product?.quantity
+          );
           if (
             product?.product?.quantity - product?.quantity < 5 &&
             product?.product?.quantity - product?.quantity > 0
           ) {
             // Low stock warning
-            await axios.post(
-              `${process.env.REACT_APP_API}/api/v1/auth/low-stock-notification`,
-              {
-                title: "Low Stock Alert ⚠️",
-                message: `${product.product.name} stock is running low. Only ${
-                  product?.product?.quantity - product?.quantity
-                } items left!`,
-                recipient: "admin",
-                status: "unread",
-                type: "system",
-              }
-            );
+            await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/low-stock-notification`, {
+              title: "Low Stock Alert ⚠️",
+              message: `${product.product.name} stock is running low. Only ${
+                product?.product?.quantity - product?.quantity
+              } items left!`,
+              recipient: "admin",
+              status: "unread",
+              type: "system",
+            });
           } else if (product?.product?.quantity - product?.quantity === 0) {
             // Out of stock notification
-            await axios.post(
-              `${process.env.REACT_APP_API}/api/v1/auth/out-of-stock-notification`,
-              {
-                title: "Out of Stock Alert ❌",
-                message: `${product.product.name} is out of stock. Please restock soon.`,
-                recipient: "admin",
-                status: "unread",
-                type: "system",
-              }
-            );
+            await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/out-of-stock-notification`, {
+              title: "Out of Stock Alert ❌",
+              message: `${product.product.name} is out of stock. Please restock soon.`,
+              recipient: "admin",
+              status: "unread",
+              type: "system",
+            });
           }
         }
         localStorage.removeItem("cart");
@@ -229,7 +226,7 @@ export default function CartPage() {
         });
       }
     } catch (error) {
-      ////console.log("Payment error:", error);
+      //console.log("Payment error:", error);
       setLoading(false);
       toast.error(
         error.response?.data?.error ||
@@ -251,18 +248,22 @@ export default function CartPage() {
   const fetchCartData = async () => {
     if (!auth?.user?._id) return;
     try {
+      setCartLoader(true);
       const { data } = await axios.get(
         `${process.env.REACT_APP_API}/api/v1/cart/get-cart/${auth.user._id}`
       );
       if (data?.success) {
-        ////console.log(data?.cartOnUser);
+        //console.log(data?.cartOnUser);
         setAllCarts(data?.cartOnUser);
         return data?.cartOnUser;
       } else {
-        ////console.log("Failed to fetch cart data");
+        //console.log("Failed to fetch cart data");
       }
     } catch (error) {
       console.error("Error fetching cart data:", error);
+    } finally {
+      setCartLoader(false);
+      setTimeout(() => {}, 100000);
     }
   };
 
@@ -289,7 +290,7 @@ export default function CartPage() {
     const checkStock = async () => {
       try {
         const cartData = await fetchCartData();
-        ////console.log("cartData", cartData);
+        //console.log("cartData", cartData);
         cartData?.forEach((cart) => {
           if (cart?.product?.availableInStock === "Out Of Stock") {
             toast.error(`Out Of Stock for ${cart.name}`, {
@@ -313,7 +314,7 @@ export default function CartPage() {
     setSelectedItems(allcarts);
   }, [allcarts]);
 
-  ////console.log(allcarts);
+  //console.log(allcarts);
 
   useEffect(() => {
     if (selectedItems.length > 0) {
@@ -345,7 +346,7 @@ export default function CartPage() {
     setIsModalVisible(false);
     setExchangeDetails(null);
   };
-  ////console.log("exchangeDetails", exchangeDetails);
+  //console.log("exchangeDetails", exchangeDetails);
 
   const [quantity, setQuantity] = useState(
     allcarts.reduce((acc, product) => {
@@ -446,214 +447,232 @@ export default function CartPage() {
         </div>
         <div className={styles.content}>
           <div className={styles.cartItems}>
-            {allcarts?.map((p) => {
-              const totalUpdatedPrice = (
-                p.orgprice * (quantities[p._id] || p.quantity)
-              ).toFixed(2);
-              return (
-                <div className={styles.cartItem} key={p._id}>
-                  {p?.product?.availableInStock === "In Stock" && (
-                    <input
-                      type="checkbox"
-                      checked={selectedItems.some((item) => item._id === p._id)}
-                      onChange={() => handleSelectItem(p)}
-                      className={styles.checkbox}
-                    />
-                  )}
-                  <img
-                    src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${p.product._id}`}
-                    alt={p.name}
-                    className={styles.productImage}
-                  />
-                  <div className={styles.productDetails}>
-                    <p className={styles.description}>
-                      {p.product.description}
-                    </p>
-                    <p
-                      className={
-                        p?.product?.availableInStock === "Out Of Stock"
-                          ? styles.outOfStock
-                          : styles.inStock
-                      }
-                    >
-                      {p?.product?.availableInStock}
-                    </p>
-                    <p className={styles.offer}>
-                      {p?.isprime === "true" && (
-                        <span className={styles.primeDayTag}>
-                          <CelebrationOutlinedIcon /> Prime Day Deal
-                        </span>
+            {cartloader ? (
+              <div>
+                <CartsSkeleton />
+              </div>
+            ) : (
+              <>
+                {" "}
+                {allcarts?.map((p) => {
+                  const totalUpdatedPrice = (
+                    p.orgprice * (quantities[p._id] || p.quantity)
+                  ).toFixed(2);
+                  return (
+                    <div className={styles.cartItem} key={p._id}>
+                      {p?.product?.availableInStock === "In Stock" && (
+                        <input
+                          type="checkbox"
+                          checked={selectedItems.some(
+                            (item) => item._id === p._id
+                          )}
+                          onChange={() => handleSelectItem(p)}
+                          className={styles.checkbox}
+                        />
                       )}
-
-                      {p?.isexchangeapplied && (
-                        <span
-                          className={styles.exchangeAppliedTag}
-                          onClick={() =>
-                            showModal({
-                              brand: p?.exchangeProduct?.brand,
-                              model: p?.exchangeProduct?.model,
-                              damage: p?.exchangeProduct?.damage || [],
-                            })
+                      <img
+                        src={`/api/v1/product/product-photo/${p.product._id}`}
+                        alt={p.name}
+                        className={styles.productImage}
+                      />
+                      <div className={styles.productDetails}>
+                        <p className={styles.description}>
+                          {p.product.description}
+                        </p>
+                        <p
+                          className={
+                            p?.product?.availableInStock === "Out Of Stock"
+                              ? styles.outOfStock
+                              : styles.inStock
                           }
                         >
-                          <VerifiedOutlinedIcon /> Exchange Applied
-                        </span>
-                      )}
-
-                      <Collapse
-                        bordered={false}
-                        className={styles.priceBreakdownAccordion}
-                      >
-                        <Panel
-                          header={
-                            <span style={{ color: "blue" }}>
-                              Show Price Breakdown
+                          {p?.product?.availableInStock}
+                        </p>
+                        <p className={styles.offer}>
+                          {p?.isprime === "true" && (
+                            <span className={styles.primeDayTag}>
+                              <CelebrationOutlinedIcon /> Prime Day Deal
                             </span>
-                          }
-                          key="1"
-                          className={styles.customPanelHeader}
-                        >
-                          <div className={styles.priceBreakdownBox}>
-                            <div className={styles.priceItem}>
-                              <span className={styles.priceLabel}>
-                                Original Price:
-                              </span>
-                              <span className={styles.priceValue}>
-                                ₹
-                                {p?.selectedspecPrice?.toFixed(2) ||
-                                  p.product?.price.toFixed(2)}
-                              </span>
-                            </div>
+                          )}
 
-                            {p?.isprime === "true" && (
-                              <div className={styles.priceItem}>
-                                <span className={styles.priceLabel}>
-                                  Offer Discount:
-                                </span>
-                                <span className={styles.priceValue}>
-                                  - ₹
-                                  {(
-                                    (p?.selectedspecPrice || p.product?.price) -
-                                    p.orgprice
-                                  ).toFixed(2)}
-                                </span>
-                              </div>
-                            )}
+                          {p?.isexchangeapplied && (
+                            <span
+                              className={styles.exchangeAppliedTag}
+                              onClick={() =>
+                                showModal({
+                                  brand: p?.exchangeProduct?.brand,
+                                  model: p?.exchangeProduct?.model,
+                                  damage: p?.exchangeProduct?.damage || [],
+                                })
+                              }
+                            >
+                              <VerifiedOutlinedIcon /> Exchange Applied
+                            </span>
+                          )}
 
-                            {p?.isexchangeapplied && (
-                              <div className={styles.priceItem}>
-                                <span className={styles.priceLabel}>
-                                  Exchange Discount:
+                          <Collapse
+                            bordered={false}
+                            className={styles.priceBreakdownAccordion}
+                          >
+                            <Panel
+                              header={
+                                <span style={{ color: "blue" }}>
+                                  Show Price Breakdown
                                 </span>
-                                <span className={styles.priceValue}>
-                                  - ₹
-                                  {p?.exchangeProduct?.damage?.length > 0
-                                    ? p?.exchangeProduct?.damage
-                                        .reduce((acc, item) => {
-                                          if (
-                                            item.damage_type === "no_damage"
-                                          ) {
-                                            return (
-                                              acc + Number(item.exchange_price)
-                                            );
-                                          } else if (
-                                            item.damage_type === "body_damage"
-                                          ) {
-                                            return (
-                                              acc + Number(item.exchange_price)
-                                            );
-                                          } else if (
-                                            item.damage_type === "screen_damage"
-                                          ) {
-                                            return (
-                                              acc - Number(item.exchange_price)
-                                            );
-                                          }
-                                          return acc;
-                                        }, 0)
-                                        .toFixed(2)
-                                    : "₹0.00"}
-                                </span>
-                              </div>
-                            )}
-                            <hr className={styles.dashedLine} />
-                            <div className={styles.priceItem}>
-                              <span className={styles.priceLabel}>Price:</span>
-                              <span className={styles.priceValue}>
-                                ₹{p.orgprice.toFixed(2)}
-                              </span>
-                            </div>
-                            <div className={styles.priceItem}>
-                              <span className={styles.priceLabel}>
-                                Quantity:
-                              </span>
-                              <span className={styles.priceValue}>
-                                {/* x {p.quantity} */}x{" "}
-                                {isQuantityUpdated[p._id]
-                                  ? quantity[p._id]
-                                  : p?.quantity}
-                              </span>
-                            </div>
-                            <hr className={styles.dashedLine} />
-                            <div className={styles.priceItem}>
-                              <span className={styles.priceLabel}>
-                                Total Price:
-                              </span>
-                              <span className={styles.priceValue}>
-                                {/* ₹{(p.orgprice * p.quantity).toFixed(2)} */}
-                                {/* setUpdatedPrice(isQuantityUpdated ? quantity
+                              }
+                              key="1"
+                              className={styles.customPanelHeader}
+                            >
+                              <div className={styles.priceBreakdownBox}>
+                                <div className={styles.priceItem}>
+                                  <span className={styles.priceLabel}>
+                                    Original Price:
+                                  </span>
+                                  <span className={styles.priceValue}>
+                                    ₹
+                                    {p?.selectedspecPrice?.toFixed(2) ||
+                                      p.product?.price.toFixed(2)}
+                                  </span>
+                                </div>
+
+                                {p?.isprime === "true" && (
+                                  <div className={styles.priceItem}>
+                                    <span className={styles.priceLabel}>
+                                      Offer Discount:
+                                    </span>
+                                    <span className={styles.priceValue}>
+                                      - ₹
+                                      {(
+                                        (p?.selectedspecPrice ||
+                                          p.product?.price) - p.orgprice
+                                      ).toFixed(2)}
+                                    </span>
+                                  </div>
+                                )}
+
+                                {p?.isexchangeapplied && (
+                                  <div className={styles.priceItem}>
+                                    <span className={styles.priceLabel}>
+                                      Exchange Discount:
+                                    </span>
+                                    <span className={styles.priceValue}>
+                                      - ₹
+                                      {p?.exchangeProduct?.damage?.length > 0
+                                        ? p?.exchangeProduct?.damage
+                                            .reduce((acc, item) => {
+                                              if (
+                                                item.damage_type === "no_damage"
+                                              ) {
+                                                return (
+                                                  acc +
+                                                  Number(item.exchange_price)
+                                                );
+                                              } else if (
+                                                item.damage_type ===
+                                                "body_damage"
+                                              ) {
+                                                return (
+                                                  acc +
+                                                  Number(item.exchange_price)
+                                                );
+                                              } else if (
+                                                item.damage_type ===
+                                                "screen_damage"
+                                              ) {
+                                                return (
+                                                  acc -
+                                                  Number(item.exchange_price)
+                                                );
+                                              }
+                                              return acc;
+                                            }, 0)
+                                            .toFixed(2)
+                                        : "₹0.00"}
+                                    </span>
+                                  </div>
+                                )}
+                                <hr className={styles.dashedLine} />
+                                <div className={styles.priceItem}>
+                                  <span className={styles.priceLabel}>
+                                    Price:
+                                  </span>
+                                  <span className={styles.priceValue}>
+                                    ₹{p.orgprice.toFixed(2)}
+                                  </span>
+                                </div>
+                                <div className={styles.priceItem}>
+                                  <span className={styles.priceLabel}>
+                                    Quantity:
+                                  </span>
+                                  <span className={styles.priceValue}>
+                                    {/* x {p.quantity} */}x{" "}
+                                    {isQuantityUpdated[p._id]
+                                      ? quantity[p._id]
+                                      : p?.quantity}
+                                  </span>
+                                </div>
+                                <hr className={styles.dashedLine} />
+                                <div className={styles.priceItem}>
+                                  <span className={styles.priceLabel}>
+                                    Total Price:
+                                  </span>
+                                  <span className={styles.priceValue}>
+                                    {/* ₹{(p.orgprice * p.quantity).toFixed(2)} */}
+                                    {/* setUpdatedPrice(isQuantityUpdated ? quantity
                               :p?.quantity) */}
-                                {/* {(p.orgprice * {isQuantityUpdated ? quantity :p?.quantity}).toFixed(2)} */}
-                                ₹{totalUpdatedPrice}
-                              </span>
-                            </div>
-                          </div>
-                        </Panel>
-                      </Collapse>
-                    </p>
-                    <p>
-                      <span className={styles.priceLabel}>Quantity:</span>
-                      {/* <span> {p?.quantity}</span> */}
-                      <span>
-                        {" "}
-                        {p?.isexchangeapplied ? (
-                          <span> {p?.quantity}</span>
-                        ) : (
-                          <NumberInputWithReset
-                            initialValue={p?.quantity}
-                            max={p?.totalquantity}
-                            onQuantityChange={(newQuantity) => {
-                              handleQuantityChange(p._id, newQuantity);
-                              handleIsQuentityUpdated(p._id);
-                              handleQuantitiesChange(p._id, newQuantity);
-                            }}
-                            onReset={(initialValue) =>
-                              handleReset(p?._id, initialValue)
-                            }
-                          />
-                        )}
-                      </span>
-                    </p>
-                    <p className={styles.currentPriceTag}>
-                      <span className={styles.currentDollar}>₹</span>
-                      <span className={styles.currentPrice}>
-                        {/* {(p.orgprice * p.quantity).toFixed(2)} */}
-                        {(
-                          p.orgprice * (quantities[p._id] || p.quantity)
-                        ).toFixed(2)}
-                      </span>
-                    </p>
+                                    {/* {(p.orgprice * {isQuantityUpdated ? quantity :p?.quantity}).toFixed(2)} */}
+                                    ₹{totalUpdatedPrice}
+                                  </span>
+                                </div>
+                              </div>
+                            </Panel>
+                          </Collapse>
+                        </p>
+                        <p>
+                          <span className={styles.priceLabel}>Quantity:</span>
+                          {/* <span> {p?.quantity}</span> */}
+                          <span>
+                            {" "}
+                            {p?.isexchangeapplied ? (
+                              <span> {p?.quantity}</span>
+                            ) : (
+                              <NumberInputWithReset
+                                initialValue={p?.quantity}
+                                max={p?.totalquantity}
+                                onQuantityChange={(newQuantity) => {
+                                  handleQuantityChange(p._id, newQuantity);
+                                  handleIsQuentityUpdated(p._id);
+                                  handleQuantitiesChange(p._id, newQuantity);
+                                }}
+                                onReset={(initialValue) =>
+                                  handleReset(p?._id, initialValue)
+                                }
+                              />
+                            )}
+                          </span>
+                        </p>
+                        <p className={styles.currentPriceTag}>
+                          <span className={styles.currentDollar}>₹</span>
+                          <span className={styles.currentPrice}>
+                            {/* {(p.orgprice * p.quantity).toFixed(2)} */}
+                            {(
+                              p.orgprice * (quantities[p._id] || p.quantity)
+                            ).toFixed(2)}
+                          </span>
+                        </p>
 
-                    <button
-                      className={`${styles.button} ${styles.removeButton}`}
-                      onClick={() => removeCartItem(p._id)}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
+                        <button
+                          className={`${styles.button} ${styles.removeButton}`}
+                          onClick={() => removeCartItem(p._id)}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </>
+            )}
           </div>
 
           {selectedItems.length === 0 ? (
@@ -786,7 +805,9 @@ export default function CartPage() {
                 )}
                 <div className={styles.paymentSection}>
                   {!clientToken || cartLength === 0 ? (
-                    ""
+                    <>
+                      <CartCheckOutSkeleton />
+                    </>
                   ) : (
                     <>
                       <DropIn

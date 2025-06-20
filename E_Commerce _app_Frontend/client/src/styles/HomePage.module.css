@@ -272,10 +272,12 @@
     text-decoration: none !important;
     color: black !important;
 }
-.scrollbarheader{
+
+.scrollbarheader {
     margin: 0px 15px !important;
     padding-top: 9px;
 }
+
 @media (max-width: 768px) {
     .banner {
         position: static;
@@ -369,4 +371,9 @@
     .horizontalScrollContainerBeforeLoginPara {
         text-align: center;
     }
+}
+
+.pickupskeleton {
+    padding: "10px";
+    display: "block"
 }

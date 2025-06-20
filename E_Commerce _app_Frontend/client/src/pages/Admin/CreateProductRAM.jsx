@@ -4,6 +4,7 @@ import axios from "axios";
 import { Modal, Table, Card, Radio, Col, Row } from "antd";
 import ProductRAMForm from "../../components/layout/Form/ProductRAMForm";
 import AdminLayout from "../../components/layout/AdminLayout";
+import ProductRAMSkeleton from "../../skeleton/Admin/ManageProducts/ProductRAMSkeleton";
 
 export default function CreateProductRAM() {
   const [productRAM, setProductRAM] = useState([]);
@@ -12,7 +13,9 @@ export default function CreateProductRAM() {
   const [selected, setSelected] = useState(null);
   const [updatedName, setUpdatedName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [skloading, setSkLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+
   const pageSize = 5;
   // Handle page change
   const handlePageChange = (page) => {
@@ -21,6 +24,7 @@ export default function CreateProductRAM() {
   // Create Product RAM
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSkLoading(true);
     try {
       setLoading(true);
       const { data } = await axios.post(
@@ -38,11 +42,14 @@ export default function CreateProductRAM() {
     } catch (error) {
       setLoading(false);
       toast.error("Something went wrong in input form");
+    } finally {
+      setSkLoading(false);
     }
   };
 
   // Get all Product RAM
   const getAllRAMs = async () => {
+    setSkLoading(true);
     try {
       const { data } = await axios.get(
         `${process.env.REACT_APP_API}/api/v1/product-ram/get-product-ram`
@@ -52,12 +59,15 @@ export default function CreateProductRAM() {
       }
     } catch (error) {
       toast.error("Something went wrong in getting Product RAM");
+    } finally {
+      setSkLoading(false);
     }
   };
 
   // Update Product RAM
   const handleUpdate = async (e) => {
     e.preventDefault();
+    setSkLoading(true);
     try {
       const { data } = await axios.put(
         `${process.env.REACT_APP_API}/api/v1/product-ram/update-product-ram/${selected._id}`,
@@ -74,6 +84,8 @@ export default function CreateProductRAM() {
       }
     } catch (error) {
       toast.error("Something went wrong");
+    } finally {
+      setSkLoading(false);
     }
   };
 
@@ -129,7 +141,7 @@ export default function CreateProductRAM() {
             className="btn btn-danger ms-2"
             onClick={() => {
               handleDelete(record._id);
-              //console.log("record", record);
+              console.log("record", record);
             }}
           >
             Delete
@@ -140,7 +152,7 @@ export default function CreateProductRAM() {
   ];
 
   // Radio Button Group for filtering (if needed)
-  // const onChange = (e) => console.log(`Radio checked: ${e.target.value}`);
+  const onChange = (e) => console.log(`Radio checked: ${e.target.value}`);
 
   // Fetch RAMs on component mount
   useEffect(() => {
@@ -174,23 +186,29 @@ export default function CreateProductRAM() {
               // }
             >
               <div className="table-responsive">
-                <Table
-                  bordered
-                  columns={columns}
-                  dataSource={productRAM}
-                  pagination={{
-                    current: currentPage,
-                    onChange: handlePageChange,
-                    pageSize: pageSize,
-                  }}
-                  scroll={{
-                    x: "max-content",
-                    // y: 120 * 5,
-                  }}
-                  loading={loading}
-                  rowKey="_id" // You should provide a unique key for each row
-                  className="ant-border-space"
-                />
+                {skloading ? (
+                  <div>
+                    <ProductRAMSkeleton />
+                  </div>
+                ) : (
+                  <Table
+                    bordered
+                    columns={columns}
+                    dataSource={productRAM}
+                    pagination={{
+                      current: currentPage,
+                      onChange: handlePageChange,
+                      pageSize: pageSize,
+                    }}
+                    scroll={{
+                      x: "max-content",
+                      // y: 120 * 5,
+                    }}
+                    loading={loading}
+                    rowKey="_id" // You should provide a unique key for each row
+                    className="ant-border-space"
+                  />
+                )}
               </div>
             </Card>
 

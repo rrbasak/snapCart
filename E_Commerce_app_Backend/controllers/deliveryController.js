@@ -217,7 +217,7 @@ export const getDeliveryActivity = async (req, res) => {
 export const getDeliveryStats = async (req, res) => {
   try {
     const { partnerId } = req.params;
-
+    console.log("partnerId", partnerId);
     const startOfToday = new Date();
     startOfToday.setHours(0, 0, 0, 0);
     const endOfToday = new Date();
@@ -226,17 +226,21 @@ export const getDeliveryStats = async (req, res) => {
     const assignedDeliveries = await orderModel.countDocuments({
       partner: partnerId,
       createdAt: { $gte: startOfToday, $lte: endOfToday },
-      $or: [{ status: "Out For Delivery" }, { status: "Delivered" }],
+      $or: [
+        { status: "Shipped" },
+        { status: "Out For Delivery" },
+        { status: "Delivered" },
+      ],
     });
 
     const pendingDeliveries = await orderModel.countDocuments({
       partner: partnerId,
       createdAt: { $gte: startOfToday, $lte: endOfToday },
-      // $nor: [
-      //   { status: "Out For Delivery" },
-      //   { deliverystatus: "Pending Approval" },
-      // ],
-      $or: [{ deliverystatus: { $exists: false } }, { deliverystatus: null }],
+      $or: [
+        { status: "Out For Delivery" },
+        { deliverystatus: "Pending Approval" },
+      ],
+      // $or: [{ deliverystatus: { $exists: false } }, { deliverystatus: null }],
     });
 
     const pendingApprovals = await orderModel.countDocuments({
@@ -250,7 +254,11 @@ export const getDeliveryStats = async (req, res) => {
         $match: {
           partner: new mongoose.Types.ObjectId(partnerId),
           createdAt: { $gte: startOfToday, $lte: endOfToday },
-          $or: [{ status: "Shipped" }, { status: "Out For Delivery" }, { status: "Delivered" }],
+          $or: [
+            { status: "Shipped" },
+            { status: "Out For Delivery" },
+            { status: "Delivered" },
+          ],
         },
       },
       {
@@ -305,9 +313,6 @@ export const getDeliveryStats = async (req, res) => {
   }
 };
 
-
-
-
 export const updatePartnerStatus = async (req, res) => {
   try {
     const { deliveryId } = req.params;
@@ -330,5 +335,3 @@ export const updatePartnerStatus = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
-

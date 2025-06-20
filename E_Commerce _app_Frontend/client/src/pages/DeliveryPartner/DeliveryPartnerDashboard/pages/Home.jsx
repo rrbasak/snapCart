@@ -45,11 +45,13 @@ import { useAuth } from "../../../../context/auth";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { updatePartnerStatus } from "../../../../features/status/statusSlice";
+import DeliveryPartnerDashboardSkeleton from "../../../../skeleton/DeliveryPartner/DeliveryPartnerDashboardSkeleton";
 
 function Home() {
   const { Title, Text } = Typography;
   const dispatch = useDispatch();
-
+  const onChange = (e) => console.log(`radio checked:${e.target.value}`);
+  const [loading, setLoading] = useState(false);
   const [reverse, setReverse] = useState(false);
   const toggleStatus = () => {
     dispatch(updatePartnerStatus(auth.user._id));
@@ -223,6 +225,7 @@ function Home() {
 
   useEffect(() => {
     async function fetchStats() {
+      setLoading(true);
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_API}/api/v1/delivery/get-delivery-stats/${auth?.user?._id}`
@@ -230,6 +233,8 @@ function Home() {
         setStats(response.data);
       } catch (error) {
         console.error("Error fetching delivery stats", error);
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -252,71 +257,77 @@ function Home() {
   return (
     <>
       <div className="layout-content">
-        <Row className="rowgap-vbox" gutter={[24, 0]}>
-          {isMobileView && (
-            <Col xs={24} sm={24} md={12} lg={6} xl={6} className="mb-24">
-              <Card bordered={false} className="criclebox">
-                <div className="number">
-                  <Row align="middle" gutter={[24, 0]}>
-                    <Col xs={18}>
-                      <span>Active</span>
-                    </Col>
-                    <Col xs={6} className="icon-col">
-                      <DangerSwitch
-                        isOnline={isOnline}
-                        toggleStatus={toggleStatus}
-                      />
-                    </Col>
-                  </Row>
-                </div>
-              </Card>
-            </Col>
-          )}
+        {loading ? (
+          <DeliveryPartnerDashboardSkeleton />
+        ) : (
+          <>
+            <Row className="rowgap-vbox" gutter={[24, 0]}>
+              {isMobileView && (
+                <Col xs={24} sm={24} md={12} lg={6} xl={6} className="mb-24">
+                  <Card bordered={false} className="criclebox">
+                    <div className="number">
+                      <Row align="middle" gutter={[24, 0]}>
+                        <Col xs={18}>
+                          <span>Active</span>
+                        </Col>
+                        <Col xs={6} className="icon-col">
+                          <DangerSwitch
+                            isOnline={isOnline}
+                            toggleStatus={toggleStatus}
+                          />
+                        </Col>
+                      </Row>
+                    </div>
+                  </Card>
+                </Col>
+              )}
 
-          {stats.map((c, index) => (
-            <Col
-              key={index}
-              xs={24}
-              sm={24}
-              md={12}
-              lg={6}
-              xl={6}
-              className="mb-24"
-            >
-              <Card bordered={false} className="criclebox">
-                <div className="number">
-                  <Row align="middle" gutter={[24, 0]}>
-                    <Col xs={18}>
-                      <span>{c.today}</span>
-                      <Title level={3}>
-                        <Tooltip title={c.fullValue || c.title}>
-                          <span>{c.title}</span>
-                        </Tooltip>
-                        <small className={c.bnb}>{c.percent}</small>
-                      </Title>
-                    </Col>
-                    <Col xs={6}>
-                      <div className="icon-box">{c.icon}</div>
-                    </Col>
-                  </Row>
-                </div>
-              </Card>
-            </Col>
-          ))}
-        </Row>
+              {stats.map((c, index) => (
+                <Col
+                  key={index}
+                  xs={24}
+                  sm={24}
+                  md={12}
+                  lg={6}
+                  xl={6}
+                  className="mb-24"
+                >
+                  <Card bordered={false} className="criclebox">
+                    <div className="number">
+                      <Row align="middle" gutter={[24, 0]}>
+                        <Col xs={18}>
+                          <span>{c.today}</span>
+                          <Title level={3}>
+                            <Tooltip title={c.fullValue || c.title}>
+                              <span>{c.title}</span>
+                            </Tooltip>
+                            <small className={c.bnb}>{c.percent}</small>
+                          </Title>
+                        </Col>
+                        <Col xs={6}>
+                          <div className="icon-box">{c.icon}</div>
+                        </Col>
+                      </Row>
+                    </div>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
 
-        <Row gutter={[24, 0]}>
-          {/* <Col xs={24} sm={24} md={12} lg={12} xl={10} className="mb-24">
+            <Row gutter={[24, 0]}>
+              {/* <Col xs={24} sm={24} md={12} lg={12} xl={10} className="mb-24">
             <Card bordered={false} className="criclebox h-full">
               <Echart />
             </Card>
           </Col> */}
-          <Col xs={24} sm={24} md={24} lg={24} xl={24} className="mb-24">
-            <Card bordered={false} className="criclebox h-full">
-              <LineChart />
-            </Card>
-          </Col>
-        </Row>
+              <Col xs={24} sm={24} md={24} lg={24} xl={24} className="mb-24">
+                <Card bordered={false} className="criclebox h-full">
+                  <LineChart />
+                </Card>
+              </Col>
+            </Row>
+          </>
+        )}
       </div>
     </>
   );

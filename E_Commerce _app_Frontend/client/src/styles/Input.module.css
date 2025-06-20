@@ -168,3 +168,31 @@
     background-color: #007bff;
     border-radius: 5px;
 }
+
+
+.eyeIconInside {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #555;
+}
+
+.lockIconInside {
+    position: absolute;
+    left: 10px;
+    top: 20%;
+    transform: translateY(-50%);
+    color: #555;
+}
+
+.errorText {
+    color: red;
+    font-size: 12px;
+    margin-top: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    display: block;
+}

@@ -45,11 +45,24 @@ import DeliveryPartnerDashboard from "./pages/DeliveryPartner/DeliveryPartnerDas
 import DeliveryPartners from "./pages/Admin/AdminDashboard/pages/DeliveryPartners";
 import PendinApprovals from "./pages/Admin/AdminDashboard/pages/PendinApprovals";
 import DeliverypartnerDeliveryHistory from "./pages/DeliveryPartner/DeliveryPartnerDashboard/pages/DeliverypartnerDeliveryHistory";
+import VehicleDetailsForm from "./pages/DeliveryPartner/VehicleDetailsForm";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import OrdersAnother from "./pages/user/OrdersAnother";
 // import ScrollToTop from "./components/commonComponents/ScrollToTop";
 
 function App() {
   const [auth, setAuth] = useAuth();
   const location = useLocation();
+  // const authenticate = useSelector((state) => state.auth.auth);
+
+  // useEffect(() => {
+  //   console.log("Auth state from Redux:", authenticate);
+  // }, [authenticate]);
+
+  // if (authenticate === null) {
+  //   return <div>Loading...</div>;
+  // }
   // Role-Based Route Guards
   const USER_ROUTE = ({ children }) => {
     return auth?.user?.role === 0 ? (
@@ -73,30 +86,34 @@ function App() {
       <Pagenotfound state={{ from: location.pathname }} />
     );
   };
+  // if (auth?.user === null) {
+  //   return <div>Loading...</div>;
+  // }
+
   return (
     <>
       <Routes>
         {/* 404 Route */}
         <Route path="*" element={<Pagenotfound />} />
-        {/* Home Route for Both User and Admin */}
+        {/* Home Route for Both User and Admin and Delivery Partner*/}
         <Route
           path="/"
           element={
             auth?.user ? (
-              auth.user.role === 1 ? ( // Admin Dashboard
+              auth.user.role === 1 ? ( // Admin Dashboard hain
                 <AdminDashboard>
                   <AdminHome />
                 </AdminDashboard>
-              ) : auth.user.role === 2 ? ( // Delivery Partner Dashboard
+              ) : auth.user.role === 2 ? ( // Delivery Partner Dashboard hain
                 <DeliveryPartnerDashboard>
                   <DeliveryPartnerHome />
                 </DeliveryPartnerDashboard>
               ) : (
-                // If not admin or delivery partner, render HomePage
+                // If not admin or delivery partner, render HomePage yeah
                 <HomePage />
               )
             ) : (
-              // If no user is logged in, render HomePage
+              // If no user is logged in, render HomePage yeah
               <HomePage />
             )
           }
@@ -114,6 +131,8 @@ function App() {
         <Route path="category/:cname/:subname" element={<CategoryProduct />} />
         <Route path="product/:slug" element={<ProductDetails />} />
         <Route path="search" element={<Search />} />
+        <Route path="dashboard/profile" element={<Profile />} />
+        <Route path="dashboard/order" element={<OneOrder />} />
         {/* User Routes */}
         <Route
           path="/*"
@@ -128,14 +147,6 @@ function App() {
           }
         >
           <Route path="cart" element={<CartPage />} />
-          {/* <Route path="categories" element={<Categories />} /> */}
-          {/* <Route path="category/:slug" element={<SubCategories />} />
-          <Route
-            path="category/:cname/:subname"
-            element={<CategoryProduct />}
-          />
-          <Route path="product/:slug" element={<ProductDetails />} />
-          <Route path="search" element={<Search />} /> */}
         </Route>
 
         {/* User Dashboard Routes */}

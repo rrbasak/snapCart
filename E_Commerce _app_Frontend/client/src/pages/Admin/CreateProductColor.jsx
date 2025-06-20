@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import ProductColorForm from "../../components/layout/Form/ProductColorForm";
 import AdminLayout from "../../components/layout/AdminLayout";
+import ProductSizeSkeleton from "../../skeleton/Admin/ManageProducts/ProductColorSkeleton";
 
 export default function CreateProductColor() {
   const [productColor, setProductColor] = useState([]);
@@ -14,6 +15,7 @@ export default function CreateProductColor() {
   const [radioValue, setRadioValue] = useState("all");
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [skloading, setSkLoading] = useState(false);
   const pageSize = 5;
   // Handle page change
   const handlePageChange = (page) => {
@@ -23,11 +25,12 @@ export default function CreateProductColor() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setSkLoading(true);
       setLoading(true);
-       const { data } = await axios.post(
-         `${process.env.REACT_APP_API}/api/v1/product-color/create-product-color`,
-         { name }
-       );
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_API}/api/v1/product-color/create-product-color`,
+        { name }
+      );
       setLoading(false);
       if (data?.success) {
         toast.success(`${name} is created`);
@@ -39,12 +42,15 @@ export default function CreateProductColor() {
     } catch (error) {
       setLoading(false);
       toast.error("Something went wrong in input form");
+    } finally {
+      setSkLoading(false);
     }
   };
 
   // Get all product colors
   const getAllColors = async () => {
     try {
+      setSkLoading(true);
       const { data } = await axios.get(
         `${process.env.REACT_APP_API}/api/v1/product-color/get-product-color`
       );
@@ -53,6 +59,8 @@ export default function CreateProductColor() {
       }
     } catch (error) {
       toast.error("Something went wrong in getting product color");
+    } finally {
+      setSkLoading(false);
     }
   };
 
@@ -60,6 +68,7 @@ export default function CreateProductColor() {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
+      setSkLoading(true);
       const { data } = await axios.put(
         `${process.env.REACT_APP_API}/api/v1/product-color/update-product-color/${selected._id}`,
         { name: updatedName }
@@ -75,12 +84,15 @@ export default function CreateProductColor() {
       }
     } catch (error) {
       toast.error("Something went wrong");
+    } finally {
+      setSkLoading(false);
     }
   };
 
   // Delete category
   const handleDelete = async (pId) => {
     try {
+      setSkLoading(true);
       const { data } = await axios.delete(
         `${process.env.REACT_APP_API}/api/v1/product-color/delete-product-color/${pId}`
       );
@@ -92,6 +104,8 @@ export default function CreateProductColor() {
       }
     } catch (error) {
       toast.error("Something went wrong");
+    } finally {
+      setSkLoading(false);
     }
   };
 
@@ -144,7 +158,7 @@ export default function CreateProductColor() {
   const onChange = (e) => {
     setRadioValue(e.target.value);
     // You can handle any filtering logic here if needed
-    //console.log(`radio checked: ${e.target.value}`);
+    console.log(`radio checked: ${e.target.value}`);
   };
 
   return (
@@ -172,22 +186,28 @@ export default function CreateProductColor() {
               // }
             >
               <div className="table-responsive">
-                <Table
-                  bordered
-                  columns={columns}
-                  dataSource={productColor}
-                  pagination={{
-                    current: currentPage,
-                    onChange: handlePageChange,
-                    pageSize: pageSize,
-                  }}
-                  scroll={{
-                    x: "max-content",
-                    // y: 120 * 5,
-                  }}
-                  loading={loading}
-                  rowKey="_id" // Assuming '_id' is the unique identifier
-                />
+                {skloading ? (
+                  <div>
+                    <ProductSizeSkeleton />
+                  </div>
+                ) : (
+                  <Table
+                    bordered
+                    columns={columns}
+                    dataSource={productColor}
+                    pagination={{
+                      current: currentPage,
+                      onChange: handlePageChange,
+                      pageSize: pageSize,
+                    }}
+                    scroll={{
+                      x: "max-content",
+                      // y: 120 * 5,
+                    }}
+                    loading={loading}
+                    rowKey="_id" // Assuming '_id' is the unique identifier
+                  />
+                )}
               </div>
             </Card>
             <Modal

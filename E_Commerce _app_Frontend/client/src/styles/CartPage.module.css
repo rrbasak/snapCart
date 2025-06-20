@@ -211,6 +211,7 @@
 .inStock {
     color: rgb(14, 208, 14);
 }
+
 .outOfStock {
     color: red;
 }
@@ -353,6 +354,7 @@
     min-width: 100px;
     /* Adjust as needed to fit your design */
 }
+
 .priceBreakdownBox {
     border: 1px solid #ddd;
     padding: 16px;
@@ -371,7 +373,6 @@
     border: none;
     border-top: 1px dashed #100505;
     margin: 12px 0;
-    /* Adjust the margin to space the dashed line */
 }
 
 .priceItem {
@@ -392,9 +393,11 @@
     color: #333;
     text-align: right;
 }
+
 .customPanelHeader {
     color: blue;
 }
+
 .cartSummary {
     padding: 20px;
 }
@@ -414,13 +417,13 @@
     font-size: 18px;
     cursor: pointer;
     color: #1890ff;
-    /* Blue color for the icon */
+
 }
 
 .smallFont {
     font-size: 14px;
 }
-/* Media queries for mobile view */
+
 @media (max-width: 768px) {
     .content {
         flex-direction: column;
@@ -442,7 +445,7 @@
 
     .subtotal {
         order: -1;
-        /* Moves the subtotal above the cart summary */
+
     }
 
     .offer {
@@ -453,12 +456,12 @@
 
     .priceBreakdownBox {
         margin-top: 10px;
-        /* Add margin to create space */
+
     }
 
     .primeDayTag,
     .exchangeAppliedTag {
         margin-bottom: 10px;
-        /* Add margin to create space below the tags */
+
     }
 }

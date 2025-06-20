@@ -4,6 +4,7 @@ import axios from "axios";
 import { Modal, Table, Radio, Card, Row, Col } from "antd";
 import ProductSizeForm from "../../components/layout/Form/ProductSizeForm";
 import AdminLayout from "../../components/layout/AdminLayout";
+import ProductSizeSkeleton from "../../skeleton/Admin/ManageProducts/ProductSizeSkeleton";
 
 export default function CreateProductSize() {
   const [productSize, setProductSize] = useState([]);
@@ -13,6 +14,8 @@ export default function CreateProductSize() {
   const [updatedName, setUpdatedName] = useState("");
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [skloading, setSkLoading] = useState(false);
+
   const pageSize = 5;
   // Handle page change
   const handlePageChange = (page) => {
@@ -26,6 +29,7 @@ export default function CreateProductSize() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setSkLoading(true);
     try {
       const { data } = await axios.post(
         `${process.env.REACT_APP_API}/api/v1/product-size/create-product-size`,
@@ -41,24 +45,32 @@ export default function CreateProductSize() {
       }
     } catch (error) {
       toast.error("Something went wrong in input form");
+    } finally {
+      setSkLoading(false);
     }
   };
 
   // Get all product sizes
   const getAllSizes = async () => {
+    setSkLoading(true);
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product-size/get-product-size`);
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API}/api/v1/product-size/get-product-size`
+      );
       if (data.success) {
         setProductSize(data.size);
       }
     } catch (error) {
       toast.error("Something went wrong in getting product size");
+    } finally {
+      setSkLoading(false);
     }
   };
 
   // Update product size
   const handleUpdate = async (e) => {
     e.preventDefault();
+    setSkLoading(true);
     try {
       const { data } = await axios.put(
         `${process.env.REACT_APP_API}/api/v1/product-size/update-product-size/${selected._id}`,
@@ -77,11 +89,14 @@ export default function CreateProductSize() {
       }
     } catch (error) {
       toast.error("Something went wrong");
+    } finally {
+      setSkLoading(false);
     }
   };
 
   // Delete product size
   const handleDelete = async (pId) => {
+    setSkLoading(true);
     try {
       const { data } = await axios.delete(
         `${process.env.REACT_APP_API}/api/v1/product-size/delete-product-size/${pId}`
@@ -94,6 +109,8 @@ export default function CreateProductSize() {
       }
     } catch (error) {
       toast.error("Something went wrong");
+    } finally {
+      setSkLoading(false);
     }
   };
 
@@ -173,23 +190,29 @@ export default function CreateProductSize() {
               // }
             >
               <div className="table-responsive">
-                <Table
-                  bordered
-                  columns={columns}
-                  dataSource={productSize}
-                  pagination={{
-                    current: currentPage,
-                    onChange: handlePageChange,
-                    pageSize: pageSize,
-                  }}
-                  scroll={{
-                    x: "max-content",
-                    // y: 120 * 5,
-                  }}
-                  loading={loading}
-                  rowKey="_id"
-                  className="ant-border-space"
-                />
+                {skloading ? (
+                  <div>
+                    <ProductSizeSkeleton />
+                  </div>
+                ) : (
+                  <Table
+                    bordered
+                    columns={columns}
+                    dataSource={productSize}
+                    pagination={{
+                      current: currentPage,
+                      onChange: handlePageChange,
+                      pageSize: pageSize,
+                    }}
+                    scroll={{
+                      x: "max-content",
+                      // y: 120 * 5,
+                    }}
+                    loading={loading}
+                    rowKey="_id"
+                    className="ant-border-space"
+                  />
+                )}
               </div>
             </Card>
 

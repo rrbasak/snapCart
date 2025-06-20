@@ -23,7 +23,7 @@ const ImageUpload = ({
   const [fileList, setFileList] = useState(initialFileList);
 
   useEffect(() => {
-    setFileList(initialFileList); // Set the initial file list on component mount/update
+    setFileList(initialFileList); 
   }, [initialFileList]);
   const handlePreview = async (file) => {
     if (!file.url && !file.preview) {

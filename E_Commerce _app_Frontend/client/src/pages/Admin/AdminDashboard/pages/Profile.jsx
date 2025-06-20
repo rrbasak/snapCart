@@ -100,7 +100,7 @@ function Profile() {
           <Row justify="space-between" align="middle" gutter={[24, 0]}>
             <Col span={24} md={12} className="col-info">
               <Avatar.Group>
-                <Avatar size={74} shape="square" src={profilavatar} />
+                {/* <Avatar size={74} shape="square" src={profilavatar} /> */}
                 <div className="avatar-info">
                   <h4 className="font-semibold m-0">{auth?.user?.name}</h4>
                 </div>

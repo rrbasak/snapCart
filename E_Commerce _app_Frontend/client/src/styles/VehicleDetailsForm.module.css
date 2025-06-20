@@ -1,5 +1,4 @@
-/* VehicleDetailsForm.module.css */
-.formContainer {
+VehicleDetailsForm.module.css .formContainer {
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;

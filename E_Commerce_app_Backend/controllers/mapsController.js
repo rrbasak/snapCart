@@ -12,10 +12,10 @@ import { parseAddress } from "../utils/addressUtil.js";
 //   // Make the API request
 //   const apiKey = process.env.GO_MAPS_API_KEYS;
 //   const url = `https://addressvalidation.gomaps.pro/v1:validateAddress?key=${apiKey}`;
-//   //console.log("payload", payload);
+//   console.log("payload", payload);
 //   try {
 //     const response = await axios.post(url, payload);
-//     //console.log("Google API Response:", response.data);
+//     console.log("Google API Response:", response.data);
 //     if (response.data.status === "OK") {
 //       const location = response.data.results[0].geometry.location;
 //       return res.json({ ltd: location.lat, lng: location.lng });
@@ -38,12 +38,12 @@ export const getAddressCoordinateController = async (req, res) => {
   const payload = parseAddress(address);
 
   // Make the API request
-  const apiKey = process.env.GO_MAPS_API_KEYS;
+  const apiKey = process.env.REACT_APP_GO_MAPS_SEC_API_KEYS;
   const url = `https://addressvalidation.gomaps.pro/v1:validateAddress?key=${apiKey}`;
 
   try {
     const response = await axios.post(url, payload);
-    //console.log("Google API Response:", response.data);
+    console.log("Google API Response:", response.data);
 
     // Check if the response has results and a geocode with location data
     if (response.data.result && response.data.result.geocode) {
@@ -68,6 +68,57 @@ export const getAddressCoordinateController = async (req, res) => {
   }
 };
 
+export const getLatandLogController = async (req, res) => {
+  const { address } = req.params;
+  console.log("address", address);
+  const apiKey = "pk.d059f309fba9296fce8f5566c8bb11c3";
+
+  const geocodeUrl = `https://us1.locationiq.com/v1/search?key=${apiKey}&q=${address}&format=json`;
+
+  try {
+    const response = await axios.get(geocodeUrl);
+    console.log(`Request URL: ${geocodeUrl}`);
+
+    if (response.data.length > 0) {
+      const { lat, lon } = response.data[0];
+      res.json({ lat: parseFloat(lat), lng: parseFloat(lon) });
+    } else {
+      res.status(404).json({ error: "No results found for the given address" });
+    }
+  } catch (error) {
+    console.error("Error fetching geocode data:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const getDirectionsController = async (req, res) => {
+  const { origin, destination } = req.query;
+  const apiKey = "pk.d059f309fba9296fce8f5566c8bb11c3";
+
+  // Check if origin and destination are provided
+  if (!origin || !destination) {
+    return res
+      .status(400)
+      .json({ error: "Origin and destination are required" });
+  }
+
+  try {
+    const geocodeUrl = `https://us1.locationiq.com/v1/directions/driving/${origin};${destination}?key=${apiKey}&steps=true&alternatives=true&geometries=polyline&overview=full`;
+    console.log("geocodeUrl", geocodeUrl);
+    const response = await axios.get(geocodeUrl);
+
+    // If directions are found
+    if (response.data && response.data.routes) {
+      return res.json(response.data.routes);
+    } else {
+      return res.status(404).json({ error: "No routes found" });
+    }
+  } catch (error) {
+    console.error("Error fetching directions:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 export const getDistanceTimeController = async (req, res) => {
   const { origin, destination } = req.query;
 
@@ -84,7 +135,7 @@ export const getDistanceTimeController = async (req, res) => {
 
   try {
     const response = await axios.get(url);
-    //console.log("response.data", response.data);
+    console.log("response.data", response.data);
     if (response.data.status === "OK") {
       const element = response.data.rows[0].elements[0];
 

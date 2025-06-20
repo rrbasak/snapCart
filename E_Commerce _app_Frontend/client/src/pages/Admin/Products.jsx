@@ -4,13 +4,14 @@ import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { Card, Table, Radio, Row, Col } from "antd";
 import AdminLayout from "../../components/layout/AdminLayout";
+import ProductSizeSkeleton from "../../skeleton/Admin/ManageProducts/ProductsSkeleton";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [radioValue, setRadioValue] = useState("all");
   const [loading, setLoading] = useState(false);
-
+  const [skloading, setSkLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 5;
 
@@ -22,11 +23,14 @@ export default function Products() {
   // Fetch all products
   const getAllProducts = async () => {
     try {
+      setSkLoading(true);
       const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/get-product`);
       setProducts(data.products);
       setFilteredProducts(data.products); // Set filtered products initially to all
     } catch (error) {
       toast.error("Something Went Wrong");
+    } finally {
+      setSkLoading(false);
     }
   };
 
@@ -130,22 +134,28 @@ export default function Products() {
               }
             >
               <div className="table-responsive">
-                <Table
-                  bordered
-                  columns={columns}
-                  dataSource={data}
-                  pagination={{
-                    current: currentPage,
-                    onChange: handlePageChange,
-                    pageSize: pageSize,
-                  }}
-                  scroll={{
-                    x: "max-content",
-                    // y: 120 * 5,
-                  }}
-                  loading={loading}
-                  className="ant-border-space"
-                />
+                {skloading ? (
+                  <div>
+                    <ProductSizeSkeleton />
+                  </div>
+                ) : (
+                  <Table
+                    bordered
+                    columns={columns}
+                    dataSource={data}
+                    pagination={{
+                      current: currentPage,
+                      onChange: handlePageChange,
+                      pageSize: pageSize,
+                    }}
+                    scroll={{
+                      x: "max-content",
+                      // y: 120 * 5,
+                    }}
+                    loading={loading}
+                    className="ant-border-space"
+                  />
+                )}
               </div>
             </Card>
           </Col>

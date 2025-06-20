@@ -37,6 +37,7 @@ import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
 import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
 import Tooltip from "@mui/material/Tooltip";
+import { Skeleton } from "@mui/material";
 
 export default function ContactReferences() {
   const [auth, setAuth] = useAuth();
@@ -228,7 +229,14 @@ export default function ContactReferences() {
                 </Tooltip>
 
                 <MDBCardText className="mb-4" style={{ fontWeight: "lighter" }}>
-                  {email}
+                  {email || (
+                    <Skeleton
+                      variant="rectangle"
+                      width={50}
+                      height={10}
+                      style={{ margin: "13px 96px" }}
+                    />
+                  )}
                 </MDBCardText>
               </MDBCardBody>
             </MDBCard>
@@ -266,8 +274,14 @@ export default function ContactReferences() {
                   />
                 </Tooltip>
                 <MDBCardText className="mb-4" style={{ fontWeight: "lighter" }}>
-                  {" "}
-                  {phone}
+                  {phone || (
+                    <Skeleton
+                      variant="rectangle"
+                      width={50}
+                      height={10}
+                      style={{ margin: "13px 96px" }}
+                    />
+                  )}
                 </MDBCardText>
               </MDBCardBody>
             </MDBCard>
@@ -309,8 +323,14 @@ export default function ContactReferences() {
                   onClick={() => showModal("address", address)}
                 />
                 <MDBCardText className="mb-4" style={{ fontWeight: "lighter" }}>
-                  {" "}
-                  {address}
+                  {address || (
+                    <Skeleton
+                      variant="rectangle"
+                      width={50}
+                      height={10}
+                      style={{ margin: "13px 96px" }}
+                    />
+                  )}
                 </MDBCardText>
               </MDBCardBody>
             </MDBCard>
