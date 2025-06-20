@@ -18,7 +18,7 @@ import { generateOrderShippedEmailContent } from "../templates/orderShippedEmail
 import { generateOrderBeforeDeliverEmailContent } from "../templates/orderBeforeDeliverEmailTemplate.js";
 import { generateOrderAfterDeliverEmailContent } from "../templates/orderAfterDeliverEmailTemplate.js";
 import { generateCancelByUserEmailContent } from "../templates/cancelByUserTemplate.js";
-import formatTimestampforOrder from "../client/src/frontendUtil/dateUtlFoOrder.js";
+import formatTimestampforOrder from "../utils/dateUtlFoOrder.js";
 import Fuse from "fuse.js";
 // import formatTimestamp from "../client/src/frontendUtil/dateUtil.js";
 // const formatTimestampforOrder = require("../client/src/frontendUtill/dateUtlFoOrder.js");
