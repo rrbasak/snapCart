@@ -74,3 +74,36 @@ export const deleteProductSizeController = async (req, res) => {
     });
   }
 };
+
+
+export const updateProductSizeController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name } = req.body;
+    const size = await productSizeModel.findById(id);
+
+    if (!size) {
+      return res.status(404).send({
+        success: false,
+        message: "Product size not found",
+      });
+    }
+
+    size.name = name;
+
+    await size.save();
+
+    res.status(200).send({
+      success: true,
+      message: "Product size updated successfully",
+      size,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      success: false,
+      message: "Error while updating product size",
+      error: error.message || error,
+    });
+  }
+};

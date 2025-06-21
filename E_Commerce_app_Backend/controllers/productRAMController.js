@@ -73,3 +73,38 @@ export const deleteProductRAMController = async (req, res) => {
     });
   }
 };
+
+
+export const updateProductRAMController = async (req, res) => {
+  try {
+    const { ramId } = req.params;
+    const { name } = req.body;
+
+    // Find the RAM by ID
+    const ram = await ramModel.findById(ramId);
+
+    if (!ram) {
+      return res.status(404).send({
+        success: false,
+        message: "RAM not found",
+      });
+    }
+
+    ram.name = name || ram.name;
+
+    await ram.save();
+
+    res.status(200).send({
+      success: true,
+      message: "Product RAM updated successfully",
+      ram,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Error while updating RAM",
+      error: error,
+    });
+  }
+};

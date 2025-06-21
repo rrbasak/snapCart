@@ -73,3 +73,40 @@ export const deleteProductColorController = async (req, res) => {
     });
   }
 };
+
+
+// update all color
+export const updateProductColorController = async (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body; 
+  console.log("id",id)
+  console.log("name",name)
+  try {
+
+    const color = await productColorModel.findById(id);
+
+    if (!color) {
+      return res.status(404).send({
+        success: false,
+        message: "Color not found",
+      });
+    }
+
+   
+    color.name = name || color.name;
+    const updatedColor = await color.save();
+
+    res.status(200).send({
+      success: true,
+      message: `${updatedColor.name} is updated`,
+      color: updatedColor,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      success: false,
+      message: "Error while updating color",
+      error: error.message,
+    });
+  }
+};

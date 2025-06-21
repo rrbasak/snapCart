@@ -1,6 +1,6 @@
 import express from "express";
 import { isAdmin, requireSignIn } from "../middlewares/authMiddleware.js";
-import { createProductSizeController, deleteProductSizeController, getProductSizeController } from "../controllers/productSizeController.js";
+import { createProductSizeController, deleteProductSizeController, getProductSizeController, updateProductSizeController } from "../controllers/productSizeController.js";
 
 const app = express();
 
@@ -22,5 +22,6 @@ router.delete(
   isAdmin,
   deleteProductSizeController
 );
-
+// update product size
+router.put("/update-product-size/:id", requireSignIn, updateProductSizeController);
 export default router;

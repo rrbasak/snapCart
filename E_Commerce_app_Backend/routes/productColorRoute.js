@@ -1,6 +1,6 @@
 import express from "express";
 import { isAdmin, requireSignIn } from "../middlewares/authMiddleware.js";
-import { createProductColorController, deleteProductColorController, getProductColorController } from "../controllers/productColorController.js";
+import { createProductColorController, deleteProductColorController, getProductColorController, updateProductColorController } from "../controllers/productColorController.js";
 
 const app = express();
 
@@ -22,5 +22,6 @@ router.delete(
   isAdmin,
   deleteProductColorController
 );
-
+// put product Color
+router.put("/update-product-color/:id", requireSignIn, isAdmin,updateProductColorController);
 export default router;

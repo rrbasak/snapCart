@@ -1,6 +1,6 @@
 import express from "express";
 import { isAdmin, requireSignIn } from "../middlewares/authMiddleware.js";
-import { createProductRAMController, deleteProductRAMController, getProductRAMController } from "../controllers/productRAMController.js";
+import { createProductRAMController, deleteProductRAMController, getProductRAMController, updateProductRAMController } from "../controllers/productRAMController.js";
 const app = express();
 
 const router = express.Router();
@@ -19,6 +19,14 @@ router.get(
   requireSignIn,
   getProductRAMController
 );
+
+router.put(
+  "/update-product-ram/:ramId",
+  requireSignIn,
+  updateProductRAMController 
+);
+
+
 // delete product ram
 router.delete(
   "/delete-product-ram/:id",

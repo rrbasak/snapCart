@@ -103,7 +103,7 @@ export default function OrdersAnother() {
   const downloadInvoice = async (order) => {
     try {
       const res = await axios.post(
-        "/api/v1/auth/generate-invoice",
+        `${process.env.REACT_APP_API}/api/v1/auth/generate-invoice`,
         { order, address },
         { responseType: "blob" }
       );
