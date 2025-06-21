@@ -40,6 +40,7 @@ import {
   resendRegisterEmailOtpverifyController,
   verifySmsOtpController,
   deletePicController,
+  downloadInvoiceController,
 } from "../controllers/authController.js";
 
 import {
@@ -346,5 +347,8 @@ router.get(
   isAdmin,
   getPartnerStatusController
 );
+
+//orders invoice download
+router.post("/generate-invoice", requireSignIn, downloadInvoiceController);
 
 export default router;

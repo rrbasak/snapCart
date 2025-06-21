@@ -28,6 +28,7 @@ import NotificationModel from "../models/notificationModel.js";
 import { generateUserWelcomeContent } from "../templates/userWelcomeTemplate.js";
 import { generateEmailVerificationOTPContent } from "../templates/emailVerificationTemplate.js";
 import { generateDeliveryPartnerWelcomeContent } from "../templates/deliverypartnerWelcomeTemplate.js";
+import generateInvoice from "../templates/generateInvoice.js";
 
 //registration
 
@@ -2108,5 +2109,29 @@ export const getPartnerStatusController = async (req, res) => {
   } catch (error) {
     console.error("Error fetching delivery:", error);
     return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+export const downloadInvoiceController = async (req, res) => {
+  try {
+    const { order, address } = req.body;
+
+    if (!order || !order._id) {
+      return res.status(400).json({ error: "Invalid order data" });
+    }
+
+    const pdfBuffer = await generateInvoice(order, address);
+
+    res
+      .writeHead(200, {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename=invoice_${order._id}.pdf`,
+        "Content-Length": pdfBuffer.length,
+      })
+      .end(pdfBuffer);
+  } catch (error) {
+    console.error("Invoice generation error:", error);
+    res.status(500).json({ error: "Failed to generate invoice" });
   }
 };

@@ -36,6 +36,8 @@ import DeleteModal from "../../components/Modals/DeleteModal.jsx";
 import Stepper from "../../frontendUtil/Stepper.jsx";
 import OrdersSkeleton from "../../skeleton/Users/Profile/OrdersSkeleton.jsx";
 import NoOrders from "../NoOrders.jsx";
+import { saveAs } from "file-saver";
+
 
 export default function OrdersAnother() {
   const { width } = useWindowDimensions();
@@ -94,6 +96,22 @@ export default function OrdersAnother() {
       ////console.log(error);
     } finally {
       setOrderLoader(false);
+    }
+  };
+
+
+  const downloadInvoice = async (order) => {
+    try {
+      const res = await axios.post(
+        "/api/v1/auth/generate-invoice",
+        { order, address },
+        { responseType: "blob" }
+      );
+
+      const pdfBlob = new Blob([res.data], { type: "application/pdf" });
+      saveAs(pdfBlob, `invoice_${order._id}.pdf`);
+    } catch (err) {
+      console.error("Failed to download invoice:", err);
     }
   };
 
@@ -430,6 +448,19 @@ export default function OrdersAnother() {
                                         Cancel
                                       </Button>
                                     )}
+
+                                  {o.status === "Delivered" && (
+                                    <Button
+                                      onClick={() => downloadInvoice(o)}
+                                      type="primary"
+                                      style={{
+                                        backgroundColor: "green",
+                                        borderColor: "green",
+                                      }}
+                                    >
+                                      Download Invoice
+                                    </Button>
+                                  )}
                                   <Button
                                     onClick={() =>
                                       showModal("orders", orders, globalIndex)
