@@ -354,7 +354,7 @@ export default function OrdersAnother() {
                                               className={styles.imageContainer}
                                             >
                                               <MDBCardImage
-                                                src={`/api/v1/product/product-photo/${product?.product._id}`}
+                                                src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product?.product._id}`}
                                                 alt={product?.product.name}
                                                 fluid
                                               />

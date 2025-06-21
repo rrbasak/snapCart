@@ -78,7 +78,7 @@ export default function SubCategories() {
                           // src="/images/m2.png"
                           src={
                             s.photo
-                              ? `/api/v1/subcategory/subcategory-photo/${s?._id}`
+                              ? `${process.env.REACT_APP_API}/api/v1/subcategory/subcategory-photo/${s?._id}`
                               : "/images/m2.png"
                           }
                           position="top"

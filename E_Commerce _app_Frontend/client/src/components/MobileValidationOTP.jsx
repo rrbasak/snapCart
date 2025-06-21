@@ -78,7 +78,7 @@ export default function MobileValidationOTP({ to, userId, email, mobile, nextPag
     // }
 
     try {
-      const res = await axios.post("/api/v1/auth/verify-sms-otp", {
+      const res = await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/verify-sms-otp`, {
         userId: userId || email,
         otp,
       });
@@ -122,7 +122,7 @@ export default function MobileValidationOTP({ to, userId, email, mobile, nextPag
   const emailHandller = async () => {
     try {
       const id = userId || email;
-      const res = await axios.post("/api/v1/auth/resend-otp", {
+      const res = await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/resend-otp`, {
         userId: id,
         email: to,
         mobile: mobile,

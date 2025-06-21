@@ -135,7 +135,7 @@ const DeliverypartnerDeliveryHistory = () => {
                   }}
                 >
                   <img
-                    src={`/api/v1/product/product-photo/${product._id}`}
+                    src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${product._id}`}
                     alt={product.name}
                     width="50px"
                     height="50px"

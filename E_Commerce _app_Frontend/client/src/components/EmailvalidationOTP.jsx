@@ -78,7 +78,7 @@ export default function EmailvalidationOTP({ to, userId, email, mobile, nextPage
     // }
 
     try {
-      const res = await axios.post("/api/v1/auth/verify-email-otp", {
+      const res = await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/verify-email-otp`, {
         userId: userId || email,
         otp,
       });
@@ -122,7 +122,7 @@ export default function EmailvalidationOTP({ to, userId, email, mobile, nextPage
   const emailHandller = async () => {
     try {
       const id = userId || email;
-      const res = await axios.post("/api/v1/auth/resend-email-otp", {
+      const res = await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/resend-email-otp`, {
         email: to,
       });
       //console.log(res);

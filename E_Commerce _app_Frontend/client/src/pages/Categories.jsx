@@ -65,7 +65,7 @@ export default function Categories() {
                           // src="/images/m2.png"
                           src={
                             c.photo
-                              ? `/api/v1/category/category-photo/${c?._id}`
+                              ? `${process.env.REACT_APP_API}/api/v1/category/category-photo/${c?._id}`
                               : "/images/m2.png"
                           }
                           position="top"

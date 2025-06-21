@@ -191,7 +191,7 @@ const Header = memo(() => {
     if (!auth?.user?._id || auth?.user?.role !== 0) return;
     try {
       const { data } = await axios.get(
-        `/api/v1/cart/get-cart/${auth.user._id}`
+        `${process.env.REACT_APP_API}/api/v1/cart/get-cart/${auth.user._id}`
       );
       if (data?.success) {
         dispatch(setCart(data?.cartOnUser));
@@ -208,11 +208,11 @@ const Header = memo(() => {
 
     let apiUrl = "";
     if (auth?.user?.role === 0) {
-      apiUrl = `/api/v1/auth/get-user-order-notifications/${auth?.user?._id}?page=${page}&limit=4`;
+      apiUrl = `${process.env.REACT_APP_API}/api/v1/auth/get-user-order-notifications/${auth?.user?._id}?page=${page}&limit=4`;
     } else if (auth?.user?.role === 1) {
-      apiUrl = `/api/v1/auth/get-admin-order-notifications/${auth?.user?._id}?page=${page}&limit=4`;
+      apiUrl = `${process.env.REACT_APP_API}/api/v1/auth/get-admin-order-notifications/${auth?.user?._id}?page=${page}&limit=4`;
     } else if (auth?.user?.role === 2) {
-      apiUrl = `/api/v1/auth/get-delivery-update-notification/${auth?.user?._id}?page=${page}&limit=4`;
+      apiUrl = `${process.env.REACT_APP_API}/api/v1/auth/get-delivery-update-notification/${auth?.user?._id}?page=${page}&limit=4`;
     } else {
       console.warn("Invalid user role for fetching notifications");
       return;
@@ -239,11 +239,11 @@ const Header = memo(() => {
     let apiUrl = "";
 
     if (auth.user.role === 0) {
-      apiUrl = `/api/v1/auth/update-user-order-notifications/${auth.user._id}`;
+      apiUrl = `${process.env.REACT_APP_API}/api/v1/auth/update-user-order-notifications/${auth.user._id}`;
     } else if (auth.user.role === 1) {
-      apiUrl = `/api/v1/auth/update-admin-notifications/${auth.user._id}`;
+      apiUrl = `${process.env.REACT_APP_API}/api/v1/auth/update-admin-notifications/${auth.user._id}`;
     } else if (auth.user.role === 2) {
-      apiUrl = `/api/v1/auth/update-delivery-order-notifications/${auth.user._id}`;
+      apiUrl = `${process.env.REACT_APP_API}/api/v1/auth/update-delivery-order-notifications/${auth.user._id}`;
     } else {
       console.warn("Invalid user role for fetching notifications");
       return;

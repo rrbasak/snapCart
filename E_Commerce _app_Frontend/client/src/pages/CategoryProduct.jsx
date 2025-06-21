@@ -94,7 +94,7 @@ export default function Categories() {
                         }}
                       >
                         <MDBCardImage
-                          src={`/api/v1/product/product-photo/${p._id}`}
+                          src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${p._id}`}
                           position="top"
                           alt={`${p.name} image`}
                           className={styles.cardImage}
