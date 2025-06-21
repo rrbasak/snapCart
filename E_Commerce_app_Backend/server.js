@@ -302,7 +302,8 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:3000",
   "https://snap-cart-frontend-api.vercel.app",
-]; // Add more if needed
+  "https://snap-cart-frontend-1uf4n4lmj-rajdeep-basaks-projects.vercel.app",
+]; 
 
 const corsOptions = {
   origin: allowedOrigins,
