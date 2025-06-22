@@ -11,6 +11,7 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import styles from "../../styles/CreateProduct.module.css";
 import CreateExchangeProductModal from "../../components/Modals/CreateExchangeProductModal";
 import ImageUpload from "../../frontendUtil/ImageUpload";
+import AdminLayout from "../../components/layout/AdminLayout";
 
 dayjs.extend(customParseFormat);
 
@@ -404,9 +405,7 @@ export default function CreateProduct() {
   // Fetch categories
   const getAllCategory = async () => {
     try {
-      const { data } = await axios.get(
-        `${process.env.REACT_APP_API}/api/v1/category/get-category`
-      );
+      const { data } = await axios.get("/api/v1/category/get-category");
       if (data?.success) {
         setCategories(data?.categories);
       }
@@ -416,9 +415,7 @@ export default function CreateProduct() {
   };
   const getAllRAM = async () => {
     try {
-      const { data } = await axios.get(
-        `${process.env.REACT_APP_API}/api/v1/product-ram/get-product-ram`
-      );
+      const { data } = await axios.get("/api/v1/product-ram/get-product-ram");
       if (data?.success) {
         setRAMs(data?.ram);
         setRamOptions(
@@ -434,9 +431,7 @@ export default function CreateProduct() {
   };
   const getAllSize = async () => {
     try {
-      const { data } = await axios.get(
-        `${process.env.REACT_APP_API}/api/v1/product-size/get-product-size`
-      );
+      const { data } = await axios.get("/api/v1/product-size/get-product-size");
       if (data?.success) {
         setSizes(data?.size);
         setSizeOptions(
@@ -453,7 +448,7 @@ export default function CreateProduct() {
   const getAllColor = async () => {
     try {
       const { data } = await axios.get(
-        `${process.env.REACT_APP_API}/api/v1/product-color/get-product-color`
+        "/api/v1/product-color/get-product-color"
       );
       if (data?.success) {
         setColors(data?.color);
@@ -471,7 +466,7 @@ export default function CreateProduct() {
 
   // Handle product creation
   const handleCreate = async (e) => {
-    ////console.log(subCategory);
+    //console.log(subCategory);
     e.preventDefault();
     try {
       const productData = new FormData();
@@ -493,7 +488,7 @@ export default function CreateProduct() {
       productData.append("size", size);
       productData.append("color", color);
       productData.append("priceVariants", JSON.stringify(priceVariants));
-      ////console.log(subcategoryId);
+      //console.log(subcategoryId);
       if (subcategoryId) {
         productData.append("subcategory", subcategoryId);
       }
@@ -515,13 +510,13 @@ export default function CreateProduct() {
       }
 
       productData.append("exchangeavailable", isExchangeAvailable);
-      ////console.log("productData", productData);
+      //console.log("productData", productData);
       for (let pair of productData.entries()) {
-        ////console.log(pair[0] + ": " + pair[1]);
+        //console.log(pair[0] + ": " + pair[1]);
       }
 
       const { data } = await axios.post(
-        `${process.env.REACT_APP_API}/api/v1/product/create-product`,
+        "/api/v1/product/create-product",
         productData
       );
       if (data?.success) {
@@ -542,13 +537,13 @@ export default function CreateProduct() {
     getAllColor();
   }, []);
 
-  ////console.log("here",priceVariants);
+  //console.log("here",priceVariants);
   const ondFreeDeliveryateChange = (date, dateString) => {
-    ////console.log(dateString);
+    //console.log(dateString);
     setFreeDeliveryDate(dateString);
   };
   const ondPublishChange = (date, dateString) => {
-    ////console.log(dateString);
+    //console.log(dateString);
     setPublishDate(dateString);
   };
   const ondFastestDeliveryateChange = (date, dateString) => {
@@ -567,7 +562,7 @@ export default function CreateProduct() {
   };
 
   const onSearch = (value) => {
-    ////console.log("search:", value);
+    //console.log("search:", value);
   };
 
   const categoryChangeHandler = (value) => {
@@ -731,7 +726,7 @@ export default function CreateProduct() {
   const getSubCategoriesBaseOnCAtegory = async (value) => {
     try {
       const { data } = await axios.get(
-        `${process.env.REACT_APP_API}/api/v1/subcategory/get-subcategory-oncategory/${value}`
+        `/api/v1/subcategory/get-subcategory-oncategory/${value}`
       );
       if (data?.success) {
         setSubCategories(data?.sub_categories_based_on_category);
@@ -761,14 +756,14 @@ export default function CreateProduct() {
   //   }))
   // );
   const handleSubCategoryChange = (sc_id) => {
-    ////console.log(sc_id);
+    //console.log(sc_id);
     const selectedSubCategoryObject = subCategories.find(
       (sc) => sc._id === sc_id
     );
-    ////console.log(selectedSubCategoryObject);
+    //console.log(selectedSubCategoryObject);
     setSubCategory(selectedSubCategoryObject);
   };
-  ////console.log("photos", photos);
+  //console.log("photos", photos);
   return (
     <>
       <CreateExchangeProductModal
@@ -780,12 +775,9 @@ export default function CreateProduct() {
         selectedCategory={category}
         selectedSubCategory={subCategory}
       />
-      <Layout title={"Dashboard - Create Product"}>
+      <AdminLayout title={"Dashboard - Create Product"}>
         <div className="container-fluid m-3 p-3">
           <div className="row">
-            <div className="col-md-3">
-              <AdminMenu />
-            </div>
             <div className="col-md-9">
               <h1>Create Product</h1>
               <div className={`m-1 w-75`}>
@@ -1434,14 +1426,14 @@ export default function CreateProduct() {
                     onClick={handleCreate}
                     type="button"
                   >
-                    CREATE PRODUCT
+                    Create Product
                   </button>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </Layout>
+      </AdminLayout>
     </>
   );
 }
