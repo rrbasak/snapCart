@@ -37,7 +37,7 @@ import Stepper from "../../frontendUtil/Stepper.jsx";
 import OrdersSkeleton from "../../skeleton/Users/Profile/OrdersSkeleton.jsx";
 import NoOrders from "../NoOrders.jsx";
 import { saveAs } from "file-saver";
-
+import { CircularProgress } from "@mui/material";
 
 export default function OrdersAnother() {
   const { width } = useWindowDimensions();
@@ -55,7 +55,7 @@ export default function OrdersAnother() {
   const [status, setStatus] = useState("");
   const [buyerName, setBuyerName] = useState("");
   const [email, setEmail] = useState("");
-
+  const [startLoading, setStartLoading] = useState(false);
   // pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 2;
@@ -101,6 +101,7 @@ export default function OrdersAnother() {
 
 
   const downloadInvoice = async (order) => {
+    setStartLoading(true);
     try {
       const res = await axios.post(
         `${process.env.REACT_APP_API}/api/v1/auth/generate-invoice`,
@@ -112,6 +113,8 @@ export default function OrdersAnother() {
       saveAs(pdfBlob, `invoice_${order._id}.pdf`);
     } catch (err) {
       console.error("Failed to download invoice:", err);
+    }finally{
+      setStartLoading(false);
     }
   };
 
@@ -453,14 +456,46 @@ export default function OrdersAnother() {
                                     <Button
                                       onClick={() => downloadInvoice(o)}
                                       type="primary"
+                                      className="btn btn-primary btn-block mb-4"
+                                      disabled={startLoading}
                                       style={{
                                         backgroundColor: "green",
                                         borderColor: "green",
+                                        opacity: startLoading ? 0.7 : 1,
+                                        cursor: startLoading
+                                          ? "not-allowed"
+                                          : "pointer",
+                                        color: "white",
                                       }}
                                     >
-                                      Download Invoice
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                          justifyContent: "center",
+                                          gap: "8px",
+                                          width: "100%",
+                                        }}
+                                      >
+                                        {startLoading ? (
+                                          <>
+                                            <CircularProgress
+                                              size={20}
+                                              style={{ color: "white" }}
+                                            />
+                                            <span style={{ color: "white" }}>
+                                              Download Invoice...
+                                            </span>
+                                          </>
+                                        ) : (
+                                          <span style={{ color: "white" }}>
+                                            Download Invoice
+                                          </span>
+                                        )}
+                                      </div>
                                     </Button>
                                   )}
+
                                   <Button
                                     onClick={() =>
                                       showModal("orders", orders, globalIndex)
