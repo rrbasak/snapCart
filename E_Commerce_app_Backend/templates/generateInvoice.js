@@ -13,7 +13,12 @@ const generateInvoice = (order, address) => {
       doc.on("end", () => resolve(Buffer.concat(buffers)));
 
       // === Logo (Top Left) ===
-      const logoPath = path.join(process.cwd(), "assets", "logoWithText.png");
+      const logoPath = path.join(
+        process.cwd(),
+        "E_Commerce_app_Backend",
+        "assets",
+        "logoWithText.png"
+      );
       if (fs.existsSync(logoPath)) {
         doc.image(logoPath, 50, 30, { width: 100 });
       }
