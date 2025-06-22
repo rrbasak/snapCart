@@ -365,7 +365,7 @@ export default function RightSideBar({ open, onClose }) {
             >
               Orders
             </Menu.Item>
-            <Menu.Item
+            {/* <Menu.Item
               key="orders"
               icon={<Icon type="track" color="#1890ff" />}
               onClick={() =>
@@ -377,7 +377,7 @@ export default function RightSideBar({ open, onClose }) {
               className={activeKey === "track" ? styles.selected : ""}
             >
               Track
-            </Menu.Item>
+            </Menu.Item> */}
             <Menu.Item
               key="orders"
               icon={<Icon type="ohistory" color="#1890ff" />}

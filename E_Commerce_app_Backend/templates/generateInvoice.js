@@ -1,10 +1,10 @@
 import PDFDocument from "pdfkit";
 import moment from "moment";
-import fs from "fs";
-import path from "path";
+import axios from "axios"; // ✅ Add this
+// fs and path are no longer needed, so remove them
 
-const generateInvoice = (order, address) => {
-  return new Promise((resolve, reject) => {
+const generateInvoice = async (order, address) => {
+  return new Promise(async (resolve, reject) => {
     try {
       const doc = new PDFDocument({ margin: 50 });
       const buffers = [];
@@ -12,15 +12,16 @@ const generateInvoice = (order, address) => {
       doc.on("data", buffers.push.bind(buffers));
       doc.on("end", () => resolve(Buffer.concat(buffers)));
 
-      // === Logo (Top Left) ===
-      const logoPath = path.join(
-        process.cwd(),
-        "E_Commerce_app_Backend",
-        "assets",
-        "logoWithText.png"
-      );
-      if (fs.existsSync(logoPath)) {
-        doc.image(logoPath, 50, 30, { width: 100 });
+      // === Fetch Cloudinary Logo ===
+      try {
+        const imageRes = await axios.get(
+          "https://res.cloudinary.com/da9eicxue/image/upload/v1750579316/logoWithText_abfbaj.png",
+          { responseType: "arraybuffer" }
+        );
+        const logoBuffer = Buffer.from(imageRes.data, "binary");
+        doc.image(logoBuffer, 50, 30, { width: 100 });
+      } catch (imageErr) {
+        console.warn("Logo load failed. Continuing without it.");
       }
 
       // === INVOICE Title Centered ===
@@ -34,7 +35,6 @@ const generateInvoice = (order, address) => {
       let currentY = 90;
 
       doc.fontSize(10);
-
       doc.font("Helvetica-Bold").text("Date:", labelX, currentY);
       doc
         .font("Helvetica")
@@ -53,7 +53,7 @@ const generateInvoice = (order, address) => {
       doc.font("Helvetica").text(order?.email, valueX, currentY);
       currentY += 30;
 
-      // === Shipping Address (Placeholder) ===
+      // === Shipping Address ===
       doc.font("Helvetica-Bold").text("Shipping Address:", 50, currentY);
       doc
         .font("Helvetica")
@@ -64,19 +64,17 @@ const generateInvoice = (order, address) => {
       // === Table Header ===
       doc.font("Helvetica-Bold").fontSize(12);
       const tableTop = currentY;
-
-      const col1 = 50; // #
-      const col2 = 80; // Product
-      const col3 = 330; // Qty
-      const col4 = 400; // Price
-      const col5 = 470; // Total
+      const col1 = 50,
+        col2 = 80,
+        col3 = 330,
+        col4 = 400,
+        col5 = 470;
 
       doc.text("#", col1, tableTop);
       doc.text("Product", col2, tableTop);
       doc.text("Qty", col3, tableTop);
       doc.text("Price", col4, tableTop);
       doc.text("Total", col5, tableTop);
-
       doc
         .moveTo(50, tableTop + 15)
         .lineTo(550, tableTop + 15)
@@ -101,41 +99,12 @@ const generateInvoice = (order, address) => {
         doc.text(`Rs. ${rowTotal}`, col5, y);
 
         y = doc.y + 10;
-
-        // Draw a separator line after each row
         doc.moveTo(50, y).lineTo(550, y).stroke();
         y += 5;
       });
 
-      // === Optional Tax/Discount Calculation ===
-      const tax = Math.round(total * 0.18); // 18% GST
-      const discount = 0; // Update as needed
+      // === Grand Total ===
       const grandTotal = total;
-
-    //   y += 10;
-    //   doc
-    //     .font("Helvetica-Bold")
-    //     .fontSize(11)
-    //     .text("Subtotal:", col4, y)
-    //     .text(`Rs. ${total}`, col5, y);
-
-    //   y += 15;
-    //   doc
-    //     .font("Helvetica-Bold")
-    //     .text("GST (18%):", col4, y)
-    //     .text(`Rs. ${tax}`, col5, y);
-
-    //   if (discount > 0) {
-    //     y += 15;
-    //     doc
-    //       .font("Helvetica-Bold")
-    //       .text("Discount:", col4, y)
-    //       .text(`-Rs. ${discount}`, col5, y);
-    //   }
-
-    //   y += 20;
-    //   doc.moveTo(350, y).lineTo(550, y).stroke();
-
       y += 10;
       doc
         .fontSize(12)
